@@ -1,5 +1,5 @@
 "use strict";
-const noSqlProgram = require("./program");
+import noSqlProgram from "./program";
 
 class NoSqlCommand {
   static async handle(program) {
@@ -12,4 +12,4 @@ class NoSqlCommand {
   }
 }
 
-module.exports = NoSqlCommand;
+export default NoSqlCommand;
