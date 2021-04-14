@@ -1,45 +1,44 @@
 "use strict";
-const fs = require("fs");
-const BaseCommand = require("../baseCommand");
-const nextStep = Symbol("nextStep");
-const generateCommand = Symbol("generateCommand");
+import fs from "fs";
+import BaseCommand from "../baseCommand";
+
 
 class ConsoleProgram {
-  static async handle(name) {
+  static async handle(name:string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Console/Commands");
     if (checkFolder) {
       let doesFileExist = await BaseCommand.checkFileExists(
-        "./App/Console/Commands/" + name + "_command.js",
+        "./App/Console/Commands/" + name + "_command.ts",
       );
       if (doesFileExist == false) {
-        await this[nextStep](name);
+        await this.nextStep(name);
       } else {
         return BaseCommand.error(
-          name + "_command.js already exist. Modify command name and try again",
+          name + "_command.ts already exist. Modify command name and try again",
         );
       }
     }
   }
 
-  static async [nextStep](name) {
+  private static async nextStep(name:string) {
     fs.appendFile(
-      "./App/Console/Commands/" + name + "_command.js",
-      this[generateCommand](name),
+      "./App/Console/Commands/" + name + "_command.ts",
+      this.generateCommand(name),
       function (err) {
         if (err) return BaseCommand.error(err.errno);
         BaseCommand.success(
           name +
-            "_command.js class successfully generated in App/Console/Commands folder",
+            "_command.ts class successfully generated in App/Console/Commands folder",
         );
         return true;
       },
     );
   }
 
-  static [generateCommand](name) {
+  private static generateCommand(name:string) {
     let body = `"use strict";
-    const Command = require("maker-console");
+    import Command from "maker-consoleTs";
 
     class ${name} extends Command {
       constructor() {
@@ -77,9 +76,9 @@ class ConsoleProgram {
       }
     }
     
-    module.exports = ${name};`;
+    export default ${name};`;
     return body;
   }
 }
 
-module.exports = ConsoleProgram;
+export default ConsoleProgram;
