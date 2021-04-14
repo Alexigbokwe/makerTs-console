@@ -1,44 +1,42 @@
 "use strict";
-const fs = require("fs");
-const BaseCommand = require("../baseCommand");
-const nextStep = Symbol("nextStep");
-const generateMiddleware = Symbol("generateMiddleware");
+import fs from "fs";
+import BaseCommand from "../baseCommand";
 
 class MiddlewareProgram {
-  static async handle(name) {
+  static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Http/Middleware");
     if (checkFolder) {
       let doesFileExist = await BaseCommand.checkFileExists(
-        "./App/Http/Middleware/" + name + "_middleware.js",
+        "./App/Http/Middleware/" + name + "_middleware.ts",
       );
       if (doesFileExist == false) {
-        await this[nextStep](name);
+        await this.nextStep(name);
       } else {
         return BaseCommand.error(
           name +
-            "_middleware.js already exist. Modify middleware name and try again",
+            "_middleware.ts already exist. Modify middleware name and try again",
         );
       }
     }
   }
 
-  static async [nextStep](name) {
+  private static async nextStep(name: string) {
     fs.appendFile(
-      "./App/Http/Middleware/" + name + "_middleware.js",
-      this[generateMiddleware](name),
+      "./App/Http/Middleware/" + name + "_middleware.ts",
+      this.generateMiddleware(name),
       function (err) {
         if (err) return BaseCommand.error(err.errno);
         BaseCommand.success(
           name +
-            "_middleware.js class successfully generated in App/Http/Middleware folder",
+            "_middleware.ts class successfully generated in App/Http/Middleware folder",
         );
         return true;
       },
     );
   }
 
-  static [generateMiddleware](name) {
+  private static generateMiddleware(name: string) {
     let body = `"use strict";
 
         class ${name} {
@@ -48,16 +46,16 @@ class MiddlewareProgram {
            * @param {Response} res
            * @param {Next} next
            */
-          async handle(req, res, next) {
+          public async handle(req, res, next) {
             //UpStream
             await next();
             //DownStream
           }
         }
 
-        module.exports = ${name};`;
+        export default ${name};`;
     return body;
   }
 }
 
-module.exports = MiddlewareProgram;
+export default MiddlewareProgram;
