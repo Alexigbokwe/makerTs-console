@@ -1,5 +1,5 @@
 "use strict";
-const listenerProgram = require("./program");
+import listenerProgram from "./program";
 
 class ListenerCommand {
   static async handle(program) {
@@ -12,4 +12,4 @@ class ListenerCommand {
   }
 }
 
-module.exports = ListenerCommand;
+export default ListenerCommand;
