@@ -2,9 +2,11 @@
   "name": "makerts",
   "version": "1.0.0",
   "description": "MakerTS is the Typescript version of Maker console which is the command line interface included for ExpressWebJs. Maker exists at the root of your application as the maker script and provides a number of helpful commands that can assist you while you build your application. To view a list of all available Maker commands, you may use the help command.",
-  "main": "index.js",
+  "types": "./lib",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build" : "tsc"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +18,8 @@
     "inquirer": "^7.3.3",
     "ora": "^5.1.0",
     "shelljs": "^0.8.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.4"
   }
 }
