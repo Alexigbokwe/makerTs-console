@@ -1,15 +1,15 @@
 "use strict";
-const jobProgram = require("./program");
+import jobProgram from "./program";
 
 class JobCommand {
-  static async handle(program) {
+  static async handle(program:any) {
     await program
       .command("make-job [jobName]")
       .description("Create a new job class")
-      .action((jobName) => {
+      .action((jobName: string) => {
         jobProgram.handle(jobName);
       });
   }
 }
 
-module.exports = JobCommand;
+export default JobCommand;

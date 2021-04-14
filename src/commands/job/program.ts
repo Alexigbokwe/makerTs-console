@@ -1,42 +1,40 @@
 "use strict";
-const fs = require("fs");
-const BaseCommand = require("../baseCommand");
-const nextStep = Symbol("nextStep");
-const generateJob = Symbol("generateJob");
+import fs from "fs";
+import BaseCommand from "../baseCommand";
 
 class JobProgram {
-  static async handle(name) {
+  static async handle(name:string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Jobs");
     if (checkFolder) {
       let doesFileExist = await BaseCommand.checkFileExists(
-        "./App/Jobs/" + name + "_job.js",
+        "./App/Jobs/" + name + "_job.ts",
       );
       if (doesFileExist == false) {
-        await this[nextStep](name);
+        await this.nextStep(name);
       } else {
         return BaseCommand.error(
-          name + "_job.js already exist. Modify job name and try again",
+          name + "_job.ts already exist. Modify job name and try again",
         );
       }
     }
   }
 
-  static async [nextStep](name) {
+  private static async nextStep(name:string) {
     fs.appendFile(
-      "./App/Jobs/" + name + "_job.js",
-      this[generateJob](name),
+      "./App/Jobs/" + name + "_job.ts",
+      this.generateJob(name),
       function (err) {
         if (err) return BaseCommand.error(err.errno);
         BaseCommand.success(
-          name + "_job.js class successfully generated in App/Jobs folder",
+          name + "_job.ts class successfully generated in App/Jobs folder",
         );
         return true;
       },
     );
   }
 
-  static [generateJob](name) {
+  private static generateJob(name:string) {
     let body = `"use strict";
         const ShouldQueue = require("../../Bootstrap/Queue/ShouldQueue");
 
@@ -55,9 +53,9 @@ class JobProgram {
           }
         }
 
-        module.exports = ${name};`;
+        export default ${name};`;
     return body;
   }
 }
 
-module.exports = JobProgram;
+export default JobProgram;
