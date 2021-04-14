@@ -1,15 +1,15 @@
 "use strict";
-const eventProgram = require("./program");
+import eventProgram from "./program";
 
 class EventCommand {
-  static async handle(program) {
+  static async handle(program:any) {
     await program
       .command("make-event <eventname>")
       .description("Create a new event class")
-      .action((eventname) => {
+      .action((eventname: any) => {
         eventProgram.handle(eventname);
       });
   }
 }
 
-module.exports = EventCommand;
+export default EventCommand;

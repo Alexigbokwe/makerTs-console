@@ -1,7 +1,7 @@
 import controllerProgram from "./program";
 
 class ControllerCommand {
-  static async handle(program) {
+  static async handle(program:any) {
     await program
       .command("make-controller <controllername>")
       .option("-r", "-resource", "Controller Resource Methods")
