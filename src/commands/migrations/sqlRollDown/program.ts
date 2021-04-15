@@ -59,7 +59,7 @@ class SqlRollDownProgram {
     spinner.color = "magenta";
     spinner.text = "Undoing " + name + " migration that was run: ";
     try {
-      shell.exec("npx knex migrate:down " + name, (error, success) => {
+      shell.exec("npx knex migrate:down " + name + "--knexfile=./SchemaSetup.ts", (error, success) => {
         if (error) {
           BaseCommand.error(error);
           spinner.color = "red";
@@ -75,7 +75,7 @@ class SqlRollDownProgram {
       });
     } catch (error) {
       shell.exec("npm install knex -g");
-      shell.exec("npx knex migrate:down " + name, (error, success) => {
+      shell.exec("npx knex migrate:down " + name + "--knexfile=./SchemaSetup.ts", (error, success) => {
         if (error) {
           BaseCommand.error(error);
           spinner.color = "red";
