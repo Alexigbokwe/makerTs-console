@@ -1,7 +1,7 @@
 "use strict";
-const BaseCommand = require("../../baseCommand");
-const shell = require("shelljs");
-const Ora = require("ora");
+import BaseCommand from "../../baseCommand";
+import shell from "shelljs";
+import Ora from "ora";
 const spinner = Ora("Processing: ");
 
 class ShowSqlListProgram {
@@ -10,7 +10,7 @@ class ShowSqlListProgram {
     spinner.color = "magenta";
     spinner.text = "Generating Migration List: ";
     try {
-      shell.exec("npx knex migrate:list", (error, success) => {
+      shell.exec("npx knex migrate:list knex --knexfile=./SchemaSetup.ts", (error, success) => {
         if (error) {
           BaseCommand.error(error);
           spinner.color = "red";
@@ -26,7 +26,7 @@ class ShowSqlListProgram {
       });
     } catch (error) {
       shell.exec("npm install knex -g");
-      shell.exec("npx knex migrate:list", (error, success) => {
+      shell.exec("npx knex migrate:list knex --knexfile=./SchemaSetup.ts", (error, success) => {
         if (error) {
           BaseCommand.error(error);
           spinner.color = "red";
@@ -44,4 +44,4 @@ class ShowSqlListProgram {
   }
 }
 
-module.exports = ShowSqlListProgram;
+export default ShowSqlListProgram;

@@ -1,8 +1,8 @@
 "use strict";
-const showSqlListProgram = require("./program");
+import showSqlListProgram from "./program";
 
 class ShowSqlListCommand {
-  static async handle(program) {
+  static async handle(program:any) {
     await program
       .command("show-sql-list")
       .description("Show list of both completed and pending migrations")
@@ -12,4 +12,4 @@ class ShowSqlListCommand {
   }
 }
 
-module.exports = ShowSqlListCommand;
+export default ShowSqlListCommand;
