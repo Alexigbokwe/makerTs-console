@@ -1,8 +1,8 @@
 "use strict";
-const scheduledProgram = require("./program");
+import scheduledProgram from "./program";
 
 class ListenerCommand {
-  static async handle(program) {
+  static async handle(program:any) {
     await program
       .command("run-schedule")
       .description("Run the scheduled commands")
@@ -12,4 +12,4 @@ class ListenerCommand {
   }
 }
 
-module.exports = ListenerCommand;
+export default ListenerCommand;

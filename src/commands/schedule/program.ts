@@ -1,10 +1,10 @@
 "use strict";
 const pathTo = process.env.PWD;
-const BaseCommand = require("../baseCommand");
+import BaseCommand from "../baseCommand";
 
 class ScheduledProgram {
   static async handle() {
-    let path = `${pathTo}/App/Console/kernel.js`;
+    let path = `${pathTo}/App/Console/kernel.ts`;
     let kernel = require(path);
     try {
       BaseCommand.success("Running scheduled command");
@@ -15,4 +15,4 @@ class ScheduledProgram {
   }
 }
 
-module.exports = ScheduledProgram;
+export default ScheduledProgram;
