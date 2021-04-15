@@ -1,16 +1,16 @@
 "use strict";
-const sqlProgram = require("./program");
+import sqlProgram from"./program";
 
 class SqlCommand {
-  static async handle(program) {
+  static async handle(program:any) {
     await program
       .command("make-sql-model <modelname>")
       .option("-m", "-migration", "Generation migration with sql model")
       .description("Create a new sql model class")
-      .action((modelname, resource) => {
+      .action((modelname: any, resource: { m: any; }) => {
         sqlProgram.handle(modelname, resource.m);
       });
   }
 }
 
-module.exports = SqlCommand;
+export default SqlCommand;

@@ -1,40 +1,37 @@
 "use strict";
-const fs = require("fs");
-const BaseCommand = require("../baseCommand");
-const shell = require("shelljs");
-const Ora = require("ora");
+import Ora from "Ora";
+import fs from "fs";
+import BaseCommand from "../baseCommand";
+import shell from "shelljs";
 const spinner = Ora("Processing: ");
-let createModel = Symbol("createModel");
-let modelBody = Symbol("modelBody");
-let modelBodyWithMigration = Symbol("modelBodyWithMigration");
 
 class SqlProgram {
-  static async handle(name, resource = null) {
+  static async handle(name:string, resource = null) {
     name = name[0].toUpperCase() + name.slice(1);
     let check = await BaseCommand.checkFileExists(
-      "./App/Model/" + name + "_model.js",
+      "./App/Model/" + name + "_model.ts",
     );
     if (check == false) {
-      await this[createModel](name, resource);
+      await this.createModel(name, resource);
     } else {
       return BaseCommand.error(`${name} Sql model class already exists`);
     }
   }
 
-  static async [createModel](modelName, resource) {
+  private static async createModel(modelName:string, resource:string|null) {
     if (resource == "Generation migration with sql model") {
       spinner.start();
       spinner.color = "magenta";
       spinner.text = "Generating Model"; 
       fs.appendFile(
-        "./App/Model/" + modelName + "_model.js",
-        await this[modelBodyWithMigration](modelName),
+        "./App/Model/" + modelName + "_model.ts",
+        await this.modelBodyWithMigration(modelName),
         function (err) {
           if (err) BaseCommand.error(err);
           BaseCommand.success(
             "\n" +
               modelName +
-              "_model.js class successfully generated in App/Model folder",
+              "_model.ts class successfully generated in App/Model folder",
           );
           spinner.color = "green";
           spinner.text = "Completed";
@@ -46,14 +43,14 @@ class SqlProgram {
       spinner.color = "magenta";
       spinner.text = "Generating Model";
       fs.appendFile(
-        "./App/Model/" + modelName + "_model.js",
-        await this[modelBody](modelName),
+        "./App/Model/" + modelName + "_model.ts",
+        this.modelBody(modelName),
         function (err) {
           if (err) BaseCommand.error(err);
           BaseCommand.success(
             "\n" +
               modelName +
-              "_model.js class successfully generated in App/Model folder",
+              "_model.ts class successfully generated in App/Model folder",
           );
           spinner.color = "green";
           spinner.text = "Completed";
@@ -63,22 +60,22 @@ class SqlProgram {
     }
   }
 
-  static [modelBody](name) {
+  private static modelBody(name:string) {
     let tableName = (name = name[0].toLowerCase() + name.slice(1));
     let modelName = (name = name[0].toUpperCase() + name.slice(1));
     let body = `"use strict";
-    const Model = require("@elucidate/Model");
+    import Model from "Elucidate/Database/Model";
     class ${modelName} extends Model{
       static get tableName() {
         return "${tableName}";
       }
     }
 
-    module.exports = ${modelName};`;
+    export default ${modelName};`;
     return body;
   }
 
-  static async [modelBodyWithMigration](modelName) {
+  private static async modelBodyWithMigration(modelName:string) {
     modelName = modelName.toLowerCase();
     try {
       shell.exec("npx knex migrate:make " + modelName);
@@ -86,17 +83,17 @@ class SqlProgram {
         modelName +
           " migration successfully generated in Database/Migrations folder",
       );
-      return await this[modelBody](modelName);
+      return this.modelBody(modelName);
     } catch (error) {
       shell.exec("npm install knex -g");
-      shell.exec("npx knex migrate:make " + modelName);
+      shell.exec("npx knex migrate:make " + modelName +"knex --knexfile=./SchemaSetup.ts");
       await BaseCommand.success(
         modelName +
           " migration successfully generated in Database/Migrations folder",
       );
-      return await this[modelBody](modelName);
+      return this.modelBody(modelName);
     }
   }
 }
 
-module.exports = SqlProgram;
+export default SqlProgram;
