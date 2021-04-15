@@ -1,25 +1,23 @@
 "use strict";
-const BaseCommand = require("../../baseCommand");
-const shell = require("shelljs");
-const Ora = require("ora");
+import BaseCommand from "../../baseCommand";
+import shell from "shelljs";
+import Ora from "ora";
 const spinner = Ora("Processing: ");
-const undoLastMigraation = Symbol("undoLastMigraation");
-const undoSpecifiedMigration = Symbol("undoSpecifiedMigration");
 
 class SqlRollDownProgram {
-  static async handle(name) {
+  static async handle(name:string) {
     return name
-      ? await this[undoSpecifiedMigration](name)
-      : await this[undoLastMigraation]();
+      ? await this.undoSpecifiedMigration(name)
+      : await this.undoLastMigraation();
   }
 
   //Undo the last migration that was run
-  static async [undoLastMigraation]() {
+  private static async undoLastMigraation() {
     spinner.start();
     spinner.color = "magenta";
     spinner.text = "Undoing the last migration that was run: ";
     try {
-      shell.exec("npx knex migrate:down", (error, success) => {
+      shell.exec("npx knex migrate:down --knexfile=./SchemaSetup.ts", (error, success) => {
         if (error) {
           BaseCommand.error(error);
           spinner.color = "red";
@@ -35,7 +33,7 @@ class SqlRollDownProgram {
       });
     } catch (error) {
       shell.exec("npm install knex -g");
-      shell.exec("npx knex migrate:down", (error, success) => {
+      shell.exec("npx knex migrate:down --knexfile=./SchemaSetup.ts", (error, success) => {
         if (error) {
           BaseCommand.error(error);
           spinner.color = "red";
@@ -56,7 +54,7 @@ class SqlRollDownProgram {
    * Undo the specified migration that was run
    * @param {String} name
    */
-  static async [undoSpecifiedMigration](name) {
+   private static async undoSpecifiedMigration(name:string) {
     spinner.start();
     spinner.color = "magenta";
     spinner.text = "Undoing " + name + " migration that was run: ";
@@ -95,4 +93,4 @@ class SqlRollDownProgram {
   }
 }
 
-module.exports = SqlRollDownProgram;
+export default SqlRollDownProgram;
