@@ -1,15 +1,15 @@
 "use strict";
-const requestProgram = require("./program");
+import requestProgram from "./program";
 
 class RequestCommand {
-  static async handle(program) {
+  static async handle(program:any) {
     await program
       .command("make-request <requestname>")
       .description("Create a new request class")
-      .action((requestname) => {
+      .action((requestname:string) => {
         requestProgram.handle(requestname);
       });
   }
 }
 
-module.exports = RequestCommand;
+export default RequestCommand;
