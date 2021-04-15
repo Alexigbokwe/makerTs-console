@@ -1,8 +1,8 @@
 "use strict";
-const runSqlMigratiomProgram = require("./program");
+import runSqlMigratiomProgram from"./program";
 
 class RunSqlMigratiomCommand {
-  static async handle(program) {
+  static async handle(program:any) {
     await program
       .command("run-sql-migration")
       .alias("rsqlm")
@@ -13,4 +13,4 @@ class RunSqlMigratiomCommand {
   }
 }
 
-module.exports = RunSqlMigratiomCommand;
+export default RunSqlMigratiomCommand;

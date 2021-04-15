@@ -1,7 +1,7 @@
 "use strict";
-const BaseCommand = require("../../baseCommand");
-const shell = require("shelljs");
-const Ora = require("ora");
+import BaseCommand from "../../baseCommand";
+import shell from "shelljs";
+import Ora from "ora";
 const spinner = Ora("Processing: ");
 
 class RunSqlMigratiomProgram {
@@ -10,7 +10,7 @@ class RunSqlMigratiomProgram {
     spinner.color = "magenta";
     spinner.text = "Running Migration: ";
     try {
-      shell.exec("npx knex migrate:latest", (error, success) => {
+      shell.exec("npx knex migrate:latest knex --knexfile=./SchemaSetup.ts", (error, success) => {
         if (error) {
           BaseCommand.error(error);
           spinner.color = "red";
@@ -26,7 +26,7 @@ class RunSqlMigratiomProgram {
       });
     } catch (error) {
       shell.exec("npm install knex -g");
-      shell.exec("npx knex migrate:latest", (error, success) => {
+      shell.exec("npx knex migrate:latest knex --knexfile=./SchemaSetup.ts", (error, success) => {
         if (error) {
           BaseCommand.error(error);
           spinner.color = "red";
@@ -44,4 +44,4 @@ class RunSqlMigratiomProgram {
   }
 }
 
-module.exports = RunSqlMigratiomProgram;
+export default RunSqlMigratiomProgram;
