@@ -38,7 +38,7 @@ class ConsoleProgram {
 
   private static generateCommand(name:string) {
     let body = `"use strict";
-    import Command from "maker-consoleTs";
+    import Command from "maker-console-ts";
 
     class ${name} extends Command {
       constructor() {
