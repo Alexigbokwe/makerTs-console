@@ -1,12 +1,11 @@
 "use strict";
-import Ora from "Ora";
+import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 const spinner = Ora("Processing: ");
 
-
 class WsControllerProgram {
-  static async handle(name:string) {
+  static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let check = await BaseCommand.checkFileExists(
       "./App/Http/Controller/Ws/" + name + ".ts",
@@ -20,7 +19,7 @@ class WsControllerProgram {
     }
   }
 
-  private static nextStep(name:string) {
+  private static nextStep(name: string) {
     spinner.start();
     spinner.color = "magenta";
     spinner.text = "Generating Web Socket Controller Class";
@@ -42,7 +41,7 @@ class WsControllerProgram {
     );
   }
 
-  private static generateController(name:string) {
+  private static generateController(name: string) {
     let body = `"use strict";
     import WsBaseController from "WsBaseController";
 

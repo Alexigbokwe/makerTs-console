@@ -1,12 +1,12 @@
 "use strict";
-import Ora from "Ora";
+import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 import shell from "shelljs";
 const spinner = Ora("Processing: ");
 
 class SqlProgram {
-  static async handle(name:string, resource = null) {
+  static async handle(name: string, resource = null) {
     name = name[0].toUpperCase() + name.slice(1);
     let check = await BaseCommand.checkFileExists(
       "./App/Model/" + name + "_model.ts",
@@ -18,11 +18,11 @@ class SqlProgram {
     }
   }
 
-  private static async createModel(modelName:string, resource:string|null) {
+  private static async createModel(modelName: string, resource: string | null) {
     if (resource == "Generation migration with sql model") {
       spinner.start();
       spinner.color = "magenta";
-      spinner.text = "Generating Model"; 
+      spinner.text = "Generating Model";
       fs.appendFile(
         "./App/Model/" + modelName + "_model.ts",
         await this.modelBodyWithMigration(modelName),
@@ -60,7 +60,7 @@ class SqlProgram {
     }
   }
 
-  private static modelBody(name:string) {
+  private static modelBody(name: string) {
     let tableName = (name = name[0].toLowerCase() + name.slice(1));
     let modelName = (name = name[0].toUpperCase() + name.slice(1));
     let body = `"use strict";
@@ -75,10 +75,14 @@ class SqlProgram {
     return body;
   }
 
-  private static async modelBodyWithMigration(modelName:string) {
+  private static async modelBodyWithMigration(modelName: string) {
     modelName = modelName.toLowerCase();
     try {
-      shell.exec("npx knex migrate:make " + modelName +"knex --knexfile=./SchemaSetup.ts");
+      shell.exec(
+        "npx knex migrate:make " +
+          modelName +
+          "knex --knexfile=./SchemaSetup.ts",
+      );
       await BaseCommand.success(
         modelName +
           " migration successfully generated in Database/Migrations folder",
@@ -86,7 +90,11 @@ class SqlProgram {
       return this.modelBody(modelName);
     } catch (error) {
       shell.exec("npm install knex -g");
-      shell.exec("npx knex migrate:make " + modelName +"knex --knexfile=./SchemaSetup.ts");
+      shell.exec(
+        "npx knex migrate:make " +
+          modelName +
+          "knex --knexfile=./SchemaSetup.ts",
+      );
       await BaseCommand.success(
         modelName +
           " migration successfully generated in Database/Migrations folder",

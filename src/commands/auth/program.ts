@@ -1,11 +1,10 @@
 "use strict";
-import Ora from "Ora";
+import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 const spinner = Ora("Processing: ");
 
 class AuthProgram {
-  
   static async handle() {
     let status = await this.createModel();
     if (status != false) await this.createAuthRoute();
@@ -55,7 +54,7 @@ class AuthProgram {
           BaseCommand.success(
             "Authentication route successfully generated in App/Routes/authRoute folder",
           );
-          return true; 
+          return true;
         }
       },
     );

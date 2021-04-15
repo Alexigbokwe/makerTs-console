@@ -1,12 +1,12 @@
 "use strict";
-import Ora from "Ora";
+import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 import shell from "shelljs";
 const spinner = Ora("Processing: ");
 
 class RouteProgram {
-  static async handle(name:string) {
+  static async handle(name: string) {
     spinner.start();
     spinner.color = "magenta";
     spinner.text = "Generating Route";
@@ -29,17 +29,17 @@ class RouteProgram {
     }
   }
 
-  private static async nextStep(name:string) {
+  private static async nextStep(name: string) {
     await this.routeFolder(name);
     shell.mv("./output.txt", "./App/Providers/Route.ts");
   }
 
-  private static async routeFolder(name:string) {
+  private static async routeFolder(name: string) {
     shell.mkdir("./Routes/" + name);
     fs.appendFile(
       "./Routes/" + name + "/index.ts",
       await this.routeBody(name),
-      function (err:any) {
+      function (err: any) {
         if (err) throw err;
         BaseCommand.success(
           `${name} route successfully generated in Routes/${name}`,
@@ -48,7 +48,7 @@ class RouteProgram {
     );
   }
 
-  private static async routeBody(name:string) {
+  private static async routeBody(name: string) {
     let body = `"use strict";
     import Route from "Elucidate/Route/manager";
     import { Request, Response, NextFunction } from "Elucidate/HttpContext";
