@@ -78,7 +78,7 @@ class SqlProgram {
   private static async modelBodyWithMigration(modelName:string) {
     modelName = modelName.toLowerCase();
     try {
-      shell.exec("npx knex migrate:make " + modelName);
+      shell.exec("npx knex migrate:make " + modelName +"knex --knexfile=./SchemaSetup.ts");
       await BaseCommand.success(
         modelName +
           " migration successfully generated in Database/Migrations folder",

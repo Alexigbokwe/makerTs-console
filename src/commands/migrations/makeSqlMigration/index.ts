@@ -1,16 +1,16 @@
 "use strict";
-const makeSqlMigratiomProgram = require("./program");
+import makeSqlMigratiomProgram from "./program";
 
 class MakeSqlMigratiomCommand {
-  static async handle(program) {
+  static async handle(program:any) {
     await program
       .command("make-sql-migration <migrationName>")
       .alias("msqlm")
       .description("Create a new migration file")
-      .action((migrationName) => {
+      .action((migrationName:string) => {
         makeSqlMigratiomProgram.handle(migrationName);
       });
   }
 }
 
-module.exports = MakeSqlMigratiomCommand;
+export default MakeSqlMigratiomCommand;

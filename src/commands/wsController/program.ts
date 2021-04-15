@@ -12,7 +12,7 @@ class WsControllerProgram {
       "./App/Http/Controller/Ws/" + name + ".ts",
     );
     if (check == false) {
-      await this.nextStep(name);
+      this.nextStep(name);
     } else {
       return BaseCommand.error(
         `${name} web socket controller class already exists`,
