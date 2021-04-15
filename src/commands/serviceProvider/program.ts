@@ -1,47 +1,45 @@
 "use strict";
-const fs = require("fs");
-const BaseCommand = require("../baseCommand");
-const nextStep = Symbol("nextStep");
-const generateService = Symbol("generateService");
+import fs from "fs";
+import BaseCommand from "../baseCommand";
 
 class ProviderProgram {
-  static async handle(name) {
+  static async handle(name:string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Providers");
     if (checkFolder) {
       let doesFileExist = await BaseCommand.checkFileExists(
-        "./App/Providers/" + name + ".js",
+        "./App/Providers/" + name + ".ts",
       );
       if (doesFileExist == false) {
-        await this[nextStep](name);
+        await this.nextStep(name);
       } else {
         return BaseCommand.error(
           name +
-            ".js already exist. Modify service provider name and try again",
+            ".ts already exist. Modify service provider name and try again",
         );
       }
     }
   }
 
-  static async [nextStep](name) {
+  private static async nextStep(name:string) {
     fs.appendFile(
-      "./App/Providers/" + name + ".js",
-      this[generateService](name),
+      "./App/Providers/" + name + ".ts",
+      this.generateService(name),
       function (err) {
         if (err) return BaseCommand.error(err.errno);
         BaseCommand.success(
-          name + ".js class successfully generated in App/Providers folder",
+          name + ".ts class successfully generated in App/Providers folder",
         );
         return true;
       },
     );
   }
 
-  static [generateService](name) {
+  private static generateService(name:string) {
     let body = `"use strict";
-    const ioc = require("expressweb-ioc");
+    import ServiceProvider from "Elucidate/Support/ServiceProvider";
     
-    class ${name}{
+    class ${name} extends ServiceProvider{
         /**
          * Register application services.
         */
@@ -53,7 +51,6 @@ class ProviderProgram {
 
         /**
          * Bootstrap any application services.
-         *
          * @return void
         */
         boot() {
@@ -61,9 +58,9 @@ class ProviderProgram {
         }
     }
 
-    module.exports = ${name};`;
+    export default ${name};`;
     return body;
   }
 }
 
-module.exports = ProviderProgram;
+export default ProviderProgram;
