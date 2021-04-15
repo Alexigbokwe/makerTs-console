@@ -6,7 +6,7 @@ class ControllerCommand {
       .command("make-controller <controllername>")
       .option("-r", "-resource", "Controller Resource Methods")
       .description("Create a new controller class")
-      .action((controllername, resource) => {
+      .action((controllername: any, resource: { r: null | undefined; }) => {
         controllerProgram.handle(controllername, resource.r);
       });
   }

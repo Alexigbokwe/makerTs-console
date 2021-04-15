@@ -2,7 +2,7 @@
 import sqlRollUpProgram from "./program";
 
 class SqlRollUpCommand {
-  static async handle(program:string) {
+  static async handle(program: { command: (arg0: string) => { (): any; new(): any; alias: { (arg0: string): { (): any; new(): any; description: { (arg0: string): { (): any; new(): any; action: { (arg0: (migrationName: string) => void): any; new(): any; }; }; new(): any; }; }; new(): any; }; }; }) {
     await program
       .command("sql-rollup [migrationName]")
       .alias("sqlru")

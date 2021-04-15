@@ -91,4 +91,4 @@ class SqlRollUpProgram {
   }
 }
 
-module.exports = SqlRollUpProgram;
+export default SqlRollUpProgram;

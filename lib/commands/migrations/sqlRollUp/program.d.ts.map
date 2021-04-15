@@ -1,0 +1,1 @@
+{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../src/commands/migrations/sqlRollUp/program.ts"],"names":[],"mappings":"AAMA,cAAM,gBAAgB;WACP,MAAM,CAAC,IAAI,EAAC,MAAM;IAK/B,OAAO,CAAC,MAAM,CAAC,gBAAgB;IAsC/B;;;OAGG;IACF,OAAO,CAAC,MAAM,CAAC,qBAAqB;CAqCtC;AAED,eAAe,gBAAgB,CAAC"}
