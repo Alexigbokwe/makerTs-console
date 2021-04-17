@@ -1,22 +1,26 @@
 "use strict";
 import BaseCommand from "../baseCommand";
 require('dotenv').config();
+import path from "path";
+let configQueuePath = path + "../../../../build/Config/queue";
 //@ts-ignore
-import Config from "../../../../App/Config/queue";
 import FS from "fs";
 
 class QueueWorkerProgram {
-  static async handle(name:string) {
-    switch (Config.default) {
+  static async handle(name: string) {
+    await import(configQueuePath).then(file => {
+      let Config = file.default;
+      switch (Config.default) {
         case "rabbitmq":
-            this.consumeViaRabbitmq(name);
+            this.consumeViaRabbitmq(name,Config);
             break;
         default:
             break;
     }
+    })
   }
 
-  private static consumeViaRabbitmq(jobQueue:any = null) {
+  private static consumeViaRabbitmq(jobQueue:any = null,Config:any) {
     let queue = jobQueue;
     const amqp = require("amqplib/callback_api");
     try {
