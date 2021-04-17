@@ -1,1 +1,0 @@
-{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../src/commands/wsController/program.ts"],"names":[],"mappings":"AAOA,cAAM,mBAAmB;WACV,MAAM,CAAC,IAAI,EAAC,MAAM;IAc/B,OAAO,CAAC,MAAM,CAAC,QAAQ;IAsBvB,OAAO,CAAC,MAAM,CAAC,kBAAkB;CA6BlC;AAED,eAAe,mBAAmB,CAAC"}

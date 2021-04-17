@@ -5,6 +5,7 @@ const pathTo = process.env.PWD;
 import program from "commander";
 program.version("1.0.0").description("ExpressWebJs Command Line TS");
 import config from "./config";
+import commandSwitch from "./commandSwitch";
 
 
 class Console {
@@ -13,15 +14,26 @@ class Console {
    * @param {Array} commands
    * @param {Array} kernel
    */
-  static async run(commands: any, kernel: { commands: Function; }) {
+  static async run() {
+    let commands = commandSwitch;
     let makerCommands = this.checkCommadsLength(commands);
     makerCommands != null
       ? await this.processMakerCommands(makerCommands)
       : null;
-    let userCommand = this.checkKernelLength(kernel.commands());
-    userCommand != null ? await this.processUserCommand(userCommand) : null;
+    //let userCommand = this.checkKernelLength(kernel.commands());
+    //userCommand != null ? await this.processUserCommand(userCommand) : null;
     program.parse(process.argv);
   }
+
+  // static async run(commands: any, kernel: { commands: Function; }) {
+  //   let makerCommands = this.checkCommadsLength(commands);
+  //   makerCommands != null
+  //     ? await this.processMakerCommands(makerCommands)
+  //     : null;
+  //   //let userCommand = this.checkKernelLength(kernel.commands());
+  //   //userCommand != null ? await this.processUserCommand(userCommand) : null;
+  //   program.parse(process.argv);
+  // }
 
   checkCommandName(name: string) {
     if (typeof config.commands[name] == "string") {
@@ -121,4 +133,4 @@ class Console {
   }
 }
 
-export default Console;
+export default Console.run();

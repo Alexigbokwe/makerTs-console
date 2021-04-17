@@ -1,5 +1,3 @@
-import "../expresswebcore/alias";
-import "../expresswebcore/Database/src/index";
 declare class Console {
     /**
      * Run Maker commands
@@ -7,7 +5,7 @@ declare class Console {
      * @param {Array} kernel
      */
     static run(commands: any, kernel: {
-        commands: () => any;
+        commands: Function;
     }): Promise<void>;
     checkCommandName(name: string): void;
     private static processMakerCommands;
