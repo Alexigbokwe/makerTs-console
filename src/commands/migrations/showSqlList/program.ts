@@ -11,7 +11,7 @@ class ShowSqlListProgram {
     spinner.text = "Generating Migration List: ";
     try {
       shell.exec(
-        "npx knex migrate:list knex --knexfile=./SchemaSetup.ts",
+        "npx knex migrate:list --knexfile=./SchemaSetup.ts",
         (error, success) => {
           if (error) {
             BaseCommand.error(error);
@@ -30,7 +30,7 @@ class ShowSqlListProgram {
     } catch (error) {
       shell.exec("npm install knex -g");
       shell.exec(
-        "npx knex migrate:list knex --knexfile=./SchemaSetup.ts",
+        "npx knex migrate:list --knexfile=./SchemaSetup.ts",
         (error, success) => {
           if (error) {
             BaseCommand.error(error);

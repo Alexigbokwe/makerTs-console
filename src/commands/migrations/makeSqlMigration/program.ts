@@ -14,7 +14,7 @@ class MakeSqlMigratiomProgram {
       shell.exec(
         "npx knex migrate:make " +
           modelName +
-          "knex --knexfile=./SchemaSetup.ts",
+          " --knexfile=./SchemaSetup.ts",
       );
       await BaseCommand.success(
         "\n" +
@@ -29,7 +29,7 @@ class MakeSqlMigratiomProgram {
       shell.exec(
         "npx knex migrate:make " +
           modelName +
-          "knex --knexfile=./SchemaSetup.ts",
+          " --knexfile=./SchemaSetup.ts",
       );
       await BaseCommand.success(
         "\n" +
