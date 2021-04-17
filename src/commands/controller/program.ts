@@ -67,7 +67,7 @@ class ControllerProgram {
           /**
            * Display a listing of the resource.
            */
-          index = async (req, res, next) =>{
+          index = async (req: Request, res: Response, next: NextFunction) =>{
             try{
               //
             }catch (error) {
@@ -80,7 +80,7 @@ class ControllerProgram {
            *
            * @return Response
            */
-          create = async (req, res, next) => {
+          create = async (req: Request, res: Response, next: NextFunction) => {
             try{
               //
             }catch (error) {
@@ -93,7 +93,7 @@ class ControllerProgram {
            * @param  Request 
            * @return Response
            */
-          store = async (req, res, next) => {
+          store = async (req: Request, res: Response, next: NextFunction) => {
             try{
               //
             }catch (error) {
@@ -106,7 +106,7 @@ class ControllerProgram {
            * @param  Request
            * @return Response
            */
-          show = async (req, res, next) => {
+          show = async (req: Request, res: Response, next: NextFunction) => {
             try{
               //
             }catch (error) {
@@ -119,7 +119,7 @@ class ControllerProgram {
            * @param  Request
            * @return Response
            */
-          edit = async (req, res, next) => {
+          edit = async (req: Request, res: Response, next: NextFunction) => {
             try{
               //
             }catch (error) {
@@ -132,7 +132,7 @@ class ControllerProgram {
            * @param  Request
            * @return Response
            */
-          update = async (req, res, next) => {
+          update = async (req: Request, res: Response, next: NextFunction) => {
             try{
               //
             }catch (error) {
@@ -146,7 +146,7 @@ class ControllerProgram {
            * @param Request
            * @return Response
            */
-          destroy = async (req, res, next) => {
+          destroy = async (req: Request, res: Response, next: NextFunction) => {
             try{
               //
             }catch (error) {
