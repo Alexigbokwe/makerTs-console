@@ -38,7 +38,7 @@ class ListenerProgram {
 
   private static generateListener(name:string) {
     let body = `"use strict";
-    import emitter from "Elucidate/Emitter";
+    import Emitter from "Elucidate/Emitter";
 
     class ${name} {
       /**
@@ -47,7 +47,7 @@ class ListenerProgram {
        * @param {*} params
        */
       constructor(eventName, params) {
-        emitter.on(eventName, () => {
+        Emitter.bind(eventName, () => {
           //Do something
         });
       }

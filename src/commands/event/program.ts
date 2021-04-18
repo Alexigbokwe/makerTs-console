@@ -36,7 +36,7 @@ class EventProgram {
 
   private static generateEvent(name:string) {
     let body = `"use strict";
-    import emitter from "Elucidate/Emitter";
+    import Emitter from "Elucidate/Emitter";
 
     class ${name} {
       /**
@@ -46,7 +46,7 @@ class EventProgram {
       constructor(params) {
         this.params = params;
         this.listenOn();
-        emitter.emit("${name}");
+        Emitter.emitEvent("${name}");
       }
 
       /**
