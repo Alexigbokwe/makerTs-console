@@ -39,11 +39,12 @@ class EventProgram {
     import Emitter from "Elucidate/Emitter";
 
     class ${name} {
+      params: any;
       /**
        * Create a new event instance.
        * @param {*} params
        */
-      constructor(params) {
+      constructor(params:any) {
         this.params = params;
         this.listenOn();
         Emitter.emitEvent("${name}");

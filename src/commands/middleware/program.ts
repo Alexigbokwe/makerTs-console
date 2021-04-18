@@ -38,7 +38,8 @@ class MiddlewareProgram {
 
   private static generateMiddleware(name: string) {
     let body = `"use strict";
-
+    import { Request, Response, NextFunction } from "Elucidate/HttpContext";
+    import HttpResponse from "Elucidate/HttpContext/ResponseType";
         class ${name} {
           /**
            * Handle Middleware.
@@ -46,7 +47,7 @@ class MiddlewareProgram {
            * @param {Response} res
            * @param {Next} next
            */
-          public async handle(req, res, next) {
+          public async handle(req: Request, res: Response, next: NextFunction) {
             //UpStream
             await next();
             //DownStream

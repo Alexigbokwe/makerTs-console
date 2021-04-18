@@ -46,7 +46,7 @@ class ListenerProgram {
        * @param {*} eventName
        * @param {*} params
        */
-      constructor(eventName, params) {
+      constructor(eventName:string, params:any) {
         Emitter.bind(eventName, () => {
           //Do something
         });
