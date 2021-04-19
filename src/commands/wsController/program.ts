@@ -43,7 +43,7 @@ class WsControllerProgram {
 
   private static generateController(name: string) {
     let body = `"use strict";
-    import WsBaseController from "WsBaseController";
+    import WsBaseController from "Elucidate/Socket/src/Base";
 
     class ${name} extends WsBaseController {
       protected socket:any;
