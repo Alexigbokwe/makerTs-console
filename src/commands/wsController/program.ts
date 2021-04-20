@@ -43,7 +43,7 @@ class WsControllerProgram {
 
   private static generateController(name: string) {
     let body = `"use strict";
-    import WsBaseController from "Elucidate/Socket/src/Base";
+    import WsBaseController from "Elucidate/Socket/Base";
 
     class ${name} extends WsBaseController {
       protected socket:any;
@@ -52,18 +52,20 @@ class WsControllerProgram {
         this.socket = socket;
       }
 
-      onMessage<T>(data:T) {
+      onMessage = (data:any) => {
         // same as: socket.on('message')
         this.socket.on('message');
         console.log(data);
       }
 
-      onClose<T>() {
+      onClose = (data:any) =>{
         // same as: socket.on('close')
+        console.log(data);
       }
 
-      onError<T>() {
+      onError = (data:any) =>{
         // same as: socket.on('error')
+        console.log(data);
       }
     }
 

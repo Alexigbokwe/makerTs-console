@@ -44,9 +44,7 @@ class ProviderProgram {
          * Register application services.
         */
         register() {
-            return {
             //
-            };
         }
 
         /**
