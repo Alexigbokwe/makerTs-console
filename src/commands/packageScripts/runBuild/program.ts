@@ -7,7 +7,7 @@ class CompileProgramProgram {
   }
 
   private static buildFile() {
-    if (shell.exec("rimraf ./build && npm run compile").code !== 0) {
+    if (shell.exec("rimraf ./build && tsc -p .").code !== 0) {
       shell.echo("Error: Build project command failed");
       shell.exit(1);
     }
