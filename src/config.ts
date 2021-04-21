@@ -23,6 +23,8 @@ commands = {
   "sql-rollup": "commands/migrations/sqlRollUp",
   "queue-work": "commands/queueWork",
   "make-provider": "commands/serviceProvider",
+  "run-dev": "commands/packageScripts/runDev",
+  "run-build": "commands/packageScripts/runBuild"
 };
 
 export default commands;
