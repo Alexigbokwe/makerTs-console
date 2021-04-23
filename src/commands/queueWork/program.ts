@@ -2,22 +2,32 @@
 import BaseCommand from "../baseCommand";
 require('dotenv').config();
 import path from "path";
-let configQueuePath = path + "../../../../build/Config/queue";
+import shell from "shelljs";
+let configQueuePath = path + "../../../../../build/Config/queue";
+let jobDirectories = `${__dirname}/../../../../../../App/Jobs`;
 //@ts-ignore
 import FS from "fs";
 
 class QueueWorkerProgram {
   static async handle(name: string) {
+    this.buildFile();
     await import(configQueuePath).then(file => {
       let Config = file.default;
       switch (Config.default) {
         case "rabbitmq":
-            this.consumeViaRabbitmq(name,Config);
+            this.consumeViaRabbitmq(name,Config); 
             break;
         default:
             break;
     }
     })
+  }
+
+  private static buildFile() {
+    if (shell.exec("node maker run-build").code !== 0) {
+      shell.echo("Error: Build project command failed");
+      shell.exit(1);
+    }
   }
 
   private static consumeViaRabbitmq(jobQueue:any = null,Config:any) {
@@ -46,8 +56,8 @@ class QueueWorkerProgram {
   }
 
   private static callHandlers(msg:any = null) {
-    FS.readdirSync(`${__dirname}/../../../../App/Jobs/`).forEach(async(file) => {
-      await import(`${__dirname}/../../../../App/Jobs/${file}`).then((f) => {
+    FS.readdirSync(`${jobDirectories}/`).forEach(async(file) => {
+      await import(`${jobDirectories}/${file}`).then((f) => {
         let jobObject = f.default;
         let job = new jobObject();
         if (job.signature == msg.signature) {

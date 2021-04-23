@@ -1,5 +1,6 @@
 declare class QueueWorkerProgram {
     static handle(name: string): Promise<void>;
+    private static buildFile;
     private static consumeViaRabbitmq;
     private static callHandlers;
 }
