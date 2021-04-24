@@ -1,8 +1,6 @@
 import shell from "shelljs";
-import fs from "fs";
-
 class CompileProgramProgram {
-  static async handle() {
+  static handle() {
     this.buildFile();
   }
 

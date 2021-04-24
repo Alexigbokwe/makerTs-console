@@ -1,5 +1,5 @@
 declare class CompileProgramProgram {
-    static handle(): Promise<void>;
+    static handle(): void;
     private static buildFile;
 }
 export default CompileProgramProgram;

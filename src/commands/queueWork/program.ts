@@ -24,7 +24,7 @@ class QueueWorkerProgram {
   }
 
   private static buildFile() {
-    if (shell.exec("node maker run-build").code !== 0) {
+    if (shell.exec("tsc -p .").code !== 0) {
       shell.echo("Error: Build project command failed");
       shell.exit(1);
     }
@@ -56,8 +56,9 @@ class QueueWorkerProgram {
   }
 
   private static callHandlers(msg:any = null) {
-    FS.readdirSync(`${jobDirectories}/`).forEach(async(file) => {
-      await import(`${jobDirectories}/${file}`).then((f) => {
+    FS.readdirSync(`${jobDirectories}/`).forEach(async (file) => {
+      let filename = file.split(".");
+      await import(`${jobDirectories}/${filename[0]}.js`).then((f) => {
         let jobObject = f.default;
         let job = new jobObject();
         if (job.signature == msg.signature) {

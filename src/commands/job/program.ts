@@ -36,7 +36,7 @@ class JobProgram {
 
   private static generateJob(name:string) {
     let body = `"use strict";
-        const ShouldQueue = require("../../Bootstrap/Queue/ShouldQueue");
+    import ShouldQueue from "expresswebcorets/lib/Queue/shoudQueue";
 
         class ${name} extends ShouldQueue{
           constructor() {
@@ -48,7 +48,7 @@ class JobProgram {
            * Execute the job.
            * @return void
            */
-          handle(data) {
+          handle(data:any) {
             //
           }
         }
