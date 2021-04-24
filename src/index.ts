@@ -12,7 +12,7 @@ class Console {
    * @param {Array} kernel
    */
   static async run(commands: any, kernel: any) {
-    let makerCommands = this.checkCommadsLength(commands.commands);
+    let makerCommands = this.checkCommadsLength(commands);
     makerCommands != null
       ? await this.processMakerCommands(makerCommands)
       : null;
