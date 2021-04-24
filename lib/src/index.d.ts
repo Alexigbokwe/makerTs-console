@@ -4,9 +4,7 @@ declare class Console {
      * @param {Array} commands
      * @param {Array} kernel
      */
-    static run(commands: any, kernel: {
-        commands: Function;
-    }): Promise<void>;
+    static run(commands: any, kernel: any): Promise<void>;
     checkCommandName(name: string): void;
     private static processMakerCommands;
     private static processUserCommand;

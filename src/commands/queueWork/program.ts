@@ -1,17 +1,13 @@
 "use strict";
 import BaseCommand from "../baseCommand";
 require('dotenv').config();
-import path from "path";
-import shell from "shelljs";
-let configQueuePath = path + "../../../../../build/Config/queue";
+let configQueuePath = `${__dirname}/../../../../../../Config/queue`;
 let tsJobDirectories = `${__dirname}/../../../../../../App/Jobs`;
-let jsJobDirectories = `${__dirname}/../../../../../../build/App/Jobs`;
 //@ts-ignore
 import FS from "fs";
 
 class QueueWorkerProgram {
   static async handle(name: string) {
-    this.buildFile();
     await import(configQueuePath).then(file => {
       let Config = file.default;
       switch (Config.default) {
@@ -22,13 +18,6 @@ class QueueWorkerProgram {
             break;
     }
     })
-  }
-
-  private static buildFile() {
-    if (shell.exec("tsc -p .").code !== 0) {
-      shell.echo("Error: Build project command failed");
-      shell.exit(1);
-    }
   }
 
   private static consumeViaRabbitmq(jobQueue:any = null,Config:any) {
@@ -58,8 +47,7 @@ class QueueWorkerProgram {
 
   private static callHandlers(msg:any = null) {
     FS.readdirSync(`${tsJobDirectories}/`).forEach(async (file) => {
-      let filename = file.split(".");
-      await import(`${jsJobDirectories}/${filename[0]}.js`).then((f) => {
+      await import(`${tsJobDirectories}/${file}`).then((f) => {
         let jobObject = f.default;
         let job = new jobObject();
         if (job.signature == msg.signature) {

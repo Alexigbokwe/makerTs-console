@@ -11,12 +11,12 @@ class Console {
    * @param {Array} commands
    * @param {Array} kernel
    */
-  static async run(commands: any, kernel: { commands: Function; }) {
-    let makerCommands = this.checkCommadsLength(commands);
+  static async run(commands: any, kernel: any) {
+    let makerCommands = this.checkCommadsLength(commands.commands);
     makerCommands != null
       ? await this.processMakerCommands(makerCommands)
       : null;
-    let userCommand = this.checkKernelLength(kernel.commands());
+    let userCommand = this.checkKernelLength(kernel.default.commands());
     userCommand != null ? await this.processUserCommand(userCommand) : null;
     program.parse(process.argv);
   }
