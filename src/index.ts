@@ -1,6 +1,4 @@
 "use strict";
-// import "../expresswebcorets/alias";
-// import "../expresswebcorets/Database/src/index";
 const pathTo = process.env.PWD;
 import program from "commander";
 program.version("1.0.0").description("ExpressWebJs Command Line TS");
@@ -24,7 +22,7 @@ class Console {
   }
 
   checkCommandName(name: string) {
-    if (typeof config.commands[name] == "string") {
+    if (typeof config[name] == "string") {
       throw "Can't recreate maker commend, try renaming your command signature";
     }
   }
@@ -41,10 +39,9 @@ class Console {
 
   private static async processUserCommand(userCommand: any) {
     userCommand.forEach((path: string) => {
-      let formatPath = path.split(".ts");
-      let commandPath = `${pathTo}/build/${formatPath[0]}.js`;
+      let commandPath = `${pathTo}/${path}`;
       let commandObject = require(commandPath);
-      let command = new commandObject();
+      let command = new commandObject.default();
       let handle = `${command.signature}`;
       if (command.arguments.length > 0) {
         command.arguments.forEach((argument: { mode: string; name: any; }) => {
