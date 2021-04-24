@@ -16,7 +16,7 @@ class Console {
     makerCommands != null
       ? await this.processMakerCommands(makerCommands)
       : null;
-    let userCommand = this.checkKernelLength(kernel.default.commands());
+    let userCommand = this.checkKernelLength(kernel.commands());
     userCommand != null ? await this.processUserCommand(userCommand) : null;
     program.parse(process.argv);
   }
