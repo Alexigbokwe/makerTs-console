@@ -4,7 +4,8 @@ require('dotenv').config();
 import path from "path";
 import shell from "shelljs";
 let configQueuePath = path + "../../../../../build/Config/queue";
-let jobDirectories = `${__dirname}/../../../../../../App/Jobs`;
+let tsJobDirectories = `${__dirname}/../../../../../../App/Jobs`;
+let jsJobDirectories = `${__dirname}/../../../../../../build/App/Jobs`;
 //@ts-ignore
 import FS from "fs";
 
@@ -56,9 +57,9 @@ class QueueWorkerProgram {
   }
 
   private static callHandlers(msg:any = null) {
-    FS.readdirSync(`${jobDirectories}/`).forEach(async (file) => {
+    FS.readdirSync(`${tsJobDirectories}/`).forEach(async (file) => {
       let filename = file.split(".");
-      await import(`${jobDirectories}/${filename[0]}.js`).then((f) => {
+      await import(`${jsJobDirectories}/${filename[0]}.js`).then((f) => {
         let jobObject = f.default;
         let job = new jobObject();
         if (job.signature == msg.signature) {
