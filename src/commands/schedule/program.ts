@@ -6,7 +6,7 @@ import shell from "shelljs";
 class ScheduledProgram {
   static async handle() {
     this.buildFile()
-    let path = `${pathTo}/buildApp/Console/kernel.js`;
+    let path = `${pathTo}/build/App/Console/kernel.js`;
     let kernel = require(path);
     try {
       BaseCommand.success("Running scheduled command");
