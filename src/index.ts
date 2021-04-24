@@ -42,7 +42,7 @@ class Console {
   private static async processUserCommand(userCommand: any) {
     userCommand.forEach((path: string) => {
       let formatPath = path.split(".ts");
-      let commandPath = `${pathTo}/${formatPath[0]}.js`;
+      let commandPath = `${pathTo}/build/${formatPath[0]}.js`;
       let commandObject = require(commandPath);
       let command = new commandObject();
       let handle = `${command.signature}`;
