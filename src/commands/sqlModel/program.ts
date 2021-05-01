@@ -64,11 +64,11 @@ class SqlProgram {
     let tableName = (name = name[0].toLowerCase() + name.slice(1));
     let modelName = (name = name[0].toUpperCase() + name.slice(1));
     let body = `"use strict";
-    import Model from "Elucidate/Database/Model";
+    import {Model} from "Elucidate/Database/Model";
     class ${modelName} extends Model{
-      static get tableName() {
-        return "${tableName}";
-      }
+      // Table name
+      static tableName = "${tableName}"
+      
     }
 
     export default ${modelName};`;
@@ -79,9 +79,7 @@ class SqlProgram {
     modelName = modelName.toLowerCase();
     try {
       shell.exec(
-        "npx knex migrate:make " +
-          modelName +
-          " --knexfile=./SchemaSetup.ts",
+        "npx knex migrate:make " + modelName + " --knexfile=./SchemaSetup.ts",
       );
       await BaseCommand.success(
         modelName +
@@ -91,9 +89,7 @@ class SqlProgram {
     } catch (error) {
       shell.exec("npm install knex -g");
       shell.exec(
-        "npx knex migrate:make " +
-          modelName +
-          " --knexfile=./SchemaSetup.ts",
+        "npx knex migrate:make " + modelName + " --knexfile=./SchemaSetup.ts",
       );
       await BaseCommand.success(
         modelName +
