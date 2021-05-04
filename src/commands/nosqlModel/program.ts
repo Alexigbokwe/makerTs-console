@@ -2,9 +2,8 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 
-
 class NoSqlProgram {
-  static async handle(name:string) {
+  static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Model");
     if (checkFolder) {
@@ -21,7 +20,7 @@ class NoSqlProgram {
     }
   }
 
-  private static async nextStep(name:string) {
+  private static async nextStep(name: string) {
     fs.appendFile(
       "./App/Model/" + name + "_model.ts",
       this.generateModel(name),
@@ -35,20 +34,20 @@ class NoSqlProgram {
     );
   }
 
-  private static generateModel(name:string) {
+  private static generateModel(name: string) {
     let body = `"use strict";
-    import mongoose from "mongoose;
-    let Schema = mongoose.Schema;
+    import { mongoose, Schema, Document } from "Elucidate/Database/NoSQLModel";
 
-    let ${name}Schema = new Schema({
+    export interface ${name}Interface extends Document {
+      //
+    }
+
+    const ${name}Schema: Schema = new Schema({
       //define the shape of your document within the collection.
-      _id: mongoose.Schema.Types.ObjectId,
-    })
+    });
 
-    ${name}Schema.set("timestamps", true);
-
-    export default mongoose.model("${name}",${name}Schema);
-    `;
+    const ${name} = mongoose.model<${name}Interface>("${name}", ${name}Schema);
+    export default ${name};`;
     return body;
   }
 }

@@ -127,35 +127,38 @@ class AuthProgram {
 
   private static generateNoSqlModel() {
     let body = `"use strict";
-    let mongoose = require("mongoose");
-    let Schema = mongoose.Schema;
-    let uniqueValidator = require("mongoose-unique-validator");
+    import { mongoose, Schema, Document } from "Elucidate/Database/NoSQLModel";
 
-    let UserSchema = new Schema({
-      //define the shape of your document within the collection.
-      _id: mongoose.Schema.Types.ObjectId,
-      first_name: { type: String, required: true },
-      last_name: { type: String, required: true },
+    export interface UserInterface extends Document {
+      username: string;
+      email: string;
+      password: string;
+    }
+    
+    const UserSchema: Schema = new Schema({
+      username: { type: String, required: true },
       email: { type: String, required: true, unique: true },
       password: { type: String, required: true },
-    })
-
-    UserSchema.set("timestamps", true);
-    UserSchema.plugin(uniqueValidator);
-
-    export default mongoose.model("User",UserSchema);
-    `;
+    });
+    
+    const User = mongoose.model<UserInterface>("User", UserSchema);
+    export default User;`;
     return body;
   }
 
   private static generateSqlModel() {
     let body = `"use strict";
-    const Model = require("@elucidate/Model");
+    import { Model } from "Elucidate/Database/Model";
 
     class User extends Model {
-      static get tableName() {
-        return "users";
-      }
+      // Model attributes
+      id!: number;
+      username!: string;
+      email!: string;
+      password!: string;
+    
+      // Table name
+      static tableName = "users";
     }
     
     export default User;`;
