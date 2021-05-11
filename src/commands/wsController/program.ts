@@ -43,13 +43,12 @@ class WsControllerProgram {
 
   private static generateController(name: string) {
     let body = `"use strict";
-    import WsBaseController from "Elucidate/Socket/Base";
 
-    class ${name} extends WsBaseController {
+    class ${name}{
       protected socket:any;
       constructor(socket:any) {
-        super(socket);
         this.socket = socket;
+        this.setMethodListeners();
       }
 
       onMessage = (data:any) => {
@@ -66,6 +65,12 @@ class WsControllerProgram {
       onError = (data:any) =>{
         // same as: socket.on('error')
         console.log(data);
+      }
+
+      private setMethodListeners() {
+        this.socket.on("message", this.onMessage);
+        this.socket.on("close", this.onClose);
+        this.socket.on("error", this.onError);
       }
     }
 
