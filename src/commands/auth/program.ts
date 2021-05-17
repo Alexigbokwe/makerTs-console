@@ -20,50 +20,40 @@ class AuthProgram {
     spinner.text = "Generating Authentication route";
     let checkFolder = BaseCommand.checkFolderExists("./Routes/authRoute");
     if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists(
-        "./Routes/authRoute/index.ts",
-      );
+      let doesFileExist = await BaseCommand.checkFileExists("./Routes/authRoute/index.ts");
       if (doesFileExist == false) {
         await this.appendRoute();
       } else {
         spinner.color = "red";
         spinner.text = "failed";
         spinner.fail("");
-        return await BaseCommand.error(
-          "Authentication routes already exist in App/Routes/authRoute folder.",
-        );
+        return await BaseCommand.error("Authentication routes already exist in App/Routes/authRoute folder.");
       }
     }
   }
 
   private static async appendRoute() {
-    fs.appendFile(
-      "./Routes/authRoute/index.ts",
-      this.routeBody(),
-      function (err) {
-        if (err) {
-          spinner.color = "red";
-          spinner.text = "failed";
-          spinner.fail("");
-          BaseCommand.error(err.errno);
-          return false;
-        } else {
-          spinner.color = "green";
-          spinner.text = "Completed";
-          spinner.succeed("Completed 😊😘");
-          BaseCommand.success(
-            "Authentication route successfully generated in App/Routes/authRoute folder",
-          );
-          return true;
-        }
-      },
-    );
+    fs.appendFile("./Routes/authRoute/index.ts", this.routeBody(), function (err) {
+      if (err) {
+        spinner.color = "red";
+        spinner.text = "failed";
+        spinner.fail("");
+        BaseCommand.error(err.errno);
+        return false;
+      } else {
+        spinner.color = "green";
+        spinner.text = "Completed";
+        spinner.succeed("Completed 😊😘");
+        BaseCommand.success("Authentication route successfully generated in App/Routes/authRoute folder");
+        return true;
+      }
+    });
   }
 
   private static routeBody() {
     let body = `
     "use strict";
-    const Route = require("@routerManager");
+    import Route from "Elucidate/Route/manager";
     
     /*
     |--------------------------------------------------------------------------
@@ -73,13 +63,12 @@ class AuthProgram {
     | This route handles both login and registration.
     | 
     */
-    
+
     Route.post("/register", "Auth/RegisterController@register");
-    
+
     Route.post("/login", "Auth/LoginController@login");
-    
-    export defaut Route.exec;
-    `;
+
+    module.exports = Route.exec;`;
     return body;
   }
 
@@ -89,13 +78,9 @@ class AuthProgram {
     spinner.text = "Generating Authentication";
     let checkFolder = BaseCommand.checkFolderExists("./App/Model");
     if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists(
-        "./App/Model/User_model.ts",
-      );
+      let doesFileExist = await BaseCommand.checkFileExists("./App/Model/User_model.ts");
       if (doesFileExist == false) {
-        return this.checkDatabaseDriver() == "nosql"
-          ? await this.nextStep(this.generateNoSqlModel())
-          : await this.nextStep(this.generateSqlModel());
+        return this.checkDatabaseDriver() == "nosql" ? await this.nextStep(this.generateNoSqlModel()) : await this.nextStep(this.generateSqlModel());
       } else {
         spinner.color = "red";
         spinner.text = "failed";
@@ -118,9 +103,7 @@ class AuthProgram {
       spinner.color = "green";
       spinner.text = "Completed";
       spinner.succeed("Completed 😊😘");
-      BaseCommand.success(
-        "User_model.ts class successfully generated in App/Model folder",
-      );
+      BaseCommand.success("User_model.ts class successfully generated in App/Model folder");
       return true;
     });
   }
