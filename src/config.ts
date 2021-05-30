@@ -1,6 +1,6 @@
 "use strict";
- 
-let commands : any;
+
+let commands: any;
 commands = {
   "make-auth": "commands/auth",
   "make-controller": "commands/controller",
@@ -14,6 +14,7 @@ commands = {
   "make-ws-controller": "commands/wsController",
   "make-sql-migration": "commands/migrations/makeSqlMigration",
   "make-command": "commands/makeCommand",
+  "make-identity": "commands/identity",
   "make-job": "commands/job",
   "run-schedule": "commands/schedule",
   "run-sql-migration": "commands/migrations/runSqlMigration",
@@ -25,7 +26,7 @@ commands = {
   "make-provider": "commands/serviceProvider",
   "run-dev": "commands/packageScripts/runDev",
   "run-build": "commands/packageScripts/runBuild",
-  "run-start": "commands/packageScripts/runStart"
+  "run-start": "commands/packageScripts/runStart",
 };
 
 export default commands;
