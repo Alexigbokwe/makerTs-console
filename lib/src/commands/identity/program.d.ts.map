@@ -1,0 +1,1 @@
+{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../src/commands/identity/program.ts"],"names":[],"mappings":"AAMA,cAAM,eAAe;WACC,MAAM;mBAWL,kBAAkB;mBAOlB,oBAAoB;IAOzC,OAAO,CAAC,MAAM,CAAC,mBAAmB;mBAIb,aAAa;mBAmBb,QAAQ;IAiB7B,OAAO,CAAC,MAAM,CAAC,kBAAkB;IA2EjC,OAAO,CAAC,MAAM,CAAC,gBAAgB;CAkGhC;AAED,eAAe,eAAe,CAAC"}
