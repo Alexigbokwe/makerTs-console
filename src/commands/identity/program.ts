@@ -6,13 +6,13 @@ const spinner = Ora("Processing: ");
 
 class IdentityProgram {
   public static async handle() {
-    switch (this.checkDatabaseDriver()) {
-      case "nosql":
-        await this.ProcessNoSqlIdentity();
-      case "sql":
-        await this.ProcessSqlIdentity();
-      default:
-        throw new Error("Cannot determine database driver, make sure `DB_CONNECTION` is set in .env file");
+    let driver = this.checkDatabaseDriver();
+    if (driver === "nosql") {
+      await this.ProcessNoSqlIdentity();
+    } else if (driver === "sql") {
+      await this.ProcessSqlIdentity();
+    } else {
+      throw new Error("Cannot determine database driver, make sure `DB_CONNECTION` is set in .env file");
     }
   }
 
