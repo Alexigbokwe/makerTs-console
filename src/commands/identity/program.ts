@@ -11,9 +11,120 @@ class IdentityProgram {
       await this.ProcessNoSqlIdentity();
     } else if (driver === "sql") {
       await this.ProcessSqlIdentity();
+      await this.ProcessSqlIdentitySchema();
     } else {
       throw new Error("Cannot determine database driver, make sure `DB_CONNECTION` is set in .env file");
     }
+  }
+
+  private static async ProcessSqlIdentitySchema() {
+    await this.createSchemaFile("20210422225119_permissions", this.PermissionSchema());
+    await this.createSchemaFile("20210422225013_roles", this.RoleSchema());
+    await this.createSchemaFile("20210422225439_role_permissions", this.Role_PermissionSchema());
+    await this.createSchemaFile("20210422225417_user_roles", this.User_RoleSchema());
+  }
+
+  private static async createSchemaFile(filename: string, generateSchema: any) {
+    fs.appendFile(`./DataBase/Migrations/${filename}.ts`, generateSchema, function (err) {
+      if (err) {
+        spinner.color = "red";
+        spinner.text = "failed";
+        spinner.fail("");
+        BaseCommand.error(err.errno);
+        return false;
+      }
+      spinner.color = "green";
+      spinner.text = "Completed";
+      spinner.succeed("Completed 😊😘");
+      BaseCommand.success(`${filename}.ts schema successfully generated in DataBase/Migrations folder`);
+      return true;
+    });
+  }
+
+  private static PermissionSchema() {
+    let body = `
+    import { Migration } from "Elucidate/Database/Model";
+
+    let tableName = "permissions";
+    exports.up = function (migration: Migration) {
+      return migration.schema.createTable(tableName, (table) => {
+        table.increments("id");
+        table.string("name");
+        table.string("description");
+        table.timestamps(true, true);
+      });
+    };
+    
+    exports.down = function (migration: Migration) {
+      return migration.schema.dropTable(tableName);
+    };`;
+    return body;
+  }
+
+  private static RoleSchema() {
+    let body = `
+    import { Migration } from "Elucidate/Database/Model";
+
+    let tableName = "roles";
+
+    exports.up = function (migration: Migration) {
+      return migration.schema.createTable(tableName, (table) => {
+        table.increments("id");
+        table.string("name");
+        table.string("description");
+        table.timestamps(true, true);
+      });
+    };
+
+    exports.down = function (migration: Migration) {
+      return migration.schema.dropTable(tableName);
+    };`;
+    return body;
+  }
+
+  private static Role_PermissionSchema() {
+    let body = `
+    import { Migration } from "Elucidate/Database/Model";
+
+    let tableName = "role_permissions";
+
+    exports.up = function (migration: migration) {
+      return migration.schema.createTable(tableName, (table) => {
+        table.increments("id");
+        table.integer("role_id").unsigned().nullable();
+        table.integer("permission_id").unsigned().nullable();
+        table.foreign("role_id").references("id").inTable("roles");
+        table.foreign("permission_id").references("id").inTable("permissions");
+        table.timestamps(true, true);
+      });
+    };
+
+    exports.down = function (migration: migration) {
+      return migration.schema.dropTable(tableName);
+    };`;
+    return body;
+  }
+
+  private static User_RoleSchema() {
+    let body = `
+    import { Migration } from "Elucidate/Database/Model";
+
+    let tableName = "user_roles";
+    exports.up = function (migration: migration) {
+      return migration.schema.createTable(tableName, (table) => {
+        table.increments("id");
+        table.integer("user_id").unsigned().nullable();
+        table.integer("role_id").unsigned().nullable();
+        table.foreign("user_id").references("id").inTable("users");
+        table.foreign("role_id").references("id").inTable("roles");
+        table.timestamps(true, true);
+      });
+    };
+
+    exports.down = function (migration: migration) {
+      return migration.schema.dropTable(tableName);
+    };`;
+    return body;
   }
 
   private static async ProcessSqlIdentity() {
