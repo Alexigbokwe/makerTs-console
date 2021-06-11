@@ -231,7 +231,7 @@ class IdentityProgram {
           role_id: { type: mongoose.Schema.Types.ObjectId, ref: "Roles" },
         });
         User_rolesSchema.set("timestamps", true);
-        const User_roles = mongoose.model<User_rolesInterface>("Permissions", User_rolesSchema);
+        const User_roles = mongoose.model<User_rolesInterface>("User_roles", User_rolesSchema);
         export default User_roles;`;
         return user_roles;
       case "roles":
@@ -248,7 +248,7 @@ class IdentityProgram {
             description: { type: String, required: true },
         });
         RolesSchema.set("timestamps", true);
-        const Roles = mongoose.model<RolesInterface>("Permissions", RolesSchema);
+        const Roles = mongoose.model<RolesInterface>("Roles", RolesSchema);
         export default Roles;`;
         return roles;
       default:
