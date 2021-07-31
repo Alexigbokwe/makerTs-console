@@ -1,6 +1,7 @@
 "use strict";
 import fs from "fs";
 import BaseCommand from "../baseCommand";
+import path from "path";
 
 class ControllerProgram {
   static async handle(name: string, resource = null) {
@@ -14,13 +15,18 @@ class ControllerProgram {
   }
 
   private static async createController(name: string, resource = null) {
+    let directory = "./App/Http/Controller/" + name + ".ts";
+    let dirPath = path.dirname(directory);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
     if (resource == "Controller Resource Methods") {
-      fs.appendFile("./App/Http/Controller/" + name + ".ts", await this.controllerBodyWithResource(name), (err) => {
+      fs.appendFile(directory, await this.controllerBodyWithResource(name), (err) => {
         if (err) BaseCommand.error(err);
         BaseCommand.success(this.formatControllerName(name) + " class successfully generated in App/Http/Controller folder");
       });
     } else {
-      fs.appendFile("./App/Http/Controller/" + name + ".ts", await this.controllerBody(name), (err) => {
+      fs.appendFile(directory, await this.controllerBody(name), (err) => {
         if (err) BaseCommand.error(err);
         BaseCommand.success(this.formatControllerName(name) + " class successfully generated in App/Http/Controller folder");
       });
