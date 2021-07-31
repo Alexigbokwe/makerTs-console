@@ -3,11 +3,9 @@ import fs from "fs";
 import BaseCommand from "../baseCommand";
 
 class ControllerProgram {
-  static async handle(name:string, resource = null) {
+  static async handle(name: string, resource = null) {
     name = name[0].toUpperCase() + name.slice(1);
-    let check = await BaseCommand.checkFileExists(
-      "./App/Http/Controller/" + name + ".ts",
-    );
+    let check = await BaseCommand.checkFileExists("./App/Http/Controller/" + name + ".ts");
     if (check == false) {
       await this.createController(name, resource);
     } else {
@@ -15,35 +13,28 @@ class ControllerProgram {
     }
   }
 
-  private static async createController(controllerName:string, resource = null) {
-    if (resource == "Controller Resource Methods") {
-      fs.appendFile(
-        "./App/Http/Controller/" + controllerName + ".ts",
-        await this.controllerBodyWithResource(controllerName),
-        function (err) {
-          if (err) BaseCommand.error(err);
-          BaseCommand.success(
-            controllerName +
-              " class successfully generated in App/Http/Controller folder",
-          );
-        },
-      );
+  private static async createController(name: string, resource = null) {
+    let controllerName = "";
+    if (name.includes("/")) {
+      let controllernamesplit = name.split("/");
+      controllerName = controllernamesplit[controllernamesplit.length - 1];
     } else {
-      fs.appendFile(
-        "./App/Http/Controller/" + controllerName + ".ts",
-        await this.controllerBody(controllerName),
-        function (err) {
-          if (err) BaseCommand.error(err);
-          BaseCommand.success(
-            controllerName +
-              " class successfully generated in App/Http/Controller folder",
-          );
-        },
-      );
+      controllerName = name;
+    }
+    if (resource == "Controller Resource Methods") {
+      fs.appendFile("./App/Http/Controller/" + controllerName + ".ts", await this.controllerBodyWithResource(controllerName), function (err) {
+        if (err) BaseCommand.error(err);
+        BaseCommand.success(controllerName + " class successfully generated in App/Http/Controller folder");
+      });
+    } else {
+      fs.appendFile("./App/Http/Controller/" + controllerName + ".ts", await this.controllerBody(controllerName), function (err) {
+        if (err) BaseCommand.error(err);
+        BaseCommand.success(controllerName + " class successfully generated in App/Http/Controller folder");
+      });
     }
   }
 
-  private static async controllerBody(controllerName:string) {
+  private static async controllerBody(controllerName: string) {
     let body = `"use strict";
     import { Request, Response, NextFunction } from "Elucidate/HttpContext";
     import HttpResponse from "Elucidate/HttpContext/ResponseType";
@@ -57,13 +48,15 @@ class ControllerProgram {
     return body;
   }
 
-  private static async controllerBodyWithResource(controllerName:string) {
+  private static async controllerBodyWithResource(controllerName: string) {
     let body =
       `"use strict";
       import { Request, Response, NextFunction } from "Elucidate/HttpContext";
       import HttpResponse from "Elucidate/HttpContext/ResponseType";
 
-      class ` +controllerName +`{
+      class ` +
+      controllerName +
+      `{
           /**
            * Display a listing of the resource.
            */
