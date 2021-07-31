@@ -14,27 +14,30 @@ class ControllerProgram {
   }
 
   private static async createController(name: string, resource = null) {
-    let controllerName = "";
-    if (name.includes("/")) {
-      let controllernamesplit = name.split("/");
-      controllerName = controllernamesplit[controllernamesplit.length - 1];
-    } else {
-      controllerName = name;
-    }
     if (resource == "Controller Resource Methods") {
-      fs.appendFile("./App/Http/Controller/" + controllerName + ".ts", await this.controllerBodyWithResource(controllerName), function (err) {
+      fs.appendFile("./App/Http/Controller/" + name + ".ts", await this.controllerBodyWithResource(name), (err) => {
         if (err) BaseCommand.error(err);
-        BaseCommand.success(controllerName + " class successfully generated in App/Http/Controller folder");
+        BaseCommand.success(this.formatControllerName(name) + " class successfully generated in App/Http/Controller folder");
       });
     } else {
-      fs.appendFile("./App/Http/Controller/" + controllerName + ".ts", await this.controllerBody(controllerName), function (err) {
+      fs.appendFile("./App/Http/Controller/" + name + ".ts", await this.controllerBody(name), (err) => {
         if (err) BaseCommand.error(err);
-        BaseCommand.success(controllerName + " class successfully generated in App/Http/Controller folder");
+        BaseCommand.success(this.formatControllerName(name) + " class successfully generated in App/Http/Controller folder");
       });
     }
   }
 
-  private static async controllerBody(controllerName: string) {
+  private static formatControllerName(name: string): string {
+    if (name.includes("/")) {
+      let controllernamesplit = name.split("/");
+      return controllernamesplit[controllernamesplit.length - 1];
+    } else {
+      return name;
+    }
+  }
+
+  private static async controllerBody(name: string) {
+    let controllerName = this.formatControllerName(name);
     let body = `"use strict";
     import { Request, Response, NextFunction } from "Elucidate/HttpContext";
     import HttpResponse from "Elucidate/HttpContext/ResponseType";
@@ -48,7 +51,8 @@ class ControllerProgram {
     return body;
   }
 
-  private static async controllerBodyWithResource(controllerName: string) {
+  private static async controllerBodyWithResource(name: string) {
+    let controllerName = this.formatControllerName(name);
     let body =
       `"use strict";
       import { Request, Response, NextFunction } from "Elucidate/HttpContext";
