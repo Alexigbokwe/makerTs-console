@@ -2,7 +2,7 @@ import shell from "shelljs";
 import copy from "recursive-copy";
 
 //@ts-ignore
-import config from "./Config/app.ts";
+import config from "../../../../../../../Config/app.ts";
 class CompileProgramProgram {
   static handle() {
     this.buildFile();
@@ -14,7 +14,7 @@ class CompileProgramProgram {
       shell.exit(1);
     } else {
       let directories = config.static_directories;
-      if (directories.lenght > 0) {
+      if (directories.length > 0) {
         this.copyStaticDirectories(directories);
       }
     }
@@ -22,13 +22,9 @@ class CompileProgramProgram {
 
   private static copyStaticDirectories(directories: Array<{ name: string; source: string; destination: string }>) {
     directories.map((directory: { name: string; source: string; destination: string }) => {
-      copy("./" + directory.source, "./" + directory.destination)
-        .then(() => {
-          console.info("Copied " + directory.name + " to" + directory.destination);
-        })
-        .catch(function (error) {
-          console.error("Copy failed: " + error);
-        });
+      copy(process.cwd() + "/" + directory.source, process.cwd() + "/" + directory.destination).catch(function (error) {
+        console.error("Copy failed: " + error);
+      });
     });
   }
 }
