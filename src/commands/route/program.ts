@@ -55,7 +55,7 @@ class RouteProgram {
     | 
     */
 
-    Route.group({prefix:${name.toLowerCase()}}, () => {
+    Route.group({prefix:'${name.toLowerCase()}'}, () => {
       //
     });
       

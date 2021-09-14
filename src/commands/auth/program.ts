@@ -80,7 +80,8 @@ class AuthProgram {
     if (checkFolder) {
       let doesFileExist = await BaseCommand.checkFileExists("./App/Model/User_model.ts");
       if (doesFileExist == false) {
-        return this.checkDatabaseDriver() == "nosql" ? await this.nextStep(this.generateNoSqlModel()) : await this.nextStep(this.generateSqlModel());
+        this.checkDatabaseDriver() == "nosql" ? await this.nextStep(this.generateNoSqlModel()) : await this.nextStep(this.generateSqlModel());
+        return true;
       } else {
         spinner.color = "red";
         spinner.text = "failed";
@@ -88,6 +89,12 @@ class AuthProgram {
         await BaseCommand.error("User_model.ts already exist.");
         return false;
       }
+    } else {
+      spinner.color = "red";
+      spinner.text = "failed";
+      spinner.fail("");
+      await BaseCommand.error("App/Model directory does not exist. Kindly create that and try again");
+      return false;
     }
   }
 

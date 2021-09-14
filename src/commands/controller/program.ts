@@ -69,6 +69,10 @@ class ControllerProgram {
       `{
           /**
            * Display a listing of the resource.
+           * @method
+           * @endpoint
+           * @param Request
+           * @return Response
            */
           index = async (req: Request, res: Response, next: NextFunction) =>{
             try{
@@ -80,7 +84,9 @@ class ControllerProgram {
 
           /**
            * Show the form for creating a new resource.
-           *
+           * @method
+           * @endpoint
+           * @param Request
            * @return Response
            */
           create = async (req: Request, res: Response, next: NextFunction) => {
@@ -93,7 +99,9 @@ class ControllerProgram {
 
           /**
            * Store a newly created resource in storage.
-           * @param  Request 
+           * @method
+           * @endpoint
+           * @param Request
            * @return Response
            */
           store = async (req: Request, res: Response, next: NextFunction) => {
@@ -106,7 +114,9 @@ class ControllerProgram {
 
           /**
            * Display the specified resource.
-           * @param  Request
+           * @method
+           * @endpoint
+           * @param Request
            * @return Response
            */
           show = async (req: Request, res: Response, next: NextFunction) => {
@@ -119,7 +129,9 @@ class ControllerProgram {
 
           /**
            * Show the form for editing the specified resource.
-           * @param  Request
+           * @method
+           * @endpoint
+           * @param Request
            * @return Response
            */
           edit = async (req: Request, res: Response, next: NextFunction) => {
@@ -132,7 +144,9 @@ class ControllerProgram {
 
           /**
            * Update the specified resource in storage.
-           * @param  Request
+           * @method
+           * @endpoint
+           * @param Request
            * @return Response
            */
           update = async (req: Request, res: Response, next: NextFunction) => {
@@ -145,7 +159,8 @@ class ControllerProgram {
 
           /**
            * Remove the specified resource from storage.
-           *
+           * @method
+           * @endpoint
            * @param Request
            * @return Response
            */
