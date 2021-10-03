@@ -83,21 +83,6 @@ class ControllerProgram {
           }
 
           /**
-           * Show the form for creating a new resource.
-           * @method
-           * @endpoint
-           * @param Request
-           * @return Response
-           */
-          create = async (req: Request, res: Response, next: NextFunction) => {
-            try{
-              //
-            }catch (error) {
-              return next(error);
-            }
-          }
-
-          /**
            * Store a newly created resource in storage.
            * @method
            * @endpoint
@@ -120,21 +105,6 @@ class ControllerProgram {
            * @return Response
            */
           show = async (req: Request, res: Response, next: NextFunction) => {
-            try{
-              //
-            }catch (error) {
-              return next(error);
-            }
-          }
-
-          /**
-           * Show the form for editing the specified resource.
-           * @method
-           * @endpoint
-           * @param Request
-           * @return Response
-           */
-          edit = async (req: Request, res: Response, next: NextFunction) => {
             try{
               //
             }catch (error) {

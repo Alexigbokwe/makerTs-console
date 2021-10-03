@@ -41,7 +41,7 @@ class RouteProgram {
   private static async routeBody(name: string) {
     let body = `"use strict";
     import Route from "Elucidate/Route/manager";
-    import { Request, Response, NextFunction } from "Elucidate/HttpContext";
+    //import { Request, Response, NextFunction } from "Elucidate/HttpContext";
        
     /*
     |--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ class RouteProgram {
     | Route.get("/",(req:Request,res:Response)=>{}); 
     |
     | Example of controller route.
-    | Route.get("/","UserController@index);
+    | Route.get("/","UserController@index");
     | 
     */
 

@@ -6,8 +6,8 @@ const spinner = Ora("Processing: ");
 
 class AuthProgram {
   static async handle() {
-    let status = await this.createModel();
-    if (status != false) await this.createAuthRoute();
+    let status = await this.createAuthRoute();
+    if (status != false) await this.createModel();
   }
 
   private static checkDatabaseDriver() {
@@ -18,36 +18,35 @@ class AuthProgram {
     spinner.start();
     spinner.color = "magenta";
     spinner.text = "Generating Authentication route";
-    let checkFolder = BaseCommand.checkFolderExists("./Routes/authRoute");
-    if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists("./Routes/authRoute/index.ts");
-      if (doesFileExist == false) {
-        await this.appendRoute();
-      } else {
-        spinner.color = "red";
-        spinner.text = "failed";
-        spinner.fail("");
-        return await BaseCommand.error("Authentication routes already exist in App/Routes/authRoute folder.");
-      }
+    let doesFileExist = await BaseCommand.checkFileExists("./Routes/authRoute/index.ts");
+    if (doesFileExist == false) {
+      return await this.appendRoute();
+    } else {
+      spinner.color = "red";
+      spinner.text = "failed";
+      spinner.fail("");
+      await BaseCommand.error("Authentication routes already exist in App/Routes/authRoute folder.");
+      return false;
     }
   }
 
   private static async appendRoute() {
-    fs.appendFile("./Routes/authRoute/index.ts", this.routeBody(), function (err) {
-      if (err) {
-        spinner.color = "red";
-        spinner.text = "failed";
-        spinner.fail("");
-        BaseCommand.error(err.errno);
-        return false;
-      } else {
+    return fs.promises
+      .appendFile("./Routes/authRoute/index.ts", this.routeBody())
+      .then(() => {
         spinner.color = "green";
         spinner.text = "Completed";
         spinner.succeed("Completed 😊😘");
         BaseCommand.success("Authentication route successfully generated in App/Routes/authRoute folder");
         return true;
-      }
-    });
+      })
+      .catch((err) => {
+        spinner.color = "red";
+        spinner.text = "failed";
+        spinner.fail("");
+        BaseCommand.error(err.errno);
+        return false;
+      });
   }
 
   private static routeBody() {
@@ -81,20 +80,17 @@ class AuthProgram {
       let doesFileExist = await BaseCommand.checkFileExists("./App/Model/User_model.ts");
       if (doesFileExist == false) {
         this.checkDatabaseDriver() == "nosql" ? await this.nextStep(this.generateNoSqlModel()) : await this.nextStep(this.generateSqlModel());
-        return true;
       } else {
         spinner.color = "red";
         spinner.text = "failed";
         spinner.fail("");
         await BaseCommand.error("User_model.ts already exist.");
-        return false;
       }
     } else {
       spinner.color = "red";
       spinner.text = "failed";
       spinner.fail("");
       await BaseCommand.error("App/Model directory does not exist. Kindly create that and try again");
-      return false;
     }
   }
 
