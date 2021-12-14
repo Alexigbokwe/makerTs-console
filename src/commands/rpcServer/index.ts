@@ -4,8 +4,8 @@ import rpcServerProgram from "./program";
 class RPCServerCommand {
   static async handle(program: any) {
     await program
-      .command("rpc-server [consumerName]")
-      .description("Start processing messages on the queue via RPC as a daemon")
+      .command("rpc-consumer [consumerName]")
+      .description("Create a new RPC consumer class")
       .action((consumerName: string) => {
         rpcServerProgram.handle(consumerName);
       });
