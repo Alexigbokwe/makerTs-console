@@ -21,7 +21,7 @@ class BaseCommand {
   }
 
   static async checkFileExists(file: string): Promise<boolean> {
-    return fs.promises
+    return await fs.promises
       .access(file, fs.constants.F_OK)
       .then(() => true)
       .catch(() => false);

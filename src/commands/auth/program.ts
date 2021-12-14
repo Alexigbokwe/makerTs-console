@@ -6,8 +6,16 @@ const spinner = Ora("Processing: ");
 
 class AuthProgram {
   static async handle() {
-    let status = await this.createAuthRoute();
-    if (status != false) await this.createModel();
+    try {
+      let status = await this.createAuthRoute();
+      if (status) {
+        await this.createModel();
+      } else {
+        await BaseCommand.error("An Error Ocurred While Generating Authentication Routes.");
+      }
+    } catch (error) {
+      await BaseCommand.error("An Error Ocurred While Generating Authentication: " + error);
+    }
   }
 
   private static checkDatabaseDriver() {
@@ -31,7 +39,11 @@ class AuthProgram {
   }
 
   private static async appendRoute() {
-    return fs.promises
+    let dir = "./Routes/authRoute";
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+    return await fs.promises
       .appendFile("./Routes/authRoute/index.ts", this.routeBody())
       .then(() => {
         spinner.color = "green";

@@ -7,6 +7,7 @@ declare class Console {
     static run(commands: any, kernel: any): Promise<void>;
     checkCommandName(name: string): void;
     private static processMakerCommands;
+    private static processServiceCommand;
     private static processUserCommand;
     private static buildCommandWithArguments;
     private static checkCommadsLength;

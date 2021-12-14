@@ -4,6 +4,17 @@ import program from "commander";
 program.version("1.0.0").description("ExpressWebJs Command Line TS");
 import config from "./config";
 
+enum mode {
+  REQUIRED = "REQUIRED",
+  OPTIONAL = "OPTIONAL",
+}
+
+type Tcommand = {
+  signature: string;
+  arguments: { name: string; mode: mode }[];
+  description: string;
+  fire(): any;
+};
 
 class Console {
   /**
@@ -13,11 +24,9 @@ class Console {
    */
   static async run(commands: any, kernel: any) {
     let makerCommands = this.checkCommadsLength(commands);
-    makerCommands != null
-      ? await this.processMakerCommands(makerCommands)
-      : null;
+    makerCommands != null ? await this.processMakerCommands(makerCommands) : null;
     let userCommand = this.checkKernelLength(kernel.commands());
-    userCommand != null ? await this.processUserCommand(userCommand) : null;
+    userCommand != null ? await this.processServiceCommand(userCommand) : null;
     program.parse(process.argv);
   }
 
@@ -31,20 +40,18 @@ class Console {
     await makerCommands.forEach((command: string) => {
       let commandName = command.split("/");
       let filePath = config[`${commandName[commandName.length - 1]}`];
-      import(`./${filePath}`).then(file => {
+      import(`./${filePath}`).then((file) => {
         file.default.handle(program);
-      })
+      });
     });
   }
 
-  private static async processUserCommand(userCommand: any) {
-    userCommand.forEach((path: string) => {
-      let commandPath = `${pathTo}/${path}`;
-      let commandObject = require(commandPath);
-      let command = new commandObject.default();
+  private static async processServiceCommand(serviceCommand: { new (): Tcommand }[]) {
+    serviceCommand.forEach((commandObject: { new (): Tcommand }) => {
+      let command = new commandObject();
       let handle = `${command.signature}`;
       if (command.arguments.length > 0) {
-        command.arguments.forEach((argument: { mode: string; name: any; }) => {
+        command.arguments.forEach((argument: { mode: string; name: any }) => {
           if (argument.mode == "REQUIRED") {
             handle = `${handle} <${argument.name}>`;
           } else if (argument.mode == "OPTIONAL") {
@@ -63,7 +70,33 @@ class Console {
     });
   }
 
-  private static buildCommandWithArguments(command:any,handle:any ) {
+  private static async processUserCommand(userCommand: any) {
+    userCommand.forEach((path: string) => {
+      let commandPath = `${pathTo}/${path}`;
+      let commandObject = require(commandPath);
+      let command = new commandObject.default();
+      let handle = `${command.signature}`;
+      if (command.arguments.length > 0) {
+        command.arguments.forEach((argument: { mode: string; name: any }) => {
+          if (argument.mode == "REQUIRED") {
+            handle = `${handle} <${argument.name}>`;
+          } else if (argument.mode == "OPTIONAL") {
+            handle = `${handle} [${argument.name}]`;
+          }
+        });
+        this.buildCommandWithArguments(command, handle);
+      } else {
+        program
+          .command(handle)
+          .description(command.description)
+          .action(() => {
+            command.fire();
+          });
+      }
+    });
+  }
+
+  private static buildCommandWithArguments(command: any, handle: any) {
     let count = command.arguments.length;
     switch (count) {
       case 2:
@@ -114,7 +147,7 @@ class Console {
     return commands.length > 0 ? commands : null;
   }
 
-  private static checkKernelLength(kernel: string | any[]) {
+  private static checkKernelLength(kernel: { new (): Tcommand }[]) {
     return kernel.length > 0 ? kernel : null;
   }
 }
