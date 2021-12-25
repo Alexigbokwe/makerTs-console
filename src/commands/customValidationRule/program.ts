@@ -35,7 +35,7 @@ class CustomValidationRuleProgram {
          * @param {string | number | boolean} value
          * @returns boolean
          */
-        public passes(value: string | number): boolean {
+        public passes(value: string | number| boolean): boolean {
           //
         }
       
