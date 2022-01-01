@@ -7,6 +7,8 @@ declare class AuthProgram {
     private static createModel;
     private static nextStep;
     private static generateNoSqlModel;
+    private static TypeORMModelBody;
+    private static ObjecionModelBody;
     private static generateSqlModel;
 }
 export default AuthProgram;

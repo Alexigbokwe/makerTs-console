@@ -144,23 +144,55 @@ class AuthProgram {
     return body;
   }
 
-  private static generateSqlModel() {
+  private static TypeORMModelBody() {
     let body = `"use strict";
-    import { Model } from "Elucidate/Database/Model";
+    import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
-    class User extends Model {
+    @Entity('users')
+    class User {
+      @PrimaryGeneratedColumn()
+      id!: number;
+
+      @Column({ type: "varchar" })
+      username!: string;
+
+      @Column({ type: "varchar" })
+      email!: string;
+
+      @Column({ type: "varchar" })
+      password!: string;
+    }
+    export default User;`;
+    return body;
+  }
+
+  private static ObjecionModelBody() {
+    let body = `"use strict";
+    import {Model} from "Elucidate/Database/Model";
+    class User extends Model{
       // Model attributes
       id!: number;
       username!: string;
       email!: string;
       password!: string;
-    
+      
       // Table name
-      static tableName = "users";
+      static tableName = "users"
     }
-    
+
     export default User;`;
     return body;
+  }
+
+  private static generateSqlModel() {
+    switch (process.env.ORM) {
+      case "TypeORM":
+        return this.TypeORMModelBody();
+      case "ObjectionWithKnex":
+        return this.ObjecionModelBody();
+      default:
+        throw new Error("Invalid ORM Selected. Accepted ORMs Are Objection, TypeORM");
+    }
   }
 }
 

@@ -74,12 +74,8 @@ class ControllerProgram {
            * @param Request
            * @return Response
            */
-          index = async (req: Request, res: Response, next: NextFunction) =>{
-            try{
-              //
-            }catch (error) {
-              return next(error);
-            }
+          index = async (req: Request, res: Response): Promise<Response> =>{
+            throw new Error('${controllerName} index method not implemented.');
           }
 
           /**
@@ -89,12 +85,8 @@ class ControllerProgram {
            * @param Request
            * @return Response
            */
-          store = async (req: Request, res: Response, next: NextFunction) => {
-            try{
-              //
-            }catch (error) {
-              return next(error);
-            }
+          store = async (req: Request, res: Response): Promise<Response> => {
+            throw new Error('${controllerName} store method not implemented.');
           }
 
           /**
@@ -104,12 +96,8 @@ class ControllerProgram {
            * @param Request
            * @return Response
            */
-          show = async (req: Request, res: Response, next: NextFunction) => {
-            try{
-              //
-            }catch (error) {
-              return next(error);
-            }
+          show = async (req: Request, res: Response): Promise<Response> => {
+            throw new Error('${controllerName} show method not implemented.');
           }
 
           /**
@@ -119,12 +107,8 @@ class ControllerProgram {
            * @param Request
            * @return Response
            */
-          update = async (req: Request, res: Response, next: NextFunction) => {
-            try{
-              //
-            }catch (error) {
-              return next(error);
-            }
+          update = async (req: Request, res: Response): Promise<Response> => {
+            throw new Error('${controllerName} update method not implemented.');
           }
 
           /**
@@ -134,12 +118,8 @@ class ControllerProgram {
            * @param Request
            * @return Response
            */
-          destroy = async (req: Request, res: Response, next: NextFunction) => {
-            try{
-              //
-            }catch (error) {
-              return next(error);
-            }
+          destroy = async (req: Request, res: Response): Promise<Response> => {
+            throw new Error('${controllerName} destroy method not implemented.');
           }
         }
 
