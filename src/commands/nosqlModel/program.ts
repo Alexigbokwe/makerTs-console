@@ -7,34 +7,24 @@ class NoSqlProgram {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Model");
     if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists(
-        "./App/Model/" + name + "_model.ts",
-      );
+      let doesFileExist = await BaseCommand.checkFileExists("./App/Model/" + name + "_model.ts");
       if (doesFileExist == false) {
         await this.nextStep(name);
       } else {
-        return BaseCommand.error(
-          name + "_model.ts already exist. Modify model name and try again",
-        );
+        return BaseCommand.error(name + "_model.ts already exist. Modify model name and try again");
       }
     }
   }
 
   private static async nextStep(name: string) {
-    fs.appendFile(
-      "./App/Model/" + name + "_model.ts",
-      this.generateModel(name),
-      function (err) {
-        if (err) return BaseCommand.error(err.errno);
-        BaseCommand.success(
-          name + "_model.ts class successfully generated in App/Model folder",
-        );
-        return true;
-      },
-    );
+    fs.appendFile("./App/Model/" + name + "_model.ts", this.generateModel(name), function (err) {
+      if (err) return BaseCommand.error(err.errno);
+      BaseCommand.success(name + "_model.ts class successfully generated in App/Model folder");
+      return true;
+    });
   }
 
-  private static generateModel(name: string) {
+  static generateModel(name: string) {
     let body = `"use strict";
     import { mongoose, Schema, Document } from "Elucidate/Database/NoSQLModel";
 

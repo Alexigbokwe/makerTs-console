@@ -57,7 +57,7 @@ class ControllerProgram {
     return body;
   }
 
-  private static async controllerBodyWithResource(name: string) {
+  static async controllerBodyWithResource(name: string) {
     let controllerName = this.formatControllerName(name);
     let body =
       `"use strict";

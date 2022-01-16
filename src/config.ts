@@ -29,7 +29,7 @@ commands = {
   "run-dev": "commands/packageScripts/runDev",
   "run-build": "commands/packageScripts/runBuild",
   "run-start": "commands/packageScripts/runStart",
-  "run-prod": "commands/packageScripts/runProd",
+  "make-domain": "commands/Domain/makeDomain",
 };
 
 export default commands;

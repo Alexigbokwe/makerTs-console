@@ -3,7 +3,7 @@ declare class SqlProgram {
     private static createModel;
     private static TypeORMModelBody;
     private static ObjecionModelBody;
-    private static modelBody;
+    static modelBody(name: string): string;
     private static modelBodyWithMigration;
 }
 export default SqlProgram;

@@ -68,7 +68,7 @@ class SqlProgram {
     return body;
   }
 
-  private static modelBody(name: string) {
+  static modelBody(name: string) {
     let tableName = (name = name[0].toLowerCase() + name.slice(1));
     let modelName = (name = name[0].toUpperCase() + name.slice(1));
     switch (process.env.ORM) {

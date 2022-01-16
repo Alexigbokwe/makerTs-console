@@ -4,8 +4,8 @@ declare class ServiceProgram {
     private static loadInterface;
     private static loadService;
     private static loadServiceBroker;
-    private static generateServiceInterface;
-    private static generateService;
+    static generateServiceInterface(name: string): string;
+    static generateService(name: string): string;
     private static generateBroker;
 }
 export default ServiceProgram;

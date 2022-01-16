@@ -55,7 +55,7 @@ class ServiceProgram {
     });
   }
 
-  private static generateServiceInterface(name: string) {
+  static generateServiceInterface(name: string) {
     let body = `
     interface I${name} {
         //
@@ -65,7 +65,7 @@ class ServiceProgram {
     return body;
   }
 
-  private static generateService(name: string) {
+  static generateService(name: string) {
     let body = `"use strict";
     import I${name} from "./I${name}";
 
