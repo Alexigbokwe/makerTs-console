@@ -37,10 +37,10 @@ class Console {
   }
 
   private static async processMakerCommands(makerCommands: any) {
-    await makerCommands.forEach((command: string) => {
+    await makerCommands.forEach(async (command: string) => {
       let commandName = command.split("/");
       let filePath = config[`${commandName[commandName.length - 1]}`];
-      import(`./${filePath}`).then((file) => {
+      await import(`./${filePath}`).then((file) => {
         file.default.handle(program);
       });
     });

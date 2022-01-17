@@ -1,5 +1,6 @@
 declare class MakeDomainProgram {
     static handle(name: string): Promise<void>;
+    private static createDirectory;
     private static nextStep;
     private static domainFolders;
     private static RepositoryFolder;

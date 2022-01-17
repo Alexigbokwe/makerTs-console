@@ -16,14 +16,31 @@ class MakeDomainProgram {
     spinner.color = "magenta";
     spinner.text = "Generating Domain";
     name = name[0].toUpperCase() + name.slice(1);
-    let checkFolder = BaseCommand.checkFolderExists("./Domains");
-    if (checkFolder) {
-      let createDomainParentFolder = BaseCommand.checkFolderExists(`./Domains/${name}`);
-      if (createDomainParentFolder) {
-        await this.nextStep(name);
+
+    try {
+      this.createDirectory("./Domains");
+      if (!this.createDirectory("./Domains/" + name)) {
+        throw new Error(name + " domain aleady exist");
       } else {
-        return BaseCommand.error(`${name} domain already exist. Modify domain name and try again`);
+        await this.nextStep(name);
+        spinner.color = "green";
+        spinner.text = "Completed";
+        spinner.succeed(name + " domain successfull generated.");
       }
+    } catch (error) {
+      spinner.color = "red";
+      spinner.text = "failed";
+      spinner.fail("");
+      BaseCommand.error(error);
+    }
+  }
+
+  private static createDirectory(name: string) {
+    if (!fs.existsSync(name)) {
+      fs.mkdirSync(name);
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -56,14 +73,14 @@ class MakeDomainProgram {
   }
 
   private static async httpFolders(path: string, name: string) {
-    shell.mkdir(`${path}/Http`);
+    this.createDirectory(`${path}/Http`);
     let blockPath = `${path}/Http`;
     await this.domainController(blockPath, name);
   }
 
   private static async domainController(path: string, name: string) {
-    shell.mkdir(`${path}/Controller`);
-    fs.appendFile(`${path}/${name}Controller.ts`, await controller.controllerBodyWithResource(name), function (err: any) {
+    this.createDirectory(`${path}/Controller`);
+    fs.appendFile(`${path}/Controller/${name}Controller.ts`, await controller.controllerBodyWithResource(`${name}Controller`), function (err: any) {
       if (err) throw err;
       BaseCommand.success(`${name} controller successfully generated in Domains/${name}/Http/Controller directory`);
     });
@@ -96,8 +113,8 @@ class MakeDomainProgram {
   private static async serviceFolder(path: string, name: string) {
     shell.mkdir(`${path}/Service`);
     let servicePath = `${path}/Service`;
-    await this.loadInterface(servicePath, name);
-    await this.loadService(servicePath, name);
+    this.loadInterface(servicePath, name);
+    this.loadService(servicePath, name);
   }
 
   private static loadInterface(servicePath: string, name: string) {
@@ -108,7 +125,7 @@ class MakeDomainProgram {
   }
 
   private static loadService(servicePath: string, name: string) {
-    fs.appendFile(`${servicePath}/index.ts`, serviceProgram.generateService(name), function (err) {
+    fs.appendFile(`${servicePath}/index.ts`, serviceProgram.generateService(`${name}Service`), function (err) {
       if (err) throw err;
       BaseCommand.success(`${name}Service implementation class successfully generated in Domains/${name}/Service directory`);
     });
