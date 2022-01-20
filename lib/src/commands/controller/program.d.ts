@@ -1,5 +1,5 @@
 declare class ControllerProgram {
-    static handle(name: string, resource?: null): Promise<void>;
+    static handle(name: string, resource?: null, directoryPath?: string): Promise<void>;
     private static createController;
     private static formatControllerName;
     private static controllerBody;

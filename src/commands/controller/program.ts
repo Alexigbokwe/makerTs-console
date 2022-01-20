@@ -4,18 +4,18 @@ import BaseCommand from "../baseCommand";
 import path from "path";
 
 class ControllerProgram {
-  static async handle(name: string, resource = null) {
+  static async handle(name: string, resource = null, directoryPath = "App/Http/Controller") {
     name = name[0].toUpperCase() + name.slice(1);
-    let check = await BaseCommand.checkFileExists("./App/Http/Controller/" + name + ".ts");
+    let check = await BaseCommand.checkFileExists("./" + directoryPath + "/" + name + ".ts");
     if (check == false) {
-      await this.createController(name, resource);
+      await this.createController(name, resource, directoryPath);
     } else {
       return BaseCommand.error("Controller class already exists");
     }
   }
 
-  private static async createController(name: string, resource = null) {
-    let directory = "./App/Http/Controller/" + name + ".ts";
+  private static async createController(name: string, resource = null, directoryPath: string) {
+    let directory = "./" + directoryPath + "/" + name + ".ts";
     let dirPath = path.dirname(directory);
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true });
@@ -23,12 +23,12 @@ class ControllerProgram {
     if (resource == "Controller Resource Methods") {
       fs.appendFile(directory, await this.controllerBodyWithResource(name), (err) => {
         if (err) BaseCommand.error(err);
-        BaseCommand.success(this.formatControllerName(name) + " class successfully generated in App/Http/Controller folder");
+        BaseCommand.success(this.formatControllerName(name) + " class successfully generated in " + directoryPath + " folder");
       });
     } else {
       fs.appendFile(directory, await this.controllerBody(name), (err) => {
         if (err) BaseCommand.error(err);
-        BaseCommand.success(this.formatControllerName(name) + " class successfully generated in App/Http/Controller folder");
+        BaseCommand.success(this.formatControllerName(name) + " class successfully generated in " + directoryPath + " folder");
       });
     }
   }

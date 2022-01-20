@@ -6,8 +6,8 @@ class MakeDomainCommand {
     await program
       .command("make-domain <domainName>")
       .description("Create a new domain")
-      .action((routename: string) => {
-        makeDomainProgram.handle(routename);
+      .action((domainName: string) => {
+        makeDomainProgram.handle(domainName);
       });
   }
 }
