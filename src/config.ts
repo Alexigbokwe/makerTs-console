@@ -32,6 +32,7 @@ commands = {
   "run-prod": "commands/packageScripts/runProd",
   "make-domain": "commands/Domain/makeDomain",
   "domain:make-controller": "commands/Domain/makeController",
+  "domain:make-model": "commands/Domain/makeModel",
 };
 
 export default commands;

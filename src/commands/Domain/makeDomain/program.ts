@@ -60,6 +60,7 @@ class MakeDomainProgram {
     await this.routeFolder(blockPath, name);
     await this.modelFolder(blockPath, name);
     await this.serviceFolder(blockPath, name);
+    await this.serviceProviderFolder(blockPath, name);
     await this.RepositoryFolder(blockPath);
     await this.TestsFolder(blockPath);
   }
@@ -108,6 +109,57 @@ class MakeDomainProgram {
     } else {
       return noSqlProgram.generateModel(name);
     }
+  }
+
+  private static serviceProviderFolder(path: string, name: string) {
+    shell.mkdir(`${path}/Provider`);
+    let providerPath = `${path}/Provider`;
+    fs.appendFile(`${providerPath}/${name}ServiceProvider.ts`, this.providerBody(name), function (err) {
+      if (err) throw err;
+      BaseCommand.success(`${name}ServiceProvider.ts successfully generated in Domains/${name}/Provider directory`);
+    });
+  }
+
+  private static providerBody(name: string) {
+    name = `${name}ServiceProvider`;
+
+    let body =
+      `
+      import ServiceProvider from "Elucidate/Support/ServiceProvider";
+
+      class ` +
+      name +
+      ` extends ServiceProvider{
+        /**
+         * Register any application services.
+         * @return void
+         */
+        public register() {
+          //
+        }
+
+        /**
+         * Bootstrap any application services.
+         * @return void
+         */
+        public async boot() {
+          //
+        }
+      
+        /**
+         * Load any service after application boot stage
+         * @return void
+         */
+        public async booted() {
+          //
+        }
+      }
+
+        export default ` +
+      name +
+      `;
+        `;
+    return body;
   }
 
   private static async serviceFolder(path: string, name: string) {

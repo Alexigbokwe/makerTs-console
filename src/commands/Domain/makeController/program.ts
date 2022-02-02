@@ -9,9 +9,10 @@ class MakeDomainControllerProgram {
   static async handle(controllerName: string, domainName: string, resource = null) {
     spinner.start();
     spinner.color = "magenta";
-    spinner.text = "Generating Domain";
-    controllerName = controllerName[0].toUpperCase() + controllerName.slice(1);
     domainName = domainName[0].toUpperCase() + domainName.slice(1);
+    controllerName = controllerName[0].toUpperCase() + controllerName.slice(1);
+
+    spinner.text = "Generating " + controllerName + "Controller in " + domainName + " Domain";
 
     try {
       if (!this.domainExist("./Domains/" + domainName)) {

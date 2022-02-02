@@ -10,6 +10,8 @@ declare class MakeDomainProgram {
     private static routeFolder;
     private static modelFolder;
     private static modelBody;
+    private static serviceProviderFolder;
+    private static providerBody;
     private static serviceFolder;
     private static loadInterface;
     private static loadService;

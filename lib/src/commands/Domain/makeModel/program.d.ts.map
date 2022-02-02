@@ -1,0 +1,1 @@
+{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../../src/commands/Domain/makeModel/program.ts"],"names":[],"mappings":"AAQA,cAAM,sBAAsB;WACb,MAAM,CAAC,SAAS,EAAE,MAAM,EAAE,UAAU,EAAE,MAAM;mBAyBpC,QAAQ;IAO7B,OAAO,CAAC,MAAM,CAAC,SAAS;IAQxB,OAAO,CAAC,MAAM,CAAC,WAAW;CAO3B;AAED,eAAe,sBAAsB,CAAC"}
