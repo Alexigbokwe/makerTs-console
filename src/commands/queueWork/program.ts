@@ -3,16 +3,13 @@ import BaseCommand from "../baseCommand";
 require("dotenv").config();
 let configQueuePath = "";
 let tsJobDirectories = "";
-let tsRPC_ConsumerDirectories = "";
 
 if (process.env.APP_ENV == "local" || process.env.APP_ENV == "development" || process.env.APP_ENV == "test") {
   configQueuePath = `${__dirname}/../../../../../../Config/queue`;
   tsJobDirectories = `${__dirname}/../../../../../../App/Jobs`;
-  tsRPC_ConsumerDirectories = `${__dirname}/../../../../../../App/RPC_Consumer`;
 } else if (process.env.APP_ENV == "production" || process.env.APP_ENV == "staging") {
   configQueuePath = `${__dirname}/../../../../../../build/Config/queue`;
   tsJobDirectories = `${__dirname}/../../../../../../build/App/Jobs`;
-  tsRPC_ConsumerDirectories = `${__dirname}/../../../../../../build/App/RPC_Consumer`;
 }
 
 //@ts-ignore
@@ -47,7 +44,6 @@ class QueueWorkerProgram {
             BaseCommand.success(`Received ${msg.content.toString()}`);
             let data = JSON.parse(msg.content.toString());
             this.callJobHandlers(data);
-            this.callRPCHandlers(data);
             channel.ack(msg);
           });
         });
@@ -68,20 +64,6 @@ class QueueWorkerProgram {
           } catch (e) {
             console.log(e);
           }
-        }
-      });
-    });
-  }
-
-  private static callRPCHandlers(msg: any = null) {
-    FS.readdirSync(`${tsRPC_ConsumerDirectories}/`).forEach(async (file) => {
-      await import(`${tsRPC_ConsumerDirectories}/${file}`).then((f) => {
-        let RPC_Consumer = f.default;
-        let RPC = new RPC_Consumer();
-        try {
-          RPC.handle(msg.data);
-        } catch (e) {
-          console.log(e);
         }
       });
     });
