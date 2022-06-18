@@ -8,7 +8,7 @@ const spinner = Ora("Processing: ");
 class SqlProgram {
   static async handle(name: string, resource = null) {
     name = name[0].toUpperCase() + name.slice(1);
-    let check = await BaseCommand.checkFileExists("./App/Model/" + name + "_model.ts");
+    let check = await BaseCommand.checkFileExists("./App/Model/" + name + "Model.ts");
     if (check == false) {
       await this.createModel(name, resource);
     } else {
@@ -21,9 +21,9 @@ class SqlProgram {
       spinner.start();
       spinner.color = "magenta";
       spinner.text = "Generating Model";
-      fs.appendFile("./App/Model/" + modelName + "_model.ts", await this.modelBodyWithMigration(modelName), function (err) {
+      fs.appendFile("./App/Model/" + modelName + "Model.ts", await this.modelBodyWithMigration(modelName), function (err) {
         if (err) BaseCommand.error(err);
-        BaseCommand.success("\n" + modelName + "_model.ts class successfully generated in App/Model folder");
+        BaseCommand.success("\n" + modelName + "Model.ts class successfully generated in App/Model folder");
         spinner.color = "green";
         spinner.text = "Completed";
         spinner.succeed("Done 😊😘");
@@ -32,9 +32,9 @@ class SqlProgram {
       spinner.start();
       spinner.color = "magenta";
       spinner.text = "Generating Model";
-      fs.appendFile("./App/Model/" + modelName + "_model.ts", this.modelBody(modelName), function (err) {
+      fs.appendFile("./App/Model/" + modelName + "Model.ts", this.modelBody(modelName), function (err) {
         if (err) BaseCommand.error(err);
-        BaseCommand.success("\n" + modelName + "_model.ts class successfully generated in App/Model folder");
+        BaseCommand.success("\n" + modelName + "Model.ts class successfully generated in App/Model folder");
         spinner.color = "green";
         spinner.text = "Completed";
         spinner.succeed("Done 😊😘");

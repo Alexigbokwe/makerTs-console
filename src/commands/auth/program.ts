@@ -39,7 +39,7 @@ class AuthProgram {
   }
 
   private static async appendRoute() {
-    let dir = "./Routes/authRoute";
+    let dir = "./Routes/AuthRoute";
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
     }
@@ -49,7 +49,7 @@ class AuthProgram {
         spinner.color = "green";
         spinner.text = "Completed";
         spinner.succeed("Completed 😊😘");
-        BaseCommand.success("Authentication route successfully generated in App/Routes/authRoute folder");
+        BaseCommand.success("Authentication route successfully generated in App/Routes/AuthRoute folder");
         return true;
       })
       .catch((err) => {
@@ -63,8 +63,7 @@ class AuthProgram {
 
   private static routeBody() {
     let body = `
-    "use strict";
-    import Route from "Elucidate/Route/manager";
+    import Route from "Elucidate/Route/RouteManager";
     
     /*
     |--------------------------------------------------------------------------
@@ -79,7 +78,7 @@ class AuthProgram {
 
     Route.post("/login", "Auth/LoginController@login");
 
-    module.exports = Route.exec;`;
+    export default Route.exec;`;
     return body;
   }
 
@@ -89,7 +88,7 @@ class AuthProgram {
     spinner.text = "Generating Authentication";
     let checkFolder = BaseCommand.checkFolderExists("./App/Model");
     if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists("./App/Model/User_model.ts");
+      let doesFileExist = await BaseCommand.checkFileExists("./App/Model/UserModel.ts");
       if (doesFileExist == false) {
         this.checkDatabaseDriver() == "nosql" ? await this.nextStep(this.generateNoSqlModel()) : await this.nextStep(this.generateSqlModel());
       } else {
@@ -107,7 +106,7 @@ class AuthProgram {
   }
 
   private static async nextStep(generateModel: any) {
-    fs.appendFile("./App/Model/User_model.ts", generateModel, function (err) {
+    fs.appendFile("./App/Model/UserModel.ts", generateModel, function (err) {
       if (err) {
         spinner.color = "red";
         spinner.text = "failed";
@@ -125,15 +124,17 @@ class AuthProgram {
 
   private static generateNoSqlModel() {
     let body = `"use strict";
-    import { mongoose, Schema, Document } from "Elucidate/Database/NoSQLModel";
+    import { mongoose, Schema, Document, Types } from "Elucidate/Database/NoSQLModel";
 
     export interface UserInterface extends Document {
+      id: Types.ObjectId;
       username: string;
       email: string;
       password: string;
     }
     
     const UserSchema: Schema = new Schema({
+      id: Schema.Types.ObjectId,
       username: { type: String, required: true },
       email: { type: String, required: true, unique: true },
       password: { type: String, required: true },
@@ -186,12 +187,12 @@ class AuthProgram {
 
   private static generateSqlModel() {
     switch (process.env.ORM) {
-      case "TypeORM":
-        return this.TypeORMModelBody();
+      // case "TypeORM":
+      //   return this.TypeORMModelBody();
       case "ObjectionWithKnex":
         return this.ObjecionModelBody();
       default:
-        throw new Error("Invalid ORM Selected. Accepted ORMs Are Objection, TypeORM");
+        throw new Error("Invalid ORM Selected");
     }
   }
 }

@@ -97,7 +97,7 @@ class MakeDomainProgram {
 
   private static async modelFolder(path: string, name: string) {
     shell.mkdir(`${path}/Model`);
-    fs.appendFile(`${path}/Model/${name}_model.ts`, this.modelBody(name), function (err: any) {
+    fs.appendFile(`${path}/Model/${name}Model.ts`, this.modelBody(name), function (err: any) {
       if (err) throw err;
       BaseCommand.success(`${name} model successfully generated in Domains/${name}/Model directory`);
     });
@@ -134,7 +134,7 @@ class MakeDomainProgram {
          * Register any application services.
          * @return void
          */
-        public register() {
+        public register():void {
           //
         }
 
@@ -142,7 +142,7 @@ class MakeDomainProgram {
          * Bootstrap any application services.
          * @return void
          */
-        public async boot() {
+        public async boot():Promise<void> {
           //
         }
       
@@ -150,7 +150,7 @@ class MakeDomainProgram {
          * Load any service after application boot stage
          * @return void
          */
-        public async booted() {
+        public async booted():void {
           //
         }
       }

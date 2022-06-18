@@ -5,13 +5,13 @@ import BaseCommand from "../baseCommand";
 class RequestProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
-    let checkFolder = BaseCommand.checkFolderExists("./App/Http/Requests");
+    let checkFolder = BaseCommand.checkFolderExists("./App/Http/Validation");
     if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists("./App/Http/Requests/" + name + "_request.ts");
+      let doesFileExist = await BaseCommand.checkFileExists("./App/Http/Validation/" + name + "Validation.ts");
       if (doesFileExist == false) {
         await this.nextStep(name);
       } else {
-        return BaseCommand.error(name + "_request.ts already exist. Modify request validator name and try again");
+        return BaseCommand.error(name + "Validation.ts already exist. Modify request validator name and try again");
       }
     }
   }
@@ -19,9 +19,9 @@ class RequestProgram {
   private static async nextStep(name: string) {
     name = name.includes("validation") ? name : name + "Validation";
     const validationName = name.charAt(0).toUpperCase() + name.slice(1);
-    fs.appendFile("./App/Http/Requests/" + validationName + ".ts", this.generateRequest(validationName), function (err: any) {
+    fs.appendFile("./App/Http/Validation/" + validationName + ".ts", this.generateRequest(validationName), function (err: any) {
       if (err) return BaseCommand.error(err.errno);
-      BaseCommand.success(validationName + "_validation.ts class successfully generated in App/Http/Requests folder");
+      BaseCommand.success(validationName + "Validation.ts class successfully generated in App/Http/Validation folder");
       return true;
     });
   }

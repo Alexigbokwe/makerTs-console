@@ -39,8 +39,8 @@ class RouteProgram {
 
   static async routeBody(name: string) {
     let body = `"use strict";
-    import Route from "Elucidate/Route/manager";
-    //import { Request, Response, NextFunction } from "Elucidate/HttpContext";
+    import { Route } from "Elucidate/Route/RouteManager";
+   // import { Request, Response } from "Elucidate/HttpContext";
        
     /*
     |--------------------------------------------------------------------------

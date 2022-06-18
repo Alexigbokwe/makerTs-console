@@ -45,8 +45,7 @@ class ControllerProgram {
   private static async controllerBody(name: string) {
     let controllerName = this.formatControllerName(name);
     let body = `"use strict";
-    import { Request, Response, NextFunction } from "Elucidate/HttpContext";
-    import HttpResponse from "Elucidate/HttpContext/ResponseType";
+    import { Request, Response } from "Elucidate/HttpContext";
 
     class ${controllerName}{
       //
@@ -60,9 +59,8 @@ class ControllerProgram {
   static async controllerBodyWithResource(name: string) {
     let controllerName = this.formatControllerName(name);
     let body =
-      `"use strict";
-      import { Request, Response, NextFunction } from "Elucidate/HttpContext";
-      import HttpResponse from "Elucidate/HttpContext/ResponseType";
+      `
+      import { Request, Response } from "Elucidate/HttpContext";
 
       class ` +
       controllerName +
@@ -71,10 +69,8 @@ class ControllerProgram {
            * Display a listing of the resource.
            * @method
            * @endpoint
-           * @param Request
-           * @return Response
            */
-          index = async (req: Request, res: Response): Promise<Response> =>{
+          index = async (req: Request, res: Response) =>{
             throw new Error('${controllerName} index method not implemented.');
           }
 
@@ -82,10 +78,8 @@ class ControllerProgram {
            * Store a newly created resource in storage.
            * @method
            * @endpoint
-           * @param Request
-           * @return Response
            */
-          store = async (req: Request, res: Response): Promise<Response> => {
+          store = async (req: Request, res: Response) => {
             throw new Error('${controllerName} store method not implemented.');
           }
 
@@ -93,10 +87,8 @@ class ControllerProgram {
            * Display the specified resource.
            * @method
            * @endpoint
-           * @param Request
-           * @return Response
            */
-          show = async (req: Request, res: Response): Promise<Response> => {
+          show = async (req: Request, res: Response) => {
             throw new Error('${controllerName} show method not implemented.');
           }
 
@@ -104,10 +96,8 @@ class ControllerProgram {
            * Update the specified resource in storage.
            * @method
            * @endpoint
-           * @param Request
-           * @return Response
            */
-          update = async (req: Request, res: Response): Promise<Response> => {
+          update = async (req: Request, res: Response) => {
             throw new Error('${controllerName} update method not implemented.');
           }
 
@@ -115,10 +105,8 @@ class ControllerProgram {
            * Remove the specified resource from storage.
            * @method
            * @endpoint
-           * @param Request
-           * @return Response
            */
-          destroy = async (req: Request, res: Response): Promise<Response> => {
+          destroy = async (req: Request, res: Response) => {
             throw new Error('${controllerName} destroy method not implemented.');
           }
         }
