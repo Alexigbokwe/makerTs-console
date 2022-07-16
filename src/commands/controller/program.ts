@@ -45,7 +45,8 @@ class ControllerProgram {
   private static async controllerBody(name: string) {
     let controllerName = this.formatControllerName(name);
     let body = `"use strict";
-    import { Request, Response } from "Elucidate/HttpContext";
+    import { Request, Response } from "Config/http";
+    import { HttpResponse } from "Elucidate/HttpContext";
 
     class ${controllerName}{
       //
@@ -59,12 +60,13 @@ class ControllerProgram {
   static async controllerBodyWithResource(name: string) {
     let controllerName = this.formatControllerName(name);
     let body =
-      `
-      import { Request, Response } from "Elucidate/HttpContext";
+      `import { Request, Response } from "Config/http";
+       import { HttpResponse } from "Elucidate/HttpContext";
 
       class ` +
       controllerName +
       `{
+        
           /**
            * Display a listing of the resource.
            * @method

@@ -26,7 +26,7 @@ class MiddlewareProgram {
 
   private static generateMiddleware(name: string) {
     let body = `"use strict";
-    import { Request, Response } from "Elucidate/HttpContext";
+    import { Request, Response } from "Config/http";
     import { MiddlewareHandler } from "Elucidate/MiddlewareHandler";
     
     class ${name} extends MiddlewareHandler{
