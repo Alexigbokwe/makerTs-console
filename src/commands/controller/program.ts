@@ -46,9 +46,9 @@ class ControllerProgram {
     let controllerName = this.formatControllerName(name);
     let body = `"use strict";
     import { Request, Response } from "Config/http";
-    import { HttpResponse } from "Elucidate/HttpContext";
+    import { BaseController } from "./BaseController";
 
-    class ${controllerName}{
+    class ${controllerName} extends BaseController{
       //
     }
 
@@ -61,11 +61,11 @@ class ControllerProgram {
     let controllerName = this.formatControllerName(name);
     let body =
       `import { Request, Response } from "Config/http";
-       import { HttpResponse } from "Elucidate/HttpContext";
+      import { BaseController } from "./BaseController";
 
       class ` +
       controllerName +
-      `{
+      ` extends BaseController{
         
           /**
            * Display a listing of the resource.
