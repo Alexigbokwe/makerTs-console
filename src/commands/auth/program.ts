@@ -48,8 +48,7 @@ class AuthProgram {
       .then(() => {
         spinner.color = "green";
         spinner.text = "Completed";
-        spinner.succeed("Completed 😊😘");
-        BaseCommand.success("Authentication route successfully generated in App/Routes/AuthRoute folder");
+        spinner.succeed("Authentication route successfully generated in App/Routes/AuthRoute folder");
         return true;
       })
       .catch((err) => {
@@ -63,7 +62,7 @@ class AuthProgram {
 
   private static routeBody() {
     let body = `
-    import Route from "Elucidate/Route/RouteManager";
+    import {Route} from "Elucidate/Route/RouteManager";
     
     /*
     |--------------------------------------------------------------------------
@@ -116,8 +115,7 @@ class AuthProgram {
       }
       spinner.color = "green";
       spinner.text = "Completed";
-      spinner.succeed("Completed 😊😘");
-      BaseCommand.success("User_model.ts class successfully generated in App/Model folder");
+      spinner.succeed("User_model.ts class successfully generated in App/Model folder");
       return true;
     });
   }
@@ -189,7 +187,7 @@ class AuthProgram {
     switch (process.env.ORM) {
       // case "TypeORM":
       //   return this.TypeORMModelBody();
-      case "ObjectionWithKnex":
+      case "Objection":
         return this.ObjecionModelBody();
       default:
         throw new Error("Invalid ORM Selected");

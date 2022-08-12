@@ -74,7 +74,7 @@ class SqlProgram {
     switch (process.env.ORM) {
       case "TypeORM":
         return this.TypeORMModelBody(modelName, tableName);
-      case "ObjectionWithKnex":
+      case "Objection":
         return this.ObjecionModelBody(modelName, tableName);
       default:
         throw new Error("Invalid ORM Selected. Accepted ORMs Are Objection, TypeORM");
