@@ -26,10 +26,37 @@ class QueueWorkerProgram {
         case "rabbitmq":
           this.consumeViaRabbitmq(name, Config);
           break;
+        case "redis":
+          this.consumeViaRedis(name, Config);
+          break;
         default:
           break;
       }
     });
+  }
+
+  private static consumeViaRedis(jobQueue: any = null, Config: any) {
+    try {
+      let queue = jobQueue;
+      if (queue == null) queue = Config.connections[Config.default].queue;
+      const job = require("bull");
+
+      let connection = new job(queue, { redis: { port: Config.connections[Config.default].port, host: Config.connections[Config.default].host, password: Config.connections[Config.default].password } });
+      BaseCommand.success(`[*] Waiting for messages in ${queue} queue. To exit press CTRL+C`);
+
+      connection.process((job: any, done: any) => {
+        job.progress("fetching data");
+        let data = job.data;
+        job.progress("fetched data");
+        BaseCommand.success("Data Received");
+        job.progress("Processing job");
+        this.callJobHandlers(data);
+        job.progress("Done processing job");
+        done();
+      });
+    } catch (error: any) {
+      BaseCommand.error(error.message);
+    }
   }
 
   private static consumeViaRabbitmq(jobQueue: any = null, Config: any) {
@@ -47,7 +74,6 @@ class QueueWorkerProgram {
             BaseCommand.success(`Received ${msg.content.toString()}`);
             let data = JSON.parse(msg.content.toString());
             this.callJobHandlers(data);
-            this.callRPCHandlers(data);
             channel.ack(msg);
           });
         });
@@ -73,19 +99,19 @@ class QueueWorkerProgram {
     });
   }
 
-  private static callRPCHandlers(msg: any = null) {
-    FS.readdirSync(`${tsRPC_ConsumerDirectories}/`).forEach(async (file) => {
-      await import(`${tsRPC_ConsumerDirectories}/${file}`).then((f) => {
-        let RPC_Consumer = f.default;
-        let RPC = new RPC_Consumer();
-        try {
-          RPC.handle(msg.data);
-        } catch (e) {
-          console.log(e);
-        }
-      });
-    });
-  }
+  // private static callRPCHandlers(msg: any = null) {
+  //   FS.readdirSync(`${tsRPC_ConsumerDirectories}/`).forEach(async (file) => {
+  //     await import(`${tsRPC_ConsumerDirectories}/${file}`).then((f) => {
+  //       let RPC_Consumer = f.default;
+  //       let RPC = new RPC_Consumer();
+  //       try {
+  //         RPC.handle(msg.data);
+  //       } catch (e) {
+  //         console.log(e);
+  //       }
+  //     });
+  //   });
+  // }
 }
 
 export default QueueWorkerProgram;
