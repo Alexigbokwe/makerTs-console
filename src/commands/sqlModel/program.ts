@@ -42,22 +42,23 @@ class SqlProgram {
     }
   }
 
-  private static TypeORMModelBody(modelName: string, tableName: string) {
-    let body = `"use strict";
-    import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+  // private static TypeORMModelBody(modelName: string, tableName: string) {
+  //   let body = `"use strict";
+  //   import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
-    @Entity('${tableName}')
-    class ${modelName} {
-      @PrimaryGeneratedColumn()
-      id!: number;
-    }
-    export default ${modelName};`;
-    return body;
-  }
+  //   @Entity('${tableName}')
+  //   class ${modelName} {
+  //     @PrimaryGeneratedColumn()
+  //     id!: number;
+  //   }
+  //   export default ${modelName};`;
+  //   return body;
+  // }
 
   private static ObjecionModelBody(modelName: string, tableName: string) {
     let body = `"use strict";
     import {Model} from "Elucidate/Database/Model";
+    
     class ${modelName} extends Model{
       // Table name
       static tableName = "${tableName}"
@@ -71,14 +72,7 @@ class SqlProgram {
   static modelBody(name: string) {
     let tableName = (name = name[0].toLowerCase() + name.slice(1));
     let modelName = (name = name[0].toUpperCase() + name.slice(1));
-    switch (process.env.ORM) {
-      case "TypeORM":
-        return this.TypeORMModelBody(modelName, tableName);
-      case "Objection":
-        return this.ObjecionModelBody(modelName, tableName);
-      default:
-        throw new Error("Invalid ORM Selected. Accepted ORMs Are Objection, TypeORM");
-    }
+    return this.ObjecionModelBody(modelName, tableName);
   }
 
   private static async modelBodyWithMigration(modelName: string) {

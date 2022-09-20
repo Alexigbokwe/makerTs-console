@@ -26,7 +26,7 @@ class NoSqlProgram {
 
   static generateModel(name: string) {
     let body = `"use strict";
-    import { mongoose, Schema, Document } from "Elucidate/Database/NoSQLModel";
+    import { mongoose, Schema } from "Elucidate/Database/NoSQLModel";
 
     export interface ${name}Interface extends Document {
       //
