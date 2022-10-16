@@ -44,79 +44,68 @@ class ControllerProgram {
 
   private static async controllerBody(name: string) {
     let controllerName = this.formatControllerName(name);
-    let body = `"use strict";
+    let body = `
     import { Request, Response } from "Config/http";
     import { BaseController } from "./BaseController";
 
-    class ${controllerName} extends BaseController{
+    export class ${controllerName} extends BaseController{
       //
-    }
-
-    export default ${controllerName};
-    `;
+    }`;
     return body;
   }
 
   static async controllerBodyWithResource(name: string) {
     let controllerName = this.formatControllerName(name);
-    let body =
-      `import { Request, Response } from "Config/http";
-      import { BaseController } from "./BaseController";
+    let body = `import { Request, Response } from "Config/http";
+    import { BaseController } from "./BaseController";
 
-      class ` +
-      controllerName +
-      ` extends BaseController{
+    export class ${controllerName} extends BaseController{
         
-          /**
-           * Display a listing of the resource.
-           * @method
-           * @endpoint
-           */
-          index = async (req: Request, res: Response) =>{
-            throw new Error('${controllerName} index method not implemented.');
-          }
+      /**
+       * Display a listing of the resource.
+       * @method GET
+       * @endpoint
+       */
+      async index(req: Request, res: Response){
+        throw new Error('${controllerName} index method not implemented.');
+      }
 
-          /**
-           * Store a newly created resource in storage.
-           * @method
-           * @endpoint
-           */
-          store = async (req: Request, res: Response) => {
-            throw new Error('${controllerName} store method not implemented.');
-          }
+      /**
+       * Store a newly created resource in storage.
+       * @method POST
+       * @endpoint
+       */
+      async store(req: Request, res: Response){
+        throw new Error('${controllerName} store method not implemented.');
+      }
 
-          /**
-           * Display the specified resource.
-           * @method
-           * @endpoint
-           */
-          show = async (req: Request, res: Response) => {
-            throw new Error('${controllerName} show method not implemented.');
-          }
+      /**
+       * Display the specified resource.
+       * @method GET
+       * @endpoint
+       */
+      async show(req: Request, res: Response){
+        throw new Error('${controllerName} show method not implemented.');
+      }
 
-          /**
-           * Update the specified resource in storage.
-           * @method
-           * @endpoint
-           */
-          update = async (req: Request, res: Response) => {
-            throw new Error('${controllerName} update method not implemented.');
-          }
+      /**
+       * Update the specified resource in storage.
+       * @method PUT/PATCH
+       * @endpoint
+       */
+      async update(req: Request, res: Response){
+        throw new Error('${controllerName} update method not implemented.');
+      }
 
-          /**
-           * Remove the specified resource from storage.
-           * @method
-           * @endpoint
-           */
-          destroy = async (req: Request, res: Response) => {
-            throw new Error('${controllerName} destroy method not implemented.');
-          }
-        }
-
-        export default ` +
-      controllerName +
-      `;
-        `;
+      /**
+       * Remove the specified resource from storage.
+       * @method DELETE
+       * @endpoint
+       */
+      async destroy(req: Request, res: Response){
+        throw new Error('${controllerName} destroy method not implemented.');
+      }
+    }`;
     return body;
   }
 }

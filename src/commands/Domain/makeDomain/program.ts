@@ -73,9 +73,14 @@ class MakeDomainProgram {
     shell.mkdir(`${path}/Tests`);
   }
 
+  private static async ValidationFolder(path: string) {
+    shell.mkdir(`${path}/Validation`);
+  }
+
   private static async httpFolders(path: string, name: string) {
     this.createDirectory(`${path}/Http`);
     let blockPath = `${path}/Http`;
+    await this.ValidationFolder(blockPath);
     await this.domainController(blockPath, name);
   }
 

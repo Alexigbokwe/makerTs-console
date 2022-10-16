@@ -27,7 +27,7 @@ class RequestProgram {
   }
 
   private static generateRequest(name: string) {
-    let body = `"use strict";
+    let body = `
     import FormRequest from "Elucidate/Validator/FormRequest";
 
     class ${name} extends FormRequest{
@@ -35,7 +35,7 @@ class RequestProgram {
        * Handle the request validation.
        * @param {*} data | e.g request body
        */
-      async validate<T>(data:T) {
+       static async validate<T>(data:T) {
         return await FormRequest.make<T>(data, {
           //Validation rules
         });

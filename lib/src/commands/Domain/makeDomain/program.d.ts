@@ -5,6 +5,7 @@ declare class MakeDomainProgram {
     private static domainFolders;
     private static RepositoryFolder;
     private static TestsFolder;
+    private static ValidationFolder;
     private static httpFolders;
     private static domainController;
     private static routeFolder;
