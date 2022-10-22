@@ -128,13 +128,10 @@ class MakeDomainProgram {
   private static providerBody(name: string) {
     name = `${name}ServiceProvider`;
 
-    let body =
-      `
+    let body = `
       import ServiceProvider from "Elucidate/Support/ServiceProvider";
 
-      class ` +
-      name +
-      ` extends ServiceProvider{
+      class ${name} extends ServiceProvider{
         /**
          * Register any application services.
          * @return void
@@ -155,36 +152,33 @@ class MakeDomainProgram {
          * Load any service after application boot stage
          * @return void
          */
-        public async booted():void {
+        public async booted():Promise<void> {
           //
         }
       }
 
-        export default ` +
-      name +
-      `;
-        `;
+        export default ${name};`;
     return body;
   }
 
   private static async serviceFolder(path: string, name: string) {
     shell.mkdir(`${path}/Service`);
     let servicePath = `${path}/Service`;
-    this.loadInterface(servicePath, name);
+    this.loadAbstractService(servicePath, name);
     this.loadService(servicePath, name);
   }
 
-  private static loadInterface(servicePath: string, name: string) {
-    fs.appendFile(`${servicePath}/I${name}Service.ts`, serviceProgram.generateServiceInterface(name), function (err) {
+  private static loadAbstractService(servicePath: string, name: string) {
+    fs.appendFile(`${servicePath}/${name}Service.ts`, serviceProgram.generateServiceAbstractClass(name), function (err) {
       if (err) throw err;
-      BaseCommand.success(`I${name}Service.ts interface successfully generated in Domains/${name}/Service directory`);
+      BaseCommand.success(`${name}Service.ts abstract class successfully generated in Domains/${name}/Service directory`);
     });
   }
 
   private static loadService(servicePath: string, name: string) {
-    fs.appendFile(`${servicePath}/index.ts`, serviceProgram.generateService(`${name}Service`), function (err) {
+    fs.appendFile(`${servicePath}/${name}ServiceImpl.ts`, serviceProgram.generateService(name, false), function (err) {
       if (err) throw err;
-      BaseCommand.success(`${name}Service implementation class successfully generated in Domains/${name}/Service directory`);
+      BaseCommand.success(`${name}ServiceImpl implementation class successfully generated in Domains/${name}/Service directory`);
     });
   }
 }

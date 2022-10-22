@@ -14,7 +14,7 @@ declare class MakeDomainProgram {
     private static serviceProviderFolder;
     private static providerBody;
     private static serviceFolder;
-    private static loadInterface;
+    private static loadAbstractService;
     private static loadService;
 }
 export default MakeDomainProgram;

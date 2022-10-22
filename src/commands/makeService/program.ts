@@ -24,7 +24,7 @@ class ServiceProgram {
   private static async nextStep(name: string, broker = null) {
     try {
       shell.mkdir("./App/Service/" + name);
-      this.loadInterface(name);
+      this.loadAbstractService(name);
       this.loadService(name);
       if (broker == "Service Broker") {
         this.loadServiceBroker(name);
@@ -34,15 +34,15 @@ class ServiceProgram {
     }
   }
 
-  private static loadInterface(name: string) {
-    fs.appendFile(`./App/Service/${name}/I${name}.ts`, this.generateServiceInterface(name), function (err) {
+  private static loadAbstractService(name: string) {
+    fs.appendFile(`./App/Service/${name}/I${name}.ts`, this.generateServiceAbstractClass(name), function (err) {
       if (err) throw err;
       BaseCommand.success(`I${name}.ts interface successfully generated in App/Service/${name} folder`);
     });
   }
 
   private static loadService(name: string) {
-    fs.appendFile(`./App/Service/${name}/index.ts`, this.generateService(name), function (err) {
+    fs.appendFile(`./App/Service/${name}/${name}Imp.ts`, this.generateService(name), function (err) {
       if (err) throw err;
       BaseCommand.success(`${name} implementation class successfully generated in App/Service/${name} folder`);
     });
@@ -55,20 +55,18 @@ class ServiceProgram {
     });
   }
 
-  static generateServiceInterface(name: string) {
-    let body = `
-    export abstract class I${name} {
+  static generateServiceAbstractClass(name: string) {
+    const body = `
+    export abstract class ${name}Service {
         //
     }`;
     return body;
   }
 
-  static generateService(name: string) {
-    let body = `;
-    import I${name} from "./I${name}";
-    import { BaseService } from "../BaseService";
-
-    export class ${name} extends BaseService implements I${name}{
+  static generateService(name: string, addBase = true) {
+    const body = `import {${name}Service} from "./${name}Service";
+    ${addBase ? 'import { BaseService } from "../BaseService";' : ""}
+    export class ${name}ServiceImp ${addBase ? "extends BaseService" : ""}implements ${name}Service{
         //
     }`;
     return body;

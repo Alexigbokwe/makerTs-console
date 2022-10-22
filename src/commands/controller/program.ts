@@ -46,7 +46,7 @@ class ControllerProgram {
     let controllerName = this.formatControllerName(name);
     let body = `
     import { Request, Response } from "Config/http";
-    import { BaseController } from "./BaseController";
+    import { BaseController } from "App/Http/Controller/BaseController";
 
     export class ${controllerName} extends BaseController{
       //
@@ -57,7 +57,7 @@ class ControllerProgram {
   static async controllerBodyWithResource(name: string) {
     let controllerName = this.formatControllerName(name);
     let body = `import { Request, Response } from "Config/http";
-    import { BaseController } from "./BaseController";
+    import { BaseController } from "App/Http/Controller/BaseController";
 
     export class ${controllerName} extends BaseController{
         
@@ -66,7 +66,7 @@ class ControllerProgram {
        * @method GET
        * @endpoint
        */
-      async index(req: Request, res: Response){
+      public async index(req: Request, res: Response){
         throw new Error('${controllerName} index method not implemented.');
       }
 
@@ -75,7 +75,7 @@ class ControllerProgram {
        * @method POST
        * @endpoint
        */
-      async store(req: Request, res: Response){
+      public async store(req: Request, res: Response){
         throw new Error('${controllerName} store method not implemented.');
       }
 
@@ -84,7 +84,7 @@ class ControllerProgram {
        * @method GET
        * @endpoint
        */
-      async show(req: Request, res: Response){
+      public async show(req: Request, res: Response){
         throw new Error('${controllerName} show method not implemented.');
       }
 
@@ -93,7 +93,7 @@ class ControllerProgram {
        * @method PUT/PATCH
        * @endpoint
        */
-      async update(req: Request, res: Response){
+      public async update(req: Request, res: Response){
         throw new Error('${controllerName} update method not implemented.');
       }
 
@@ -102,7 +102,7 @@ class ControllerProgram {
        * @method DELETE
        * @endpoint
        */
-      async destroy(req: Request, res: Response){
+      public async destroy(req: Request, res: Response){
         throw new Error('${controllerName} destroy method not implemented.');
       }
     }`;
