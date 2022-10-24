@@ -4,8 +4,8 @@ let commands: any;
 commands = {
   "make-auth": "commands/auth",
   "make-controller": "commands/controller",
-  "make-event": "commands/event",
-  "make-listener": "commands/listener",
+  //"make-event": "commands/event",   ==> depreciated
+  //"make-listener": "commands/listener", ==> depreciated
   "make-middleware": "commands/middleware",
   "make-nosql-model": "commands/nosqlModel",
   "make-request": "commands/request",
