@@ -2,7 +2,7 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 
-class RequestProgram {
+class ValidationProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Http/Validation");
@@ -19,20 +19,20 @@ class RequestProgram {
   private static async nextStep(name: string) {
     name = name.includes("validation") ? name : name + "Validation";
     const validationName = name.charAt(0).toUpperCase() + name.slice(1);
-    fs.appendFile("./App/Http/Validation/" + validationName + ".ts", this.generateRequest(validationName), function (err: any) {
+    fs.appendFile("./App/Http/Validation/" + validationName + ".ts", this.generateValidation(validationName), function (err: any) {
       if (err) return BaseCommand.error(err.errno);
       BaseCommand.success(validationName + "Validation.ts class successfully generated in App/Http/Validation folder");
       return true;
     });
   }
 
-  private static generateRequest(name: string) {
+  private static generateValidation(name: string) {
     let body = `
     import FormRequest from "Elucidate/Validator/FormRequest";
 
-    class ${name} extends FormRequest{
+    export class ${name} extends FormRequest{
       /**
-       * Handle the request validation.
+       * Handle data validation.
        * @param {*} data | e.g request body
        */
        static async validate<T>(data:T) {
@@ -40,11 +40,9 @@ class RequestProgram {
           //Validation rules
         });
       }
-    }
-
-    export default new ${name}();`;
+    }`;
     return body;
   }
 }
 
-export default RequestProgram;
+export default ValidationProgram;

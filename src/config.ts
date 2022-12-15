@@ -8,7 +8,7 @@ commands = {
   //"make-listener": "commands/listener", ==> depreciated
   "make-middleware": "commands/middleware",
   "make-nosql-model": "commands/nosqlModel",
-  "make-request": "commands/request",
+  "make-validation": "commands/validation",
   "make-route": "commands/route",
   "make-sql-model": "commands/sqlModel",
   "make-ws-controller": "commands/wsController",

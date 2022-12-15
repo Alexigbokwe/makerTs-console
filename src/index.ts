@@ -40,9 +40,11 @@ class Console {
     await makerCommands.forEach(async (command: string) => {
       let commandName = command.split("/");
       let filePath = config[`${commandName[commandName.length - 1]}`];
-      await import(`./${filePath}`).then((file) => {
-        file.default.handle(program);
-      });
+      if (filePath) {
+        await import(`./${filePath}`).then((file) => {
+          file.default.handle(program);
+        });
+      }
     });
   }
 
