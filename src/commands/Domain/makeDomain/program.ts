@@ -6,12 +6,13 @@ import shell from "shelljs";
 const spinner = Ora("Processing: ");
 import controller from "../../controller/program";
 import route from "../../route/program";
-import sqlmodel from "../../sqlModel/program";
-import noSqlProgram from "../../nosqlModel/program";
+import SqlProgram from "../../sqlModel/program";
+import NoSqlProgram from "../../nosqlModel/program";
 import serviceProgram from "../../makeService/program";
+import { ORM } from "../../../index";
 
 class MakeDomainProgram {
-  static async handle(name: string) {
+  static async handle(name: string, orm: ORM) {
     spinner.start();
     spinner.color = "magenta";
     spinner.text = "Generating Domain";
@@ -20,12 +21,12 @@ class MakeDomainProgram {
     try {
       this.createDirectory("./Domains");
       if (!this.createDirectory("./Domains/" + name)) {
-        throw new Error(name + " domain aleady exist");
+        throw new Error(name + " domain already exist");
       } else {
-        await this.nextStep(name);
+        await this.nextStep(name, orm);
         spinner.color = "green";
         spinner.text = "Completed";
-        spinner.succeed(name + " domain successfull generated.");
+        spinner.succeed(name + " domain successfully generated.");
       }
     } catch (error) {
       spinner.color = "red";
@@ -44,21 +45,21 @@ class MakeDomainProgram {
     }
   }
 
-  private static async nextStep(name: string) {
-    await this.domainFolders(name)
+  private static async nextStep(name: string, orm: ORM) {
+    await this.domainFolders(name, orm)
       .then(() => {
         BaseCommand.success(`${name} Domain Successfully Generated`);
       })
       .catch((error) => {
-        BaseCommand.success(`Error Occured  While  Generating ${name} Domain: ${error}`);
+        BaseCommand.success(`Error Occurred  While  Generating ${name} Domain: ${error}`);
       });
   }
 
-  private static async domainFolders(name: string) {
+  private static async domainFolders(name: string, orm: ORM) {
     let blockPath = `./Domains/${name}`;
     await this.httpFolders(blockPath, name);
     await this.routeFolder(blockPath, name);
-    await this.modelFolder(blockPath, name);
+    await this.modelFolder(blockPath, name, orm);
     await this.serviceFolder(blockPath, name);
     await this.serviceProviderFolder(blockPath, name);
     await this.RepositoryFolder(blockPath);
@@ -100,19 +101,19 @@ class MakeDomainProgram {
     });
   }
 
-  private static async modelFolder(path: string, name: string) {
+  private static async modelFolder(path: string, name: string, orm: ORM) {
     shell.mkdir(`${path}/Model`);
-    fs.appendFile(`${path}/Model/${name}Model.ts`, this.modelBody(name), function (err: any) {
+    fs.appendFile(`${path}/Model/${name}Model.ts`, this.modelBody(name, orm), function (err: any) {
       if (err) throw err;
       BaseCommand.success(`${name} model successfully generated in Domains/${name}/Model directory`);
     });
   }
 
-  private static modelBody(name: string) {
-    if (process.env.DB_CONNECTION != "mongoose") {
-      return sqlmodel.modelBody(name);
+  private static modelBody(name: string, orm: ORM) {
+    if (orm !== ORM.Mongoose) {
+      return SqlProgram.modelBody(name, orm);
     } else {
-      return noSqlProgram.generateModel(name);
+      return NoSqlProgram.generateModel(name);
     }
   }
 

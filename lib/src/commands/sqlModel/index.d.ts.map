@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../src/commands/sqlModel/index.ts"],"names":[],"mappings":"AAGA,cAAM,UAAU;WACD,MAAM,CAAC,OAAO,EAAC,GAAG;CAShC;AAED,eAAe,UAAU,CAAC"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../src/commands/sqlModel/index.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,GAAG,EAAE,MAAM,aAAa,CAAC;AAGlC,cAAM,UAAU;WACD,MAAM,CAAC,OAAO,EAAE,GAAG,EAAE,GAAG,EAAE,GAAG;CAS3C;AAED,eAAe,UAAU,CAAC"}

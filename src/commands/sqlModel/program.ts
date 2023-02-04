@@ -3,25 +3,26 @@ import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 import shell from "shelljs";
+import { ORM } from "../../index";
 const spinner = Ora("Processing: ");
 
 class SqlProgram {
-  static async handle(name: string, resource = null) {
+  static async handle(name: string, resource = null, orm: ORM) {
     name = name[0].toUpperCase() + name.slice(1);
     let check = await BaseCommand.checkFileExists("./App/Model/" + name + "Model.ts");
     if (check == false) {
-      await this.createModel(name, resource);
+      await this.createModel(name, resource, orm);
     } else {
       return BaseCommand.error(`${name} Sql model class already exists`);
     }
   }
 
-  private static async createModel(modelName: string, resource: string | null) {
-    if (resource == "Generation migration with sql model") {
+  private static async createModel(modelName: string, resource: string | null, orm: ORM) {
+    if (resource != null) {
       spinner.start();
       spinner.color = "magenta";
       spinner.text = "Generating Model";
-      fs.appendFile("./App/Model/" + modelName + "Model.ts", await this.modelBodyWithMigration(modelName), function (err) {
+      fs.appendFile("./App/Model/" + modelName + "Model.ts", await this.modelBodyWithMigration(modelName, orm), function (err) {
         if (err) BaseCommand.error(err);
         BaseCommand.success("\n" + modelName + "Model.ts class successfully generated in App/Model folder");
         spinner.color = "green";
@@ -32,7 +33,7 @@ class SqlProgram {
       spinner.start();
       spinner.color = "magenta";
       spinner.text = "Generating Model";
-      fs.appendFile("./App/Model/" + modelName + "Model.ts", this.modelBody(modelName), function (err) {
+      fs.appendFile("./App/Model/" + modelName + "Model.ts", this.modelBody(modelName, orm), function (err) {
         if (err) BaseCommand.error(err);
         BaseCommand.success("\n" + modelName + "Model.ts class successfully generated in App/Model folder");
         spinner.color = "green";
@@ -42,50 +43,54 @@ class SqlProgram {
     }
   }
 
-  // private static TypeORMModelBody(modelName: string, tableName: string) {
-  //   let body = `"use strict";
-  //   import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+  private static TypeORMModelBody(modelName: string, tableName: string) {
+    let body = `
+    import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
-  //   @Entity('${tableName}')
-  //   class ${modelName} {
-  //     @PrimaryGeneratedColumn()
-  //     id!: number;
-  //   }
-  //   export default ${modelName};`;
-  //   return body;
-  // }
-
-  private static ObjecionModelBody(modelName: string, tableName: string) {
-    let body = `"use strict";
-    import {Model} from "Elucidate/Database/Model";
-    
-    class ${modelName} extends Model{
-      // Table name
-      static tableName = "${tableName}"
-      
-    }
-
-    export default ${modelName};`;
+    @Entity('${tableName}')
+    export class ${modelName} {
+      @PrimaryGeneratedColumn()
+      id!: number;
+    }`;
     return body;
   }
 
-  static modelBody(name: string) {
-    let tableName = (name = name[0].toLowerCase() + name.slice(1));
-    let modelName = (name = name[0].toUpperCase() + name.slice(1));
-    return this.ObjecionModelBody(modelName, tableName);
+  private static ObjectionModelBody(modelName: string, tableName: string) {
+    let body = `
+    import {Model} from "Elucidate/Database/Model";
+    
+    export class ${modelName} extends Model{
+      // Table name
+      static tableName = "${tableName}"
+      
+    }`;
+    return body;
   }
 
-  private static async modelBodyWithMigration(modelName: string) {
+  static modelBody(name: string, orm: ORM) {
+    let tableName = (name = name[0].toLowerCase() + name.slice(1));
+    let modelName = (name = name[0].toUpperCase() + name.slice(1));
+    switch (orm) {
+      case ORM.Objection:
+        return this.ObjectionModelBody(modelName, tableName);
+      case ORM.TypeORM:
+        return this.TypeORMModelBody(modelName, tableName);
+      default:
+        throw new Error("Invalid SQL ORM selected");
+    }
+  }
+
+  private static async modelBodyWithMigration(modelName: string, orm: ORM) {
     modelName = modelName.toLowerCase();
     try {
       shell.exec("npx knex migrate:make " + modelName + " --knexfile=./SchemaSetup.ts");
       await BaseCommand.success(modelName + " migration successfully generated in Database/Migrations folder");
-      return this.modelBody(modelName);
+      return this.modelBody(modelName, orm);
     } catch (error) {
       shell.exec("npm install knex -g");
       shell.exec("npx knex migrate:make " + modelName + " --knexfile=./SchemaSetup.ts");
       await BaseCommand.success(modelName + " migration successfully generated in Database/Migrations folder");
-      return this.modelBody(modelName);
+      return this.modelBody(modelName, orm);
     }
   }
 }

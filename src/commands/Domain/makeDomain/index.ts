@@ -1,13 +1,14 @@
 "use strict";
+import { ORM } from "../../../index";
 import makeDomainProgram from "./program";
 
 class MakeDomainCommand {
-  static async handle(program: any) {
+  static async handle(program: any, orm: ORM) {
     await program
       .command("make-domain <domainName>")
       .description("Create a new domain")
       .action((domainName: string) => {
-        makeDomainProgram.handle(domainName);
+        makeDomainProgram.handle(domainName, orm);
       });
   }
 }

@@ -1,5 +1,6 @@
+import { ORM } from "../../../index";
 declare class MakeDomainProgram {
-    static handle(name: string): Promise<void>;
+    static handle(name: string, orm: ORM): Promise<void>;
     private static createDirectory;
     private static nextStep;
     private static domainFolders;

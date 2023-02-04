@@ -1,5 +1,6 @@
+import { ORM } from "../../../index";
 declare class MakeDomainModelProgram {
-    static handle(modelName: string, domainName: string): Promise<void>;
+    static handle(modelName: string, domainName: string, orm: ORM): Promise<void>;
     private static nextStep;
     private static modelBody;
     private static domainExist;

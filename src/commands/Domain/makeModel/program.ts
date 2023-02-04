@@ -3,11 +3,12 @@ import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../../baseCommand";
 const spinner = Ora("Processing: ");
-import sqlmodel from "../../sqlModel/program";
-import noSqlmodel from "../../nosqlModel/program";
+import SqlProgram from "../../sqlModel/program";
+import NoSqlProgram from "../../nosqlModel/program";
+import { ORM } from "../../../index";
 
 class MakeDomainModelProgram {
-  static async handle(modelName: string, domainName: string) {
+  static async handle(modelName: string, domainName: string, orm: ORM) {
     spinner.start();
     spinner.color = "magenta";
     domainName = domainName[0].toUpperCase() + domainName.slice(1);
@@ -19,10 +20,10 @@ class MakeDomainModelProgram {
       if (!this.domainExist("./Domains/" + domainName)) {
         throw new Error(domainName + " domain does not exist, kindly create it using 'ts-node maker make-domain " + domainName + "'");
       } else {
-        await this.nextStep(modelName, domainName);
+        await this.nextStep(modelName, domainName, orm);
         spinner.color = "green";
         spinner.text = "Completed";
-        spinner.succeed(`${modelName} model successfull generated in Domain/${domainName}/Model directory.`);
+        spinner.succeed(`${modelName} model successfully generated in Domain/${domainName}/Model directory.`);
       }
     } catch (error) {
       spinner.color = "red";
@@ -32,18 +33,18 @@ class MakeDomainModelProgram {
     }
   }
 
-  private static async nextStep(modelName: string, domainName: string) {
-    let blockPath = `./Domains/${domainName}`;
-    fs.appendFile(`${blockPath}/Model/${modelName}_model.ts`, this.modelBody(modelName), function (err: any) {
+  private static async nextStep(modelName: string, domainName: string, orm: ORM) {
+    const blockPath = `./Domains/${domainName}`;
+    fs.appendFile(`${blockPath}/Model/${modelName}_model.ts`, this.modelBody(modelName, orm), function (err: any) {
       if (err) throw err;
     });
   }
 
-  private static modelBody(name: string) {
-    if (process.env.DB_CONNECTION != "mongoose") {
-      return sqlmodel.modelBody(name);
+  private static modelBody(name: string, orm: ORM) {
+    if (orm !== ORM.Mongoose) {
+      return SqlProgram.modelBody(name, orm);
     } else {
-      return noSqlmodel.generateModel(name);
+      return NoSqlProgram.generateModel(name);
     }
   }
 
