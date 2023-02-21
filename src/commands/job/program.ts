@@ -26,26 +26,22 @@ class JobProgram {
 
   private static generateJob(name: string) {
     let body = `
-    import ShouldQueue from "expresswebcorets/lib/Queue/shoudQueue";
+    import ShouldQueue from "expresswebcorets/lib/Queue/ShouldQueue";
 
-    class ${name} extends ShouldQueue{
-      public signature = "${name}_job";
-
-      constructor() {
+    export class ${name} extends ShouldQueue{
+      constructor(public signature:string = "${name}") {
         super();
         this.queueSignature(this.signature);
       }
       
       /**
-       * Execute the job.
+       * Handle method executes job.
        * @return void
        */
       handle<T>(data:T): void {
         //
       }
-    }
-
-    export default ${name};`;
+    }`;
     return body;
   }
 }
