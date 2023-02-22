@@ -29,9 +29,8 @@ class JobProgram {
     import ShouldQueue from "expresswebcorets/lib/Queue/ShouldQueue";
 
     export class ${name} extends ShouldQueue{
-      constructor(public signature:string = "${name}") {
-        super();
-        this.queueSignature(this.signature);
+      constructor() {
+        super("${name}");
       }
       
       /**
