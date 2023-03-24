@@ -74,7 +74,7 @@ class QueueWorkerProgram {
           signature: job.name,
         });
       },
-      { connection: { port: Config.connections[Config.default].port, host: Config.connections[Config.default].host, password: Config.connections[Config.default].password } }
+      { connection: { port: Config.connections[Config.default].port, host: Config.connections[Config.default].host, password: Config.connections[Config.default].password } },
     );
   }
 
@@ -120,20 +120,18 @@ class QueueWorkerProgram {
   }
 
   private static async callJobHandlers(msg: any = null) {
-    let error: any = null;
     const files = FS.readdirSync(`${jobDirectories}/`);
+    let error: any = null;
     for await (let file of files) {
-      await import(`${jobDirectories}/${file}`).then((f) => {
+      await import(`${jobDirectories}/${file}`).then(async (f) => {
         const jobObject: any = Object.values(f)[0];
         let job = new jobObject();
         if (job.signature == msg.signature) {
-          try {
-            let methods = this.getAllMethodsInClass(job);
-            if (methods.includes("handle")) {
-              job.handle(msg.data);
-            }
-          } catch (e) {
-            console.log(e);
+          let methods = this.getAllMethodsInClass(job);
+          if (methods.includes("handle")) {
+            await job.handle(msg.data).catch((e: any) => {
+              error = e;
+            });
           }
         }
       });
