@@ -119,8 +119,10 @@ class QueueWorkerProgram {
     }
   }
 
-  private static callJobHandlers(msg: any = null) {
-    FS.readdirSync(`${jobDirectories}/`).forEach(async (file) => {
+  private static async callJobHandlers(msg: any = null) {
+    let error: any = null;
+    const files = FS.readdirSync(`${jobDirectories}/`);
+    for await (let file of files) {
       await import(`${jobDirectories}/${file}`).then((f) => {
         const jobObject: any = Object.values(f)[0];
         let job = new jobObject();
@@ -135,7 +137,11 @@ class QueueWorkerProgram {
           }
         }
       });
-    });
+    }
+
+    if (error) {
+      throw new Error(error?.message);
+    }
   }
 
   private static getAllMethodsInClass(value: any) {
