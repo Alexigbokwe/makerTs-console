@@ -35,7 +35,7 @@ class ValidationProgram {
        * Handle data validation.
        * @param {*} data | e.g request body
        */
-       static async validate<T>(data:T) {
+       public static async validate<T>(data:T) {
         return await FormRequest.make<T>(data, {
           //Validation rules
         });

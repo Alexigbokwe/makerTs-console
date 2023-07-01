@@ -74,7 +74,7 @@ class QueueWorkerProgram {
           signature: job.name,
         });
       },
-      { connection: { port: Config.connections[Config.default].port, host: Config.connections[Config.default].host, password: Config.connections[Config.default].password } },
+      { connection: { port: Config.connections[Config.default].port, host: Config.connections[Config.default].host, password: Config.connections[Config.default].password } }
     );
   }
 
@@ -153,20 +153,6 @@ class QueueWorkerProgram {
       if (e != arr[i + 1] && typeof value[e] == "function") return true;
     });
   }
-
-  // private static callRPCHandlers(msg: any = null) {
-  //   FS.readdirSync(`${tsRPC_ConsumerDirectories}/`).forEach(async (file) => {
-  //     await import(`${tsRPC_ConsumerDirectories}/${file}`).then((f) => {
-  //       let RPC_Consumer = f.default;
-  //       let RPC = new RPC_Consumer();
-  //       try {
-  //         RPC.handle(msg.data);
-  //       } catch (e) {
-  //         console.log(e);
-  //       }
-  //     });
-  //   });
-  // }
 }
 
 export default QueueWorkerProgram;

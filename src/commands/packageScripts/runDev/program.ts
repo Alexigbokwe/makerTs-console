@@ -1,6 +1,6 @@
 import shell from "shelljs";
 
-class DevelopementServerProgram {
+class DevelopmentServerProgram {
   static async handle() {
     this.runDevServer();
   }
@@ -10,12 +10,7 @@ class DevelopementServerProgram {
       shell.echo("Error: Run development server command failed");
       shell.exit(1);
     }
-
-    // if (shell.exec("nodemon").code !== 0) {
-    //   shell.echo("Error: Run development server command failed");
-    //   shell.exit(1);
-    // }
   }
 }
 
-export default DevelopementServerProgram;
+export default DevelopmentServerProgram;

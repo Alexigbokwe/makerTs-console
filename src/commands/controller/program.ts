@@ -45,7 +45,7 @@ class ControllerProgram {
   private static async controllerBody(name: string) {
     let controllerName = this.formatControllerName(name);
     let body = `
-    import { Request, Response } from "Config/http";
+    import { Request, Response } from "Config/Http";
     import { BaseController } from "App/Http/Controller/BaseController";
 
     export class ${controllerName} extends BaseController{
@@ -56,7 +56,7 @@ class ControllerProgram {
 
   static async controllerBodyWithResource(name: string) {
     let controllerName = this.formatControllerName(name);
-    let body = `import { Request, Response } from "Config/http";
+    let body = `import { Request, Response } from "Config/Http";
     import { BaseController } from "App/Http/Controller/BaseController";
 
     export class ${controllerName} extends BaseController{

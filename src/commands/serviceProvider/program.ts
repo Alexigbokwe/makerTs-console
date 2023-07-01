@@ -28,12 +28,12 @@ class ProviderProgram {
     let body = `
     import ServiceProvider from "Elucidate/Support/ServiceProvider";
     
-    class ${name} extends ServiceProvider{
+    export class ${name} extends ServiceProvider{
       /**
        * Register application services.
        * @return void
       */
-      register():void {
+      public register():void {
           //
       }
 
@@ -41,12 +41,10 @@ class ProviderProgram {
        * Bootstrap any application services.
        * @return void
       */
-      async boot():Promise<void> {
+      public async boot():Promise<void> {
           //
       }
-    }
-
-    export default ${name};`;
+    }`;
     return body;
   }
 }
