@@ -28,7 +28,7 @@ class ValidationProgram {
 
   private static generateValidation(name: string) {
     let body = `
-    import FormRequest from "Elucidate/Validator/FormRequest";
+    import {FormRequest} from "Elucidate/Validator/FormRequest";
 
     export class ${name} extends FormRequest{
       /**

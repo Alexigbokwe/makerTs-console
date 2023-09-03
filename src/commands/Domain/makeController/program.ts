@@ -21,7 +21,7 @@ class MakeDomainControllerProgram {
         await this.nextStep(controllerName, domainName, resource);
         spinner.color = "green";
         spinner.text = "Completed";
-        spinner.succeed(`${controllerName}Controller successfull generated in Domain/${domainName}/Http/Controller directory.`);
+        spinner.succeed(`${controllerName}Controller successfully generated in Domain/${domainName}/Http/Controller directory.`);
       }
     } catch (error) {
       spinner.color = "red";
