@@ -1,4 +1,3 @@
-"use strict";
 import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../../baseCommand";

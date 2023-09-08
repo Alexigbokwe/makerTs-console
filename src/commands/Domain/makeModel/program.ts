@@ -1,4 +1,3 @@
-"use strict";
 import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../../baseCommand";
@@ -8,7 +7,7 @@ import NoSqlProgram from "../../nosqlModel/program";
 import { ORM } from "../../../index";
 
 class MakeDomainModelProgram {
-  static async handle(modelName: string, domainName: string, orm: ORM) {
+  static async handle(modelName: string, domainName: string, orm: ORM): Promise<void> {
     spinner.start();
     spinner.color = "magenta";
     domainName = domainName[0].toUpperCase() + domainName.slice(1);
@@ -33,14 +32,14 @@ class MakeDomainModelProgram {
     }
   }
 
-  private static async nextStep(modelName: string, domainName: string, orm: ORM) {
+  private static async nextStep(modelName: string, domainName: string, orm: ORM): Promise<void> {
     const blockPath = `./Domains/${domainName}`;
     fs.appendFile(`${blockPath}/Model/${modelName}_model.ts`, this.modelBody(modelName, orm), function (err: any) {
       if (err) throw err;
     });
   }
 
-  private static modelBody(name: string, orm: ORM) {
+  private static modelBody(name: string, orm: ORM): string {
     if (orm !== ORM.Mongoose) {
       return SqlProgram.modelBody(name, orm);
     } else {
@@ -48,7 +47,7 @@ class MakeDomainModelProgram {
     }
   }
 
-  private static domainExist(name: string) {
+  private static domainExist(name: string): boolean {
     if (fs.existsSync(name)) {
       return true;
     } else {
