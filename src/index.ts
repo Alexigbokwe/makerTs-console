@@ -21,7 +21,7 @@ export enum ORM {
 }
 
 class Console {
-  private static ormRelated: Array<string> = ["commands/Domain/makeModel", "commands/sqlModel", "commands/Domain/makeDomain"];
+  private static ormRelated: Array<string> = ["commands/Domain/makeModel", "commands/sqlModel", "commands/Domain/makeDomain", "commands/auth"];
   /**
    * Run Maker commands
    * @param {Array} commands
@@ -37,7 +37,7 @@ class Console {
 
   public static checkCommandName(name: string) {
     if (config.has(name)) {
-      throw "Can't recreate maker commend, try renaming your command signature";
+      throw new Error("Can't recreate maker commend, try renaming your command signature");
     }
   }
 

@@ -2,14 +2,15 @@
 import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../baseCommand";
+import { ORM } from "../../index";
 const spinner = Ora("Processing: ");
 
 class AuthProgram {
-  static async handle() {
+  static async handle(orm: ORM) {
     try {
       let status = await this.createAuthRoute();
       if (status) {
-        await this.createModel();
+        await this.createModel(orm);
       } else {
         await BaseCommand.error("An Error Ocurred While Generating Authentication Routes.");
       }
@@ -81,20 +82,32 @@ class AuthProgram {
     return body;
   }
 
-  private static async createModel() {
+  private static async createModel(orm: ORM) {
     spinner.start();
     spinner.color = "magenta";
     spinner.text = "Generating Authentication";
     let checkFolder = BaseCommand.checkFolderExists("./App/Model");
     if (checkFolder) {
       let doesFileExist = await BaseCommand.checkFileExists("./App/Model/UserModel.ts");
-      if (doesFileExist == false) {
-        this.checkDatabaseDriver() == "nosql" ? await this.nextStep(this.generateNoSqlModel()) : await this.nextStep(this.generateSqlModel());
+      if (!doesFileExist) {
+        switch (orm) {
+          case ORM.Mongoose:
+            await this.nextStep(this.MongoDBModelBody());
+          case ORM.Objection:
+            await this.nextStep(this.ObjectionModelBody());
+          case ORM.TypeORM:
+            await this.nextStep(this.TypeORMModelBody());
+          default:
+            spinner.color = "red";
+            spinner.text = "failed";
+            spinner.fail("");
+            await BaseCommand.error("Invalid ORM Selected.");
+        }
       } else {
         spinner.color = "red";
         spinner.text = "failed";
         spinner.fail("");
-        await BaseCommand.error("User_model.ts already exist.");
+        await BaseCommand.error("UserModel.ts already exist.");
       }
     } else {
       spinner.color = "red";
@@ -120,7 +133,7 @@ class AuthProgram {
     });
   }
 
-  private static generateNoSqlModel() {
+  private static MongoDBModelBody() {
     let body = `"use strict";
     import { mongoose, Schema, Document, Types } from "Elucidate/Database/NoSQLModel";
 
@@ -165,7 +178,7 @@ class AuthProgram {
     return body;
   }
 
-  private static ObjecionModelBody() {
+  private static ObjectionModelBody() {
     let body = `"use strict";
     import {Model} from "Elucidate/Database/Model";
     class User extends Model{
@@ -181,17 +194,6 @@ class AuthProgram {
 
     export default User;`;
     return body;
-  }
-
-  private static generateSqlModel() {
-    switch (process.env.ORM) {
-      // case "TypeORM":
-      //   return this.TypeORMModelBody();
-      case "Objection":
-        return this.ObjecionModelBody();
-      default:
-        throw new Error("Invalid ORM Selected");
-    }
   }
 }
 

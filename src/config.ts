@@ -12,7 +12,7 @@ config.set("make-sql-model", "commands/sqlModel");
 config.set("make-ws-controller", "commands/wsController");
 config.set("make-sql-migration", "commands/migrations/makeSqlMigration");
 config.set("make-command", "commands/makeCommand");
-config.set("make-identity", "commands/identity");
+// config.set("make-identity", "commands/identity") ==> depreciated
 config.set("make-job", "commands/job");
 config.set("make-service", "commands/makeService");
 config.set("make-provider", "commands/serviceProvider");
