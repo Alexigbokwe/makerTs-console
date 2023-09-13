@@ -1,5 +1,4 @@
 import shell from "shelljs";
-import fs from "fs";
 
 class RunStartProgram {
   static async handle() {

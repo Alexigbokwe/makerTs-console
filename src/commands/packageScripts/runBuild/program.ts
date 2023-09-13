@@ -1,13 +1,8 @@
 import shell from "shelljs";
 import copy from "recursive-copy";
+import { projectDirectory } from "../../../RootDirectory";
 
-let config: any;
-if (process.env.APP_ENV == "local" || process.env.APP_ENV == "development" || process.env.APP_ENV == "test") {
-  config = require("../../../../../../../Config/App").default;
-} else if (process.env.APP_ENV == "production" || process.env.APP_ENV == "staging") {
-  config = require("../../../../../../../build/Config/App.js").default;
-}
-
+let config = require(`${projectDirectory}/Config/App`).default;
 class CompileProgramProgram {
   static handle() {
     this.buildFile();
