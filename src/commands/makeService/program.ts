@@ -24,7 +24,7 @@ class ServiceProgram {
   private static async nextStep(name: string, broker = null) {
     try {
       shell.mkdir("./App/Service/" + name);
-      this.loadInterface(name);
+      this.loadAbstractService(name);
       this.loadService(name);
       if (broker == "Service Broker") {
         this.loadServiceBroker(name);
@@ -34,15 +34,15 @@ class ServiceProgram {
     }
   }
 
-  private static loadInterface(name: string) {
-    fs.appendFile(`./App/Service/${name}/I${name}.ts`, this.generateServiceInterface(name), function (err) {
+  private static loadAbstractService(name: string) {
+    fs.appendFile(`./App/Service/${name}/I${name}.ts`, this.generateServiceAbstractClass(name), function (err) {
       if (err) throw err;
       BaseCommand.success(`I${name}.ts interface successfully generated in App/Service/${name} folder`);
     });
   }
 
   private static loadService(name: string) {
-    fs.appendFile(`./App/Service/${name}/index.ts`, this.generateService(name), function (err) {
+    fs.appendFile(`./App/Service/${name}/${name}Imp.ts`, this.generateService(name), function (err) {
       if (err) throw err;
       BaseCommand.success(`${name} implementation class successfully generated in App/Service/${name} folder`);
     });
@@ -55,65 +55,40 @@ class ServiceProgram {
     });
   }
 
-  private static generateServiceInterface(name: string) {
-    let body = `
-    interface I${name} {
+  static generateServiceAbstractClass(name: string) {
+    const body = `
+    export abstract class ${name}Service {
         //
-    }
-
-    export default I${name};`;
+    }`;
     return body;
   }
 
-  private static generateService(name: string) {
-    let body = `"use strict";
-    import I${name} from "./I${name}";
-
-    class ${name} implements I${name}{
+  static generateService(name: string, addBase = true) {
+    const body = `import {${name}Service} from "./${name}Service";
+    ${addBase ? 'import { BaseService } from "../BaseService";' : ""}
+    export class ${name}ServiceImp ${addBase ? "extends BaseService" : ""}implements ${name}Service{
         //
-    }
-
-    export default ${name};`;
+    }`;
     return body;
   }
 
   private static generateBroker(name: string) {
     let body = `
     import I${name} from "./I${name}";
-    import broker from "app";
+    import { IBrokerAction } from "Elucidate/Broker";
 
-    class ${name}Broker {
-      static exposeActions(${name}: I${name}) {
-        broker.createService({
-          name: "${name}",
-          version: "",
-          settings: {
-            upperCase: true,
-          },
-          actions: {},
-          events: {},
-          methods: {},
-    
-          created() {
-            // Fired when the service instance created (with "broker.loadService" or "broker.createService")
-          },
-    
-          merged() {
-            // Fired after the service schemas merged and before the service instance created
-          },
-    
-          async started() {
-            // Fired when broker starts this service (in "broker.start()")
-          },
-    
-          async stopped() {
-            // Fired when broker stops this service (in "broker.stop()")
-          },
-        });
+    export class ${name} {
+      public name: string;
+      public version?: number | string;
+
+      constructor() {
+        this.name = "${name}";
       }
-    }
 
-    export default ${name}Broker;`;
+      public actions: IBrokerAction = {
+        //
+      };
+    }`;
     return body;
   }
 }

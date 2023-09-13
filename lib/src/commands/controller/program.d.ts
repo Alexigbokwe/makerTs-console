@@ -1,9 +1,9 @@
 declare class ControllerProgram {
-    static handle(name: string, resource?: null): Promise<void>;
+    static handle(name: string, resource?: null, directoryPath?: string): Promise<void>;
     private static createController;
     private static formatControllerName;
     private static controllerBody;
-    private static controllerBodyWithResource;
+    static controllerBodyWithResource(name: string): Promise<string>;
 }
 export default ControllerProgram;
 //# sourceMappingURL=program.d.ts.map

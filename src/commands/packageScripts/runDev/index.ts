@@ -1,13 +1,13 @@
 "use strict";
-import RunDevelopementProgram from "./program";
+import DevelopmentServerProgram from "./program";
 
 class AuthCommand {
-  static async handle(program:any) {
+  static async handle(program: any) {
     await program
       .command("run-dev")
-      .description("Run developement server")
+      .description("Run development server")
       .action(() => {
-        RunDevelopementProgram.handle();
+        DevelopmentServerProgram.handle();
       });
   }
 }

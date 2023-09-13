@@ -27,7 +27,6 @@ class RouteProgram {
 
   private static async nextStep(name: string) {
     await this.routeFolder(name);
-    shell.mv("./output.txt", "./App/Providers/Route.ts");
   }
 
   private static async routeFolder(name: string) {
@@ -38,10 +37,10 @@ class RouteProgram {
     });
   }
 
-  private static async routeBody(name: string) {
+  static async routeBody(name: string) {
     let body = `"use strict";
-    import Route from "Elucidate/Route/manager";
-    //import { Request, Response, NextFunction } from "Elucidate/HttpContext";
+    import { Route } from "Elucidate/Route/RouteManager";
+   //import { Request, Response } from "Config/Http";
        
     /*
     |--------------------------------------------------------------------------

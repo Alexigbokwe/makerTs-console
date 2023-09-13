@@ -1,16 +1,21 @@
+export declare enum ORM {
+    Objection = "Objection",
+    Mongoose = "Mongoose",
+    TypeORM = "TypeORM"
+}
 declare class Console {
+    private static ormRelated;
     /**
      * Run Maker commands
      * @param {Array} commands
      * @param {Array} kernel
      */
-    static run(commands: any, kernel: any): Promise<void>;
-    checkCommandName(name: string): void;
+    static run(commands: Array<string>, kernel: any, orm: ORM): Promise<void>;
+    static checkCommandName(name: string): void;
     private static processMakerCommands;
     private static processServiceCommand;
-    private static processUserCommand;
     private static buildCommandWithArguments;
-    private static checkCommadsLength;
+    private static checkCommandsLength;
     private static checkKernelLength;
 }
 export default Console;

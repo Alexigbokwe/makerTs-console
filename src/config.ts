@@ -1,34 +1,35 @@
-"use strict";
+let config: Map<string, string> = new Map();
 
-let commands: any;
-commands = {
-  "make-auth": "commands/auth",
-  "make-controller": "commands/controller",
-  "make-event": "commands/event",
-  "make-listener": "commands/listener",
-  "make-middleware": "commands/middleware",
-  "make-nosql-model": "commands/nosqlModel",
-  "make-request": "commands/request",
-  "make-route": "commands/route",
-  "make-sql-model": "commands/sqlModel",
-  "make-ws-controller": "commands/wsController",
-  "make-sql-migration": "commands/migrations/makeSqlMigration",
-  "make-command": "commands/makeCommand",
-  "make-identity": "commands/identity",
-  "make-job": "commands/job",
-  "make-service": "commands/makeService",
-  "make-provider": "commands/serviceProvider",
-  "make-rule": "commands/customValidationRule",
-  "run-schedule": "commands/schedule",
-  "run-sql-migration": "commands/migrations/runSqlMigration",
-  "show-sql-list": "commands/migrations/showSqlList",
-  "sql-rollback": "commands/migrations/sqlRollBack",
-  "sql-rolldown": "commands/migrations/sqlRollDown",
-  "sql-rollup": "commands/migrations/sqlRollUp",
-  "queue-work": "commands/queueWork",
-  "run-dev": "commands/packageScripts/runDev",
-  "run-build": "commands/packageScripts/runBuild",
-  "run-start": "commands/packageScripts/runStart",
-};
+config.set("make-auth", "commands/auth");
+config.set("make-controller", "commands/controller");
+// config.set("make-event", "commands/event")   ==> depreciated
+// config.set("make-listener", "commands/listener") ==> depreciated
+config.set("make-middleware", "commands/middleware");
+config.set("make-nosql-model", "commands/nosqlModel");
+config.set("make-validation", "commands/validation");
+config.set("make-route", "commands/route");
+config.set("make-sql-model", "commands/sqlModel");
+config.set("make-ws-controller", "commands/wsController");
+config.set("make-sql-migration", "commands/migrations/makeSqlMigration");
+config.set("make-command", "commands/makeCommand");
+// config.set("make-identity", "commands/identity") ==> depreciated
+config.set("make-job", "commands/job");
+config.set("make-service", "commands/makeService");
+config.set("make-provider", "commands/serviceProvider");
+config.set("make-rule", "commands/customValidationRule");
+config.set("run-schedule", "commands/schedule");
+config.set("run-sql-migration", "commands/migrations/runSqlMigration");
+config.set("show-sql-list", "commands/migrations/showSqlList");
+config.set("sql-rollback", "commands/migrations/sqlRollBack");
+config.set("sql-rolldown", "commands/migrations/sqlRollDown");
+config.set("sql-rollup", "commands/migrations/sqlRollUp");
+config.set("queue-work", "commands/queueWork");
+config.set("run-dev", "commands/packageScripts/runDev");
+config.set("run-build", "commands/packageScripts/runBuild");
+config.set("run-start", "commands/packageScripts/runStart");
+config.set("run-prod", "commands/packageScripts/runProd");
+config.set("make-domain", "commands/Domain/makeDomain");
+config.set("domain:make-controller", "commands/Domain/makeController");
+config.set("domain:make-model", "commands/Domain/makeModel");
 
-export default commands;
+export default config;

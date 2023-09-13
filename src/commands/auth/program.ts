@@ -2,14 +2,15 @@
 import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../baseCommand";
+import { ORM } from "../../index";
 const spinner = Ora("Processing: ");
 
 class AuthProgram {
-  static async handle() {
+  static async handle(orm: ORM) {
     try {
       let status = await this.createAuthRoute();
       if (status) {
-        await this.createModel();
+        await this.createModel(orm);
       } else {
         await BaseCommand.error("An Error Ocurred While Generating Authentication Routes.");
       }
@@ -39,7 +40,7 @@ class AuthProgram {
   }
 
   private static async appendRoute() {
-    let dir = "./Routes/authRoute";
+    let dir = "./Routes/AuthRoute";
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
     }
@@ -48,8 +49,7 @@ class AuthProgram {
       .then(() => {
         spinner.color = "green";
         spinner.text = "Completed";
-        spinner.succeed("Completed 😊😘");
-        BaseCommand.success("Authentication route successfully generated in App/Routes/authRoute folder");
+        spinner.succeed("Authentication route successfully generated in App/Routes/AuthRoute folder");
         return true;
       })
       .catch((err) => {
@@ -63,8 +63,7 @@ class AuthProgram {
 
   private static routeBody() {
     let body = `
-    "use strict";
-    import Route from "Elucidate/Route/manager";
+    import {Route} from "Elucidate/Route/RouteManager";
     
     /*
     |--------------------------------------------------------------------------
@@ -79,24 +78,36 @@ class AuthProgram {
 
     Route.post("/login", "Auth/LoginController@login");
 
-    module.exports = Route.exec;`;
+    export default Route.exec;`;
     return body;
   }
 
-  private static async createModel() {
+  private static async createModel(orm: ORM) {
     spinner.start();
     spinner.color = "magenta";
     spinner.text = "Generating Authentication";
     let checkFolder = BaseCommand.checkFolderExists("./App/Model");
     if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists("./App/Model/User_model.ts");
-      if (doesFileExist == false) {
-        this.checkDatabaseDriver() == "nosql" ? await this.nextStep(this.generateNoSqlModel()) : await this.nextStep(this.generateSqlModel());
+      let doesFileExist = await BaseCommand.checkFileExists("./App/Model/UserModel.ts");
+      if (!doesFileExist) {
+        switch (orm) {
+          case ORM.Mongoose:
+            await this.nextStep(this.MongoDBModelBody());
+          case ORM.Objection:
+            await this.nextStep(this.ObjectionModelBody());
+          case ORM.TypeORM:
+            await this.nextStep(this.TypeORMModelBody());
+          default:
+            spinner.color = "red";
+            spinner.text = "failed";
+            spinner.fail("");
+            await BaseCommand.error("Invalid ORM Selected.");
+        }
       } else {
         spinner.color = "red";
         spinner.text = "failed";
         spinner.fail("");
-        await BaseCommand.error("User_model.ts already exist.");
+        await BaseCommand.error("UserModel.ts already exist.");
       }
     } else {
       spinner.color = "red";
@@ -107,7 +118,7 @@ class AuthProgram {
   }
 
   private static async nextStep(generateModel: any) {
-    fs.appendFile("./App/Model/User_model.ts", generateModel, function (err) {
+    fs.appendFile("./App/Model/UserModel.ts", generateModel, function (err) {
       if (err) {
         spinner.color = "red";
         spinner.text = "failed";
@@ -117,23 +128,24 @@ class AuthProgram {
       }
       spinner.color = "green";
       spinner.text = "Completed";
-      spinner.succeed("Completed 😊😘");
-      BaseCommand.success("User_model.ts class successfully generated in App/Model folder");
+      spinner.succeed("User_model.ts class successfully generated in App/Model folder");
       return true;
     });
   }
 
-  private static generateNoSqlModel() {
+  private static MongoDBModelBody() {
     let body = `"use strict";
-    import { mongoose, Schema, Document } from "Elucidate/Database/NoSQLModel";
+    import { mongoose, Schema, Document, Types } from "Elucidate/Database/NoSQLModel";
 
     export interface UserInterface extends Document {
+      id: Types.ObjectId;
       username: string;
       email: string;
       password: string;
     }
     
     const UserSchema: Schema = new Schema({
+      id: Schema.Types.ObjectId,
       username: { type: String, required: true },
       email: { type: String, required: true, unique: true },
       password: { type: String, required: true },
@@ -144,21 +156,42 @@ class AuthProgram {
     return body;
   }
 
-  private static generateSqlModel() {
+  private static TypeORMModelBody() {
     let body = `"use strict";
-    import { Model } from "Elucidate/Database/Model";
+    import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
-    class User extends Model {
+    @Entity('users')
+    class User {
+      @PrimaryGeneratedColumn()
+      id!: number;
+
+      @Column({ type: "varchar" })
+      username!: string;
+
+      @Column({ type: "varchar" })
+      email!: string;
+
+      @Column({ type: "varchar" })
+      password!: string;
+    }
+    export default User;`;
+    return body;
+  }
+
+  private static ObjectionModelBody() {
+    let body = `"use strict";
+    import {Model} from "Elucidate/Database/Model";
+    class User extends Model{
       // Model attributes
       id!: number;
       username!: string;
       email!: string;
       password!: string;
-    
+      
       // Table name
-      static tableName = "users";
+      static tableName = "users"
     }
-    
+
     export default User;`;
     return body;
   }

@@ -1,7 +1,10 @@
+import { ORM } from "../../index";
 declare class SqlProgram {
-    static handle(name: string, resource?: null): Promise<void>;
+    static handle(name: string, resource: null | undefined, orm: ORM): Promise<void>;
     private static createModel;
-    private static modelBody;
+    private static TypeORMModelBody;
+    private static ObjectionModelBody;
+    static modelBody(name: string, orm: ORM): string;
     private static modelBodyWithMigration;
 }
 export default SqlProgram;

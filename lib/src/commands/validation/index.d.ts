@@ -1,5 +1,5 @@
-declare class RequestCommand {
+declare class ValidationCommand {
     static handle(program: any): Promise<void>;
 }
-export default RequestCommand;
+export default ValidationCommand;
 //# sourceMappingURL=index.d.ts.map

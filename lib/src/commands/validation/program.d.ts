@@ -1,7 +1,7 @@
-declare class RequestProgram {
+declare class ValidationProgram {
     static handle(name: string): Promise<void>;
     private static nextStep;
-    private static generateRequest;
+    private static generateValidation;
 }
-export default RequestProgram;
+export default ValidationProgram;
 //# sourceMappingURL=program.d.ts.map

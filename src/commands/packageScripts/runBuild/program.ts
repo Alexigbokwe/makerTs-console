@@ -1,8 +1,8 @@
 import shell from "shelljs";
 import copy from "recursive-copy";
+import { projectDirectory } from "../../../RootDirectory";
 
-//@ts-ignore
-import config from "../../../../../../../Config/app.ts";
+let config = require(`${projectDirectory}/Config/App`).default;
 class CompileProgramProgram {
   static handle() {
     this.buildFile();
