@@ -1,5 +1,5 @@
 import program from "commander";
-program.version("1.0.1").description("ExpressWebJs Command Line TS");
+program.name("maker").version("1.0.1").description("ExpressWebJs Command Line TS");
 import config from "./config";
 
 enum mode {
@@ -137,5 +137,5 @@ class Console {
     return kernel.length > 0 ? kernel : null;
   }
 }
-
+program.parse(process.argv);
 export default Console;
