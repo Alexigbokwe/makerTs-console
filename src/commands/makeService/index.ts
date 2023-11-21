@@ -1,4 +1,5 @@
 "use strict";
+import { commandOptionChecker } from "../../OptionChecker";
 import serviceProgram from "./program";
 
 class ServiceCommand {
@@ -8,6 +9,7 @@ class ServiceCommand {
       .option("-b", "-broker", "Service Broker")
       .description("Create a new service class with interface")
       .action((consumerName: string, broker: { b: null | undefined }) => {
+        commandOptionChecker(broker);
         serviceProgram.handle(consumerName, broker.b);
       });
   }

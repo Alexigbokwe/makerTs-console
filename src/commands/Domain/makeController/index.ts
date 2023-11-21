@@ -1,4 +1,5 @@
 "use strict";
+import { commandOptionChecker } from "../../../OptionChecker";
 import makeDomainControllerProgram from "./program";
 
 class MakeDomainControllerCommand {
@@ -8,6 +9,7 @@ class MakeDomainControllerCommand {
       .description("Create domain controller. First argument is controller name, second is domain name")
       .option("-r", "-resource", "Controller Resource Methods")
       .action((controllerName: string, domainName: string, resource: { r: null | undefined }) => {
+        commandOptionChecker(resource);
         makeDomainControllerProgram.handle(controllerName, domainName, resource.r);
       });
   }
