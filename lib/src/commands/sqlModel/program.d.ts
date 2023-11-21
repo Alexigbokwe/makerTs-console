@@ -1,4 +1,4 @@
-import { ORM } from "../../index";
+import { ORM } from "../../Types/CommandTypes";
 declare class SqlProgram {
     static handle(name: string, resource: null | undefined, orm: ORM): Promise<void>;
     private static createModel;

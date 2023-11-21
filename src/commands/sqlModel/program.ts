@@ -3,14 +3,14 @@ import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 import shell from "shelljs";
-import { ORM } from "../../index";
+import { ORM } from "../../Types/CommandTypes";
 const spinner = Ora("Processing: ");
 
 class SqlProgram {
   static async handle(name: string, resource = null, orm: ORM) {
     name = name[0].toUpperCase() + name.slice(1);
     let check = await BaseCommand.checkFileExists("./App/Model/" + name + "Model.ts");
-    if (check == false) {
+    if (!check) {
       await this.createModel(name, resource, orm);
     } else {
       return BaseCommand.error(`${name} Sql model class already exists`);

@@ -1,4 +1,4 @@
-import { ORM } from "../../../index";
+import { ORM } from "../../../Types/CommandTypes";
 declare class MakeDomainModelProgram {
     static handle(modelName: string, domainName: string, orm: ORM): Promise<void>;
     private static nextStep;

@@ -2,7 +2,7 @@
 import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../baseCommand";
-import { ORM } from "../../index";
+import { ORM } from "../../Types/CommandTypes";
 const spinner = Ora("Processing: ");
 
 class AuthProgram {

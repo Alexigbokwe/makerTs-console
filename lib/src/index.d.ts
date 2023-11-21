@@ -1,8 +1,4 @@
-export declare enum ORM {
-    Objection = "Objection",
-    Mongoose = "Mongoose",
-    TypeORM = "TypeORM"
-}
+import { ORM } from "./Types/CommandTypes";
 declare class Console {
     private static ormRelated;
     /**

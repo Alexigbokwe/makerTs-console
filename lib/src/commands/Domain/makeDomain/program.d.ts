@@ -1,4 +1,4 @@
-import { ORM } from "../../../index";
+import { ORM } from "../../../Types/CommandTypes";
 declare class MakeDomainProgram {
     static handle(name: string, orm: ORM): Promise<void>;
     private static createDirectory;

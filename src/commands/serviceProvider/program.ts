@@ -8,7 +8,7 @@ class ProviderProgram {
     let checkFolder = BaseCommand.checkFolderExists("./App/Providers");
     if (checkFolder) {
       let doesFileExist = await BaseCommand.checkFileExists("./App/Providers/" + name + ".ts");
-      if (doesFileExist == false) {
+      if (!doesFileExist) {
         await this.nextStep(name);
       } else {
         return BaseCommand.error(name + ".ts already exist. Modify service provider name and try again");
@@ -26,7 +26,7 @@ class ProviderProgram {
 
   private static generateService(name: string) {
     let body = `
-    import ServiceProvider from "Elucidate/Support/ServiceProvider";
+    import {ServiceProvider} from "Elucidate/Support/ServiceProvider";
     
     export class ${name} extends ServiceProvider{
       /**

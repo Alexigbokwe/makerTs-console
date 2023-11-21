@@ -7,7 +7,7 @@ class ControllerProgram {
   static async handle(name: string, resource = null, directoryPath = "App/Http/Controller") {
     name = name[0].toUpperCase() + name.slice(1);
     let check = await BaseCommand.checkFileExists("./" + directoryPath + "/" + name + ".ts");
-    if (check == false) {
+    if (!check) {
       await this.createController(name, resource, directoryPath);
     } else {
       return BaseCommand.error("Controller class already exists");

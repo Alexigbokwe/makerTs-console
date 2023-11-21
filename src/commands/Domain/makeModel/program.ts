@@ -4,7 +4,7 @@ import BaseCommand from "../../baseCommand";
 const spinner = Ora("Processing: ");
 import SqlProgram from "../../sqlModel/program";
 import NoSqlProgram from "../../nosqlModel/program";
-import { ORM } from "../../../index";
+import { ORM } from "../../../Types/CommandTypes";
 
 class MakeDomainModelProgram {
   static async handle(modelName: string, domainName: string, orm: ORM): Promise<void> {

@@ -1,5 +1,5 @@
 "use strict";
-import { ORM } from "../../../index";
+import { ORM } from "../../../Types/CommandTypes";
 import makeDomainModelProgram from "./program";
 
 class MakeDomainModelCommand {

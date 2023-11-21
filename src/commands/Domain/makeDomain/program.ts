@@ -9,7 +9,7 @@ import route from "../../route/program";
 import SqlProgram from "../../sqlModel/program";
 import NoSqlProgram from "../../nosqlModel/program";
 import serviceProgram from "../../makeService/program";
-import { ORM } from "../../../index";
+import { ORM } from "../../../Types/CommandTypes";
 
 class MakeDomainProgram {
   static async handle(name: string, orm: ORM) {
@@ -130,9 +130,9 @@ class MakeDomainProgram {
     name = `${name}ServiceProvider`;
 
     let body = `
-      import ServiceProvider from "Elucidate/Support/ServiceProvider";
+      import {ServiceProvider} from "Elucidate/Support/ServiceProvider";
 
-      class ${name} extends ServiceProvider{
+      export class ${name} extends ServiceProvider{
         /**
          * Register any application services.
          * @return void
@@ -156,9 +156,7 @@ class MakeDomainProgram {
         public async booted():Promise<void> {
           //
         }
-      }
-
-        export default ${name};`;
+      }`;
     return body;
   }
 

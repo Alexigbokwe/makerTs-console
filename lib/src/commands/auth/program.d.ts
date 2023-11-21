@@ -1,4 +1,4 @@
-import { ORM } from "../../index";
+import { ORM } from "../../Types/CommandTypes";
 declare class AuthProgram {
     static handle(orm: ORM): Promise<void>;
     private static checkDatabaseDriver;
