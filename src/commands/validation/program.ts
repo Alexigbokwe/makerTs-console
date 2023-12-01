@@ -2,7 +2,7 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 
-class ValidationProgram {
+export class ValidationProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Http/Validation");
@@ -44,5 +44,3 @@ class ValidationProgram {
     return body;
   }
 }
-
-export default ValidationProgram;

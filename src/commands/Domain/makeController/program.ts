@@ -2,10 +2,11 @@ import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../../baseCommand";
 import controller from "../../controller/program";
+import { Arguments } from "../../../Types/CommandTypes";
 const spinner = Ora("Processing: ");
 
 class MakeDomainControllerProgram {
-  static async handle(controllerName: string, domainName: string, resource = null) {
+  static async handle(controllerName: string, domainName: string, resource?: Arguments.resourceController) {
     spinner.start();
     spinner.color = "magenta";
     domainName = domainName[0].toUpperCase() + domainName.slice(1);
@@ -30,8 +31,8 @@ class MakeDomainControllerProgram {
     }
   }
 
-  private static async nextStep(controllerName: string, domainName: string, resource = null) {
-    await controller.handle(`${controllerName}Controller`, resource, "Domains/" + domainName + "/Http/Controller");
+  private static async nextStep(controllerName: string, domainName: string, resource?: Arguments.resourceController) {
+    await controller.handle(`${controllerName}Controller`, "Domains/" + domainName + "/Http/Controller", resource);
   }
 
   private static domainExist(name: string) {

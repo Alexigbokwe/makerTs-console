@@ -1,19 +1,13 @@
 "use strict";
+import { projectDirectory } from "../../RootDirectory";
 import BaseCommand from "../baseCommand";
 require("dotenv").config();
-let configQueuePath = "";
-let jobDirectories = "";
-let tsRPC_ConsumerDirectories = "";
 
-if (process.env.APP_ENV == "local" || process.env.APP_ENV == "development" || process.env.APP_ENV == "test") {
-  configQueuePath = `${__dirname}/../../../../../../Config/queue`;
-  jobDirectories = `${__dirname}/../../../../../../App/Jobs`;
-  tsRPC_ConsumerDirectories = `${__dirname}/../../../../../../App/RPC_Consumer`;
-} else if (process.env.APP_ENV == "production" || process.env.APP_ENV == "staging") {
-  configQueuePath = `${__dirname}/../../../../../../build/Config/queue`;
-  jobDirectories = `${__dirname}/../../../../../../build/App/Jobs`;
-  tsRPC_ConsumerDirectories = `${__dirname}/../../../../../../build/App/RPC_Consumer`;
-}
+import fs from "fs";
+
+let configQueuePath = `${projectDirectory}/Config/queue`;
+let jobDirectories = `${projectDirectory}/App/Jobs`;
+let tsRPC_ConsumerDirectories = `${projectDirectory}/App/RPC_Consumer`;
 
 enum queueProviders {
   Bull = "bull",
@@ -21,10 +15,7 @@ enum queueProviders {
   RABBITMQ = "rabbitmq",
 }
 
-//@ts-ignore
-import FS from "fs";
-
-class QueueWorkerProgram {
+export class QueueWorkerProgram {
   static async handle(name: string) {
     await import(configQueuePath).then((file) => {
       const Config: any = Object.values(file)[0];
@@ -120,7 +111,7 @@ class QueueWorkerProgram {
   }
 
   private static async callJobHandlers(msg: any = null) {
-    const files = FS.readdirSync(`${jobDirectories}/`);
+    const files = fs.readdirSync(`${jobDirectories}/`);
     let error: any = null;
     for await (let file of files) {
       await import(`${jobDirectories}/${file}`).then(async (f) => {
@@ -154,5 +145,3 @@ class QueueWorkerProgram {
     });
   }
 }
-
-export default QueueWorkerProgram;

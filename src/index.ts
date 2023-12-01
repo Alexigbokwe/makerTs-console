@@ -4,14 +4,6 @@ import { ORM, TCommand } from "./Types/CommandTypes";
 
 const program = new Command();
 
-program.name("maker").version("1.0.2").description("ExpressWebJs Command Line TS");
-
-const modifiedArray = process.argv.map((item) => {
-  // Replace one or more '-' at the start of the string with an empty string
-  return item.replace(/^[-]+/, "");
-});
-
-process.argv = modifiedArray;
 class Console {
   private static ormRelated: Array<string> = ["commands/Domain/makeModel", "commands/sqlModel", "commands/Domain/makeDomain", "commands/auth"];
   /**

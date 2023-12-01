@@ -1,4 +1,4 @@
-declare class SqlRollUpProgram {
+export declare class SqlRollUpProgram {
     static handle(name: string): Promise<void>;
     private static runNextMigration;
     /**
@@ -7,5 +7,4 @@ declare class SqlRollUpProgram {
      */
     private static runSpecifiedMigration;
 }
-export default SqlRollUpProgram;
 //# sourceMappingURL=program.d.ts.map

@@ -1,13 +1,13 @@
 "use strict";
-import providerProgram from"./program";
+import { ProviderProgram } from "./program";
 
 class providerCommand {
-  static async handle(program:any) {
+  static async handle(program: any) {
     await program
-      .command("make-provider [providerName]")
+      .command("make-provider <providerName>")
       .description("Create new service provider class")
-      .action((providerName:string) => {
-        providerProgram.handle(providerName);
+      .action((providerName: string) => {
+        ProviderProgram.handle(providerName);
       });
   }
 }

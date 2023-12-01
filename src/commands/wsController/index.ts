@@ -1,12 +1,12 @@
-import wscontrollerProgram from"./program";
+import { WsControllerProgram } from "./program";
 
 class WsControllerCommand {
-  static async handle(program:any) {
+  static async handle(program: any) {
     await program
       .command("make-ws-controller <wsControllerName>")
       .description("Create a new web socket controller class")
-      .action((wsControllerName:string) => {
-        wscontrollerProgram.handle(wsControllerName);
+      .action((wsControllerName: string) => {
+        WsControllerProgram.handle(wsControllerName);
       });
   }
 }

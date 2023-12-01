@@ -15,3 +15,9 @@ export enum ORM {
   Mongoose = "Mongoose",
   TypeORM = "TypeORM",
 }
+
+export enum Arguments {
+  migration = "m",
+  broker = "b",
+  resourceController = "r",
+}

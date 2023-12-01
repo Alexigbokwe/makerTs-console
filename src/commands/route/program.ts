@@ -5,7 +5,7 @@ import BaseCommand from "../baseCommand";
 import shell from "shelljs";
 const spinner = Ora("Processing: ");
 
-class RouteProgram {
+export class RouteProgram {
   static async handle(name: string) {
     spinner.start();
     spinner.color = "magenta";
@@ -65,5 +65,3 @@ class RouteProgram {
     return body;
   }
 }
-
-export default RouteProgram;

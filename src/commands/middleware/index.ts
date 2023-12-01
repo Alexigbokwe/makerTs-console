@@ -1,13 +1,13 @@
 "use strict";
-import middlewareProgram from "./program";
+import { MiddlewareProgram } from "./program";
 
 class MiddlewareCommand {
-  static async handle(program:any) {
+  static async handle(program: any) {
     await program
-      .command("make-middleware <middlewarename>")
+      .command("make-middleware <middleWareName>")
       .description("Create a new middleware class")
-      .action((middlewarename:string) => {
-        middlewareProgram.handle(middlewarename);
+      .action((middleWareName: string) => {
+        MiddlewareProgram.handle(middleWareName);
       });
   }
 }

@@ -2,25 +2,26 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 import path from "path";
+import { Arguments } from "../../Types/CommandTypes";
 
 class ControllerProgram {
-  static async handle(name: string, resource = null, directoryPath = "App/Http/Controller") {
+  static async handle(name: string, directoryPath: string, resource?: Arguments.resourceController) {
     name = name[0].toUpperCase() + name.slice(1);
     let check = await BaseCommand.checkFileExists("./" + directoryPath + "/" + name + ".ts");
     if (!check) {
-      await this.createController(name, resource, directoryPath);
+      await this.createController(name, directoryPath, resource);
     } else {
       return BaseCommand.error("Controller class already exists");
     }
   }
 
-  private static async createController(name: string, resource = null, directoryPath: string) {
+  private static async createController(name: string, directoryPath: string, resource?: Arguments.resourceController) {
     let directory = "./" + directoryPath + "/" + name + ".ts";
     let dirPath = path.dirname(directory);
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true });
     }
-    if (resource == "Controller Resource Methods") {
+    if (resource === Arguments.resourceController) {
       fs.appendFile(directory, await this.controllerBodyWithResource(name), (err) => {
         if (err) BaseCommand.error(err);
         BaseCommand.success(this.formatControllerName(name) + " class successfully generated in " + directoryPath + " folder");
@@ -35,8 +36,8 @@ class ControllerProgram {
 
   private static formatControllerName(name: string): string {
     if (name.includes("/")) {
-      let controllernamesplit = name.split("/");
-      return controllernamesplit[controllernamesplit.length - 1];
+      let controllerNameSplit = name.split("/");
+      return controllerNameSplit[controllerNameSplit.length - 1];
     } else {
       return name;
     }

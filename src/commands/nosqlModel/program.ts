@@ -2,7 +2,7 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 
-class NoSqlProgram {
+export class NoSqlProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Model");
@@ -41,5 +41,3 @@ class NoSqlProgram {
     return body;
   }
 }
-
-export default NoSqlProgram;

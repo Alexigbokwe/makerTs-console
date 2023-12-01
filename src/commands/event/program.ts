@@ -2,7 +2,7 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 
-class EventProgram {
+export class EventProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Events");
@@ -47,5 +47,3 @@ class EventProgram {
     return body;
   }
 }
-
-export default EventProgram;

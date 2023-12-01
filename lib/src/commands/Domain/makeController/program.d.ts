@@ -1,5 +1,6 @@
+import { Arguments } from "../../../Types/CommandTypes";
 declare class MakeDomainControllerProgram {
-    static handle(controllerName: string, domainName: string, resource?: null): Promise<void>;
+    static handle(controllerName: string, domainName: string, resource?: Arguments.resourceController): Promise<void>;
     private static nextStep;
     private static domainExist;
 }

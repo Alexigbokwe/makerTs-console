@@ -2,7 +2,7 @@
 const pathTo = process.env.PWD;
 import BaseCommand from "../baseCommand";
 
-class ScheduledProgram {
+export class ScheduledProgram {
   static async handle() {
     let path = `${pathTo}/App/Console/kernel.ts`;
     await import(path).then((kernel) => {
@@ -15,5 +15,3 @@ class ScheduledProgram {
     });
   }
 }
-
-export default ScheduledProgram;

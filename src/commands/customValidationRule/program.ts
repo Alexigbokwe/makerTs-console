@@ -2,7 +2,7 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 
-class CustomValidationRuleProgram {
+export class CustomValidationRuleProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Rules");
@@ -52,5 +52,3 @@ class CustomValidationRuleProgram {
     return body;
   }
 }
-
-export default CustomValidationRuleProgram;

@@ -1,6 +1,5 @@
 "use strict";
-import { commandOptionChecker } from "../../../OptionChecker";
-import sqlRollBackProgram from "./program";
+import { SqlRollBackProgram } from "./program";
 
 class SqlRollBackCommand {
   static async handle(program: any) {
@@ -10,8 +9,7 @@ class SqlRollBackCommand {
       .alias("sqlrb")
       .description("Rollback the last batch of migrations")
       .action((all: any) => {
-        commandOptionChecker(all);
-        sqlRollBackProgram.handle(all.r);
+        SqlRollBackProgram.handle(all.r);
       });
   }
 }

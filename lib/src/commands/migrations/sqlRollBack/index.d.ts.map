@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../../src/commands/migrations/sqlRollBack/index.ts"],"names":[],"mappings":"AAIA,cAAM,kBAAkB;WACT,MAAM,CAAC,OAAO,EAAE,GAAG;CAWjC;AAED,eAAe,kBAAkB,CAAC"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../../src/commands/migrations/sqlRollBack/index.ts"],"names":[],"mappings":"AAGA,cAAM,kBAAkB;WACT,MAAM,CAAC,OAAO,EAAE,GAAG;CAUjC;AAED,eAAe,kBAAkB,CAAC"}

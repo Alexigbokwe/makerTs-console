@@ -1,13 +1,13 @@
 "use strict";
-import routeProgram from "./program";
+import { RouteProgram } from "./program";
 
 class RouteCommand {
-  static async handle(program:any) {
+  static async handle(program: any) {
     await program
-      .command("make-route <routename>")
+      .command("make-route <routeName>")
       .description("Create a new route folder")
-      .action((routename:string) => {
-        routeProgram.handle(routename);
+      .action((routeName: string) => {
+        RouteProgram.handle(routeName);
       });
   }
 }

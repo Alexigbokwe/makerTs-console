@@ -1,5 +1,6 @@
 "use strict";
-import { commandOptionChecker } from "../../../OptionChecker";
+import { argumentChecker } from "../../../argumentChecker";
+import { Arguments } from "../../../Types/CommandTypes";
 import makeDomainControllerProgram from "./program";
 
 class MakeDomainControllerCommand {
@@ -7,10 +8,10 @@ class MakeDomainControllerCommand {
     await program
       .command("domain:make-controller <controllerName> <domainName>")
       .description("Create domain controller. First argument is controller name, second is domain name")
-      .option("-r", "-resource", "Controller Resource Methods")
-      .action((controllerName: string, domainName: string, resource: { r: null | undefined }) => {
-        commandOptionChecker(resource);
-        makeDomainControllerProgram.handle(controllerName, domainName, resource.r);
+      .argument("[r]", "Generate Controller Resource Methods")
+      .action((controllerName: string, domainName: string, argument?: Arguments.resourceController) => {
+        argumentChecker({ checker: Arguments.resourceController, argument });
+        makeDomainControllerProgram.handle(controllerName, domainName, argument);
       });
   }
 }

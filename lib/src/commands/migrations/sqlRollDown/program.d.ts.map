@@ -1,1 +1,1 @@
-{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../../src/commands/migrations/sqlRollDown/program.ts"],"names":[],"mappings":"AAMA,cAAM,kBAAkB;WACT,MAAM,CAAC,IAAI,EAAE,MAAM;mBAOX,kBAAkB;IA4CvC;;;OAGG;mBACkB,sBAAsB;CA2C5C;AAED,eAAe,kBAAkB,CAAC"}
+{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../../src/commands/migrations/sqlRollDown/program.ts"],"names":[],"mappings":"AAMA,qBAAa,kBAAkB;WAChB,MAAM,CAAC,IAAI,EAAE,MAAM;mBAKX,iBAAiB;IAsCtC;;;OAGG;mBACkB,sBAAsB;CAqC5C"}

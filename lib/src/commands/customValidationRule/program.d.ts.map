@@ -1,1 +1,1 @@
-{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../src/commands/customValidationRule/program.ts"],"names":[],"mappings":"AAIA,cAAM,2BAA2B;WAClB,MAAM,CAAC,IAAI,EAAE,MAAM;mBAaX,QAAQ;IAQ7B,OAAO,CAAC,MAAM,CAAC,YAAY;CA2B5B;AAED,eAAe,2BAA2B,CAAC"}
+{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../src/commands/customValidationRule/program.ts"],"names":[],"mappings":"AAIA,qBAAa,2BAA2B;WACzB,MAAM,CAAC,IAAI,EAAE,MAAM;mBAaX,QAAQ;IAQ7B,OAAO,CAAC,MAAM,CAAC,YAAY;CA2B5B"}

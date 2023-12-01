@@ -2,7 +2,7 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 
-class ListenerProgram {
+export class ListenerProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Listeners");
@@ -45,5 +45,3 @@ class ListenerProgram {
     return body;
   }
 }
-
-export default ListenerProgram;

@@ -16,4 +16,9 @@ export declare enum ORM {
     Mongoose = "Mongoose",
     TypeORM = "TypeORM"
 }
+export declare enum Arguments {
+    migration = "m",
+    broker = "b",
+    resourceController = "r"
+}
 //# sourceMappingURL=CommandTypes.d.ts.map

@@ -1,5 +1,6 @@
-declare class ServiceProgram {
-    static handle(name: string, broker?: null): Promise<void>;
+import { Arguments } from "../../Types/CommandTypes";
+export declare class ServiceProgram {
+    static handle(name: string, broker?: Arguments.broker): Promise<void>;
     private static nextStep;
     private static loadAbstractService;
     private static loadService;
@@ -8,5 +9,4 @@ declare class ServiceProgram {
     static generateService(name: string, addBase?: boolean): string;
     private static generateBroker;
 }
-export default ServiceProgram;
 //# sourceMappingURL=program.d.ts.map

@@ -1,16 +1,16 @@
 "use strict";
-import makeSqlMigratiomProgram from "./program";
+import { MakeSqlMigrationProgram } from "./program";
 
-class MakeSqlMigratiomCommand {
-  static async handle(program:any) {
+class MakeSqlMigrationCommand {
+  static async handle(program: any) {
     await program
       .command("make-sql-migration <migrationName>")
       .alias("msqlm")
       .description("Create a new migration file")
-      .action((migrationName:string) => {
-        makeSqlMigratiomProgram.handle(migrationName);
+      .action((migrationName: string) => {
+        MakeSqlMigrationProgram.handle(migrationName);
       });
   }
 }
 
-export default MakeSqlMigratiomCommand;
+export default MakeSqlMigrationCommand;

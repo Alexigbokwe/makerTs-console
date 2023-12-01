@@ -2,7 +2,7 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 
-class JobProgram {
+export class JobProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Jobs");
@@ -44,5 +44,3 @@ class JobProgram {
     return body;
   }
 }
-
-export default JobProgram;

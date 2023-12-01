@@ -1,13 +1,13 @@
 "use strict";
-import CustomValidationRuleProgram from "./program";
+import { CustomValidationRuleProgram } from "./program";
 
 class RuleCommand {
   static async handle(program: any) {
     await program
-      .command("make-rule <rulename>")
+      .command("make-rule <ruleName>")
       .description("Create custom validation rule")
-      .action((rulename: any) => {
-        CustomValidationRuleProgram.handle(rulename);
+      .action((ruleName: any) => {
+        CustomValidationRuleProgram.handle(ruleName);
       });
   }
 }

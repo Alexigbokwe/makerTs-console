@@ -1,1 +1,1 @@
-{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../src/commands/wsController/program.ts"],"names":[],"mappings":"AAMA,cAAM,mBAAmB;WACV,MAAM,CAAC,IAAI,EAAE,MAAM;IAUhC,OAAO,CAAC,MAAM,CAAC,QAAQ;IAcvB,OAAO,CAAC,MAAM,CAAC,kBAAkB;CAoClC;AAED,eAAe,mBAAmB,CAAC"}
+{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../src/commands/wsController/program.ts"],"names":[],"mappings":"AAMA,qBAAa,mBAAmB;WACjB,MAAM,CAAC,IAAI,EAAE,MAAM;IAUhC,OAAO,CAAC,MAAM,CAAC,QAAQ;IAcvB,OAAO,CAAC,MAAM,CAAC,kBAAkB;CAoClC"}

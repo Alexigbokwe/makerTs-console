@@ -3,22 +3,22 @@ import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 import shell from "shelljs";
-import { ORM } from "../../Types/CommandTypes";
+import { Arguments, ORM } from "../../Types/CommandTypes";
 const spinner = Ora("Processing: ");
 
-class SqlProgram {
-  static async handle(name: string, resource = null, orm: ORM) {
+export class SqlProgram {
+  static async handle(name: string, orm: ORM, migration?: Arguments.migration) {
     name = name[0].toUpperCase() + name.slice(1);
     let check = await BaseCommand.checkFileExists("./App/Model/" + name + "Model.ts");
     if (!check) {
-      await this.createModel(name, resource, orm);
+      await this.createModel(name, orm, migration);
     } else {
       return BaseCommand.error(`${name} Sql model class already exists`);
     }
   }
 
-  private static async createModel(modelName: string, resource: string | null, orm: ORM) {
-    if (resource != null) {
+  private static async createModel(modelName: string, orm: ORM, migration?: Arguments.migration) {
+    if (migration === Arguments.migration) {
       spinner.start();
       spinner.color = "magenta";
       spinner.text = "Generating Model";
@@ -94,5 +94,3 @@ class SqlProgram {
     }
   }
 }
-
-export default SqlProgram;

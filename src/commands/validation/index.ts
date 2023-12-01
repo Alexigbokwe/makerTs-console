@@ -1,5 +1,5 @@
 "use strict";
-import validationProgram from "./program";
+import { ValidationProgram } from "./program";
 
 class ValidationCommand {
   static async handle(program: any) {
@@ -7,7 +7,7 @@ class ValidationCommand {
       .command("make-validation <requestname>")
       .description("Create a new validation class")
       .action((requestname: string) => {
-        validationProgram.handle(requestname);
+        ValidationProgram.handle(requestname);
       });
   }
 }

@@ -2,7 +2,7 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 
-class ProviderProgram {
+export class ProviderProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Providers");
@@ -48,5 +48,3 @@ class ProviderProgram {
     return body;
   }
 }
-
-export default ProviderProgram;

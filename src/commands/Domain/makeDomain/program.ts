@@ -5,10 +5,10 @@ import BaseCommand from "../../baseCommand";
 import shell from "shelljs";
 const spinner = Ora("Processing: ");
 import controller from "../../controller/program";
-import route from "../../route/program";
-import SqlProgram from "../../sqlModel/program";
-import NoSqlProgram from "../../nosqlModel/program";
-import serviceProgram from "../../makeService/program";
+import { RouteProgram } from "../../route/program";
+import { SqlProgram } from "../../sqlModel/program";
+import { NoSqlProgram } from "../../nosqlModel/program";
+import { ServiceProgram } from "../../makeService/program";
 import { ORM } from "../../../Types/CommandTypes";
 
 class MakeDomainProgram {
@@ -95,7 +95,7 @@ class MakeDomainProgram {
 
   private static async routeFolder(path: string, name: string) {
     shell.mkdir(`${path}/Routes`);
-    fs.appendFile(`${path}/Routes/index.ts`, await route.routeBody(name), function (err: any) {
+    fs.appendFile(`${path}/Routes/index.ts`, await RouteProgram.routeBody(name), function (err: any) {
       if (err) throw err;
       BaseCommand.success(`${name} route successfully generated in Domains/${name}/Routes directory`);
     });
@@ -168,14 +168,14 @@ class MakeDomainProgram {
   }
 
   private static loadAbstractService(servicePath: string, name: string) {
-    fs.appendFile(`${servicePath}/${name}Service.ts`, serviceProgram.generateServiceAbstractClass(name), function (err) {
+    fs.appendFile(`${servicePath}/${name}Service.ts`, ServiceProgram.generateServiceAbstractClass(name), function (err) {
       if (err) throw err;
       BaseCommand.success(`${name}Service.ts abstract class successfully generated in Domains/${name}/Service directory`);
     });
   }
 
   private static loadService(servicePath: string, name: string) {
-    fs.appendFile(`${servicePath}/${name}ServiceImpl.ts`, serviceProgram.generateService(name, false), function (err) {
+    fs.appendFile(`${servicePath}/${name}ServiceImpl.ts`, ServiceProgram.generateService(name, false), function (err) {
       if (err) throw err;
       BaseCommand.success(`${name}ServiceImpl implementation class successfully generated in Domains/${name}/Service directory`);
     });

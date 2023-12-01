@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../../src/commands/Domain/makeController/index.ts"],"names":[],"mappings":"AAIA,cAAM,2BAA2B;WAClB,MAAM,CAAC,OAAO,EAAE,GAAG;CAUjC;AAED,eAAe,2BAA2B,CAAC"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../../src/commands/Domain/makeController/index.ts"],"names":[],"mappings":"AAKA,cAAM,2BAA2B;WAClB,MAAM,CAAC,OAAO,EAAE,GAAG;CAUjC;AAED,eAAe,2BAA2B,CAAC"}

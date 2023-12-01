@@ -2,41 +2,29 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 
-
-class ConsoleProgram {
-  static async handle(name:string) {
+export class ConsoleProgram {
+  static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Console/Commands");
     if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists(
-        "./App/Console/Commands/" + name + "_command.ts",
-      );
+      let doesFileExist = await BaseCommand.checkFileExists("./App/Console/Commands/" + name + "_command.ts");
       if (doesFileExist == false) {
         await this.nextStep(name);
       } else {
-        return BaseCommand.error(
-          name + "_command.ts already exist. Modify command name and try again",
-        );
+        return BaseCommand.error(name + "_command.ts already exist. Modify command name and try again");
       }
     }
   }
 
-  private static async nextStep(name:string) {
-    fs.appendFile(
-      "./App/Console/Commands/" + name + "_command.ts",
-      this.generateCommand(name),
-      function (err) {
-        if (err) return BaseCommand.error(err.errno);
-        BaseCommand.success(
-          name +
-            "_command.ts class successfully generated in App/Console/Commands folder",
-        );
-        return true;
-      },
-    );
+  private static async nextStep(name: string) {
+    fs.appendFile("./App/Console/Commands/" + name + "_command.ts", this.generateCommand(name), function (err) {
+      if (err) return BaseCommand.error(err.errno);
+      BaseCommand.success(name + "_command.ts class successfully generated in App/Console/Commands folder");
+      return true;
+    });
   }
 
-  private static generateCommand(name:string) {
+  private static generateCommand(name: string) {
     let body = `"use strict";
     import Command from "maker-console-ts";
 
@@ -79,5 +67,3 @@ class ConsoleProgram {
     return body;
   }
 }
-
-export default ConsoleProgram;

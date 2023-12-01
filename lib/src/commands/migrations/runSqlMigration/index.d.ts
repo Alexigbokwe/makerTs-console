@@ -1,5 +1,5 @@
-declare class RunSqlMigratiomCommand {
+declare class RunSqlMigrationCommand {
     static handle(program: any): Promise<void>;
 }
-export default RunSqlMigratiomCommand;
+export default RunSqlMigrationCommand;
 //# sourceMappingURL=index.d.ts.map

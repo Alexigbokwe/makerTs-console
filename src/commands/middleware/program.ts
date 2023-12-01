@@ -2,7 +2,7 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 
-class MiddlewareProgram {
+export class MiddlewareProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Http/Middleware");
@@ -40,5 +40,3 @@ class MiddlewareProgram {
     return body;
   }
 }
-
-export default MiddlewareProgram;

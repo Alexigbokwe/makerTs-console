@@ -2,9 +2,10 @@
 import fs from "fs";
 import BaseCommand from "../baseCommand";
 import shell from "shelljs";
+import { Arguments } from "../../Types/CommandTypes";
 
-class ServiceProgram {
-  static async handle(name: string, broker = null) {
+export class ServiceProgram {
+  static async handle(name: string, broker?: Arguments.broker) {
     name = name[0].toUpperCase() + name.slice(1);
     let checkFolder = BaseCommand.checkFolderExists("./App/Service");
     if (checkFolder) {
@@ -21,12 +22,12 @@ class ServiceProgram {
     }
   }
 
-  private static async nextStep(name: string, broker = null) {
+  private static async nextStep(name: string, broker?: Arguments.broker) {
     try {
       shell.mkdir("./App/Service/" + name);
       this.loadAbstractService(name);
       this.loadService(name);
-      if (broker == "Service Broker") {
+      if (broker == Arguments.broker) {
         this.loadServiceBroker(name);
       }
     } catch (error) {
@@ -92,5 +93,3 @@ class ServiceProgram {
     return body;
   }
 }
-
-export default ServiceProgram;

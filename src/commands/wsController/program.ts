@@ -4,7 +4,7 @@ import fs from "fs";
 import BaseCommand from "../baseCommand";
 const spinner = Ora("Processing: ");
 
-class WsControllerProgram {
+export class WsControllerProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
     let check = await BaseCommand.checkFileExists("./App/Http/Controller/Ws/" + name + ".ts");
@@ -66,5 +66,3 @@ class WsControllerProgram {
     return body;
   }
 }
-
-export default WsControllerProgram;

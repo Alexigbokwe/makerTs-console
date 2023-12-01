@@ -2,8 +2,8 @@ import Ora from "ora";
 import fs from "fs";
 import BaseCommand from "../../baseCommand";
 const spinner = Ora("Processing: ");
-import SqlProgram from "../../sqlModel/program";
-import NoSqlProgram from "../../nosqlModel/program";
+import { SqlProgram } from "../../sqlModel/program";
+import { NoSqlProgram } from "../../nosqlModel/program";
 import { ORM } from "../../../Types/CommandTypes";
 
 class MakeDomainModelProgram {

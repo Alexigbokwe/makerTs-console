@@ -1,5 +1,6 @@
+import { Arguments } from "../../Types/CommandTypes";
 declare class ControllerProgram {
-    static handle(name: string, resource?: null, directoryPath?: string): Promise<void>;
+    static handle(name: string, directoryPath: string, resource?: Arguments.resourceController): Promise<void>;
     private static createController;
     private static formatControllerName;
     private static controllerBody;

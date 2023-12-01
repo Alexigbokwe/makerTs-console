@@ -1,5 +1,4 @@
-declare class RunSqlMigratiomProgram {
+export declare class RunSqlMigrationProgram {
     static handle(): Promise<void>;
 }
-export default RunSqlMigratiomProgram;
 //# sourceMappingURL=program.d.ts.map
