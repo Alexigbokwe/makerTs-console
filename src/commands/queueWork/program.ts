@@ -5,7 +5,7 @@ require("dotenv").config();
 
 import fs from "fs";
 
-let configQueuePath = `${projectDirectory}/Config/queue`;
+let configQueuePath = `${projectDirectory}/Config/Queue`;
 let jobDirectories = `${projectDirectory}/App/Jobs`;
 let tsRPC_ConsumerDirectories = `${projectDirectory}/App/RPC_Consumer`;
 
