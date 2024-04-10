@@ -1,10 +1,11 @@
 import { Command } from "commander";
 import config from "./config";
 import { ORM, TCommand } from "./Types/CommandTypes";
+export { CommandArgument, Command } from "./command";
 
 const program = new Command();
 
-class Console {
+export class Console {
   private static ormRelated: Array<string> = ["commands/Domain/makeModel", "commands/sqlModel", "commands/Domain/makeDomain", "commands/auth"];
   /**
    * Run Maker commands
@@ -122,4 +123,3 @@ class Console {
   }
 }
 program.parse(process.argv);
-export default Console;

@@ -1,5 +1,6 @@
 import { ORM } from "./Types/CommandTypes";
-declare class Console {
+export { CommandArgument, Command } from "./command";
+export declare class Console {
     private static ormRelated;
     /**
      * Run Maker commands
@@ -14,5 +15,4 @@ declare class Console {
     private static checkCommandsLength;
     private static checkKernelLength;
 }
-export default Console;
 //# sourceMappingURL=index.d.ts.map

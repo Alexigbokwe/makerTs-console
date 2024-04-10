@@ -1,1 +1,1 @@
-{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../src/commands/makeCommand/program.ts"],"names":[],"mappings":"AAIA,qBAAa,cAAc;WACZ,MAAM,CAAC,IAAI,EAAE,MAAM;mBAaX,QAAQ;IAQ7B,OAAO,CAAC,MAAM,CAAC,eAAe;CA0C/B"}
+{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../src/commands/makeCommand/program.ts"],"names":[],"mappings":"AAKA,qBAAa,cAAc;WACZ,MAAM,CAAC,IAAI,EAAE,MAAM;IAchC,OAAO,CAAC,MAAM,CAAC,2BAA2B;mBAMrB,QAAQ;IAQ7B,OAAO,CAAC,MAAM,CAAC,eAAe;CA+B/B"}
