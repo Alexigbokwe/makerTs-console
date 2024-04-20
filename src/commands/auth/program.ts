@@ -401,7 +401,7 @@ class AuthProgram {
 
   private static MongoDBModelBody() {
     return `
-    import { mongoose, Schema, Document, Types } from "Elucidate/Database/NoSQLModel";
+    import mongoose,{Schema,Document, Types } from "mongoose";
 
     export interface UserInterface extends Document {
       id: Types.ObjectId;
