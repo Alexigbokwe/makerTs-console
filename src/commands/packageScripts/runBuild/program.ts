@@ -1,10 +1,12 @@
 import shell from "shelljs";
 import copy from "recursive-copy";
 import { projectDirectory } from "../../../RootDirectory";
+import { BaseScript } from "../BaseScript";
 
 let config = require(`${projectDirectory}/Config/App`).default;
-class CompileProgramProgram {
+class CompileProgramProgram extends BaseScript {
   static handle() {
+    this.checkAppEnvironment();
     this.buildFile();
   }
 

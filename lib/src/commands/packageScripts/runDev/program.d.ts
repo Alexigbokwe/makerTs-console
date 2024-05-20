@@ -1,4 +1,5 @@
-declare class DevelopmentServerProgram {
+import { BaseScript } from "../BaseScript";
+declare class DevelopmentServerProgram extends BaseScript {
     static handle(): Promise<void>;
     private static runDevServer;
 }

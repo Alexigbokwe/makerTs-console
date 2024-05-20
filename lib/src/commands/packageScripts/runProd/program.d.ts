@@ -1,4 +1,5 @@
-declare class RunProductionProgram {
+import { BaseScript } from "../BaseScript";
+declare class RunProductionProgram extends BaseScript {
     static handle(): Promise<void>;
     private static runProductionServer;
 }

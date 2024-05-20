@@ -1,4 +1,5 @@
-declare class CompileProgramProgram {
+import { BaseScript } from "../BaseScript";
+declare class CompileProgramProgram extends BaseScript {
     static handle(): void;
     private static buildFile;
     private static copyStaticDirectories;

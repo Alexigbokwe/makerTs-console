@@ -1,1 +1,1 @@
-{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../../src/commands/packageScripts/runDev/program.ts"],"names":[],"mappings":"AAEA,cAAM,wBAAwB;WACf,MAAM;IAInB,OAAO,CAAC,MAAM,CAAC,YAAY;CAM5B;AAED,eAAe,wBAAwB,CAAC"}
+{"version":3,"file":"program.d.ts","sourceRoot":"","sources":["../../../../../src/commands/packageScripts/runDev/program.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,UAAU,EAAE,MAAM,eAAe,CAAC;AAE3C,cAAM,wBAAyB,SAAQ,UAAU;WAClC,MAAM;IAKnB,OAAO,CAAC,MAAM,CAAC,YAAY;CAM5B;AAED,eAAe,wBAAwB,CAAC"}

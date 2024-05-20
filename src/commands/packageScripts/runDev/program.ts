@@ -1,7 +1,9 @@
 import shell from "shelljs";
+import { BaseScript } from "../BaseScript";
 
-class DevelopmentServerProgram {
+class DevelopmentServerProgram extends BaseScript {
   static async handle() {
+    this.checkAppEnvironment();
     this.runDevServer();
   }
 
