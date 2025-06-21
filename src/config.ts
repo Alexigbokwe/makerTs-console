@@ -27,7 +27,6 @@ config.set("queue-work", "commands/queueWork");
 config.set("run-dev", "commands/packageScripts/runDev");
 config.set("run-build", "commands/packageScripts/runBuild");
 config.set("run-start", "commands/packageScripts/runStart");
-config.set("run-prod", "commands/packageScripts/runProd");
 config.set("make-domain", "commands/Domain/makeDomain");
 config.set("domain:make-controller", "commands/Domain/makeController");
 config.set("domain:make-model", "commands/Domain/makeModel");

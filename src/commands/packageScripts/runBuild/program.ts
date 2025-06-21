@@ -11,7 +11,7 @@ class CompileProgramProgram extends BaseScript {
   }
 
   private static buildFile() {
-    if (shell.exec("rimraf ./build && tsc -p .").code !== 0) {
+    if (shell.exec("rimraf ./build && tsc -p . && node -r tsconfig-paths/register -e ''").code !== 0) {
       shell.echo("Error: Build project command failed");
       shell.exit(1);
     } else {

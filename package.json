@@ -1,6 +1,6 @@
 {
   "name": "maker-console-ts",
-  "version": "2.1.9",
+  "version": "2.1.19",
   "description": "MakerTS v2.1.0 upwards is for version framework version 4.2 . It is the Typescript version of Maker console which is the command line interface for ExpressWebJs. Maker exists at the root of your application as the maker script and provides a number of helpful commands that can assist you while you build your application. To view a list of all available Maker commands, you may use the help command. Download version < 2.0.23 for ExpressWeb version 4.1",
   "types": "./lib/src",
   "main": "lib/src/index.js",
@@ -16,12 +16,14 @@
     "dotenv": "^8.2.0",
     "figlet": "^1.5.0",
     "inquirer": "^7.3.3",
+    "module-alias": "^2.2.3",
     "ora": "^5.1.0",
     "recursive-copy": "^2.0.13",
     "shelljs": "^0.8.4",
     "tsc-watch": "^4.6.0"
   },
   "devDependencies": {
+    "@types/module-alias": "^2.0.4",
     "@types/node": "^14.14.37",
     "@types/shelljs": "^0.8.8",
     "@types/tsc-watch": "^4.2.0",
