@@ -1,32 +1,33 @@
 "use strict";
-import Ora from "ora";
-import fs from "fs";
+import { promises as fs } from "fs";
 import BaseCommand from "../baseCommand";
-const spinner = Ora("Processing: ");
+import path from "path";
 
 export class WsControllerProgram {
   static async handle(name: string) {
+    const spinner = BaseCommand.progress();
     name = name[0].toUpperCase() + name.slice(1);
-    let check = await BaseCommand.checkFileExists("./App/Http/Controller/Ws/" + name + ".ts");
-    if (check == false) {
-      this.nextStep(name);
-    } else {
-      return BaseCommand.error(`${name} web socket controller class already exists`);
+    const controllerPath = path.join("App", "Http", "Controller", "Ws");
+    const filePath = path.join(controllerPath, `${name}.ts`);
+
+    spinner.start(`Generating web socket controller ${name}`);
+
+    try {
+      if (await BaseCommand.checkFileExists(filePath)) {
+        throw new Error(`${name} web socket controller class already exists`);
+      }
+
+      await BaseCommand.checkFolderExists(controllerPath);
+      await this.nextStep(name, filePath);
+      spinner.succeed(`Web socket controller ${name} created successfully.`);
+    } catch (error) {
+      spinner.fail((error as Error).message);
     }
   }
 
-  private static nextStep(name: string) {
-    spinner.start();
-    spinner.color = "magenta";
-    spinner.text = "Generating Web Socket Controller Class";
-    fs.appendFile("./App/Http/Controller/Ws/" + name + ".ts", this.generateController(name), function (err) {
-      if (err) return BaseCommand.error(err.errno);
-      BaseCommand.success("\n" + name + ".ts web socket class successfully generated in App/Http/Controller/Ws folder");
-      spinner.color = "green";
-      spinner.text = "Completed";
-      spinner.succeed("Done 😊😘");
-      return true;
-    });
+  private static async nextStep(name: string, filePath: string) {
+    await fs.writeFile(filePath, this.generateController(name));
+    BaseCommand.success(`${name}.ts web socket class successfully generated in App/Http/Controller/Ws folder`);
   }
 
   private static generateController(name: string) {

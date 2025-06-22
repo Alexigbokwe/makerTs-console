@@ -1,45 +1,40 @@
 "use strict";
 import BaseCommand from "../../baseCommand";
-import shell from "shelljs";
-import Ora from "ora";
-const spinner = Ora("Processing: ");
+import { exec } from "child_process";
 
 export class RunSqlMigrationProgram {
   static async handle() {
-    spinner.start();
-    spinner.color = "magenta";
-    spinner.text = "Running Migration: ";
-    try {
-      shell.exec("npx knex migrate:latest --knexfile=./SchemaSetup.ts", (error, success) => {
-        if (error) {
-          BaseCommand.error(error);
-          spinner.color = "red";
-          spinner.text = "failed";
-          spinner.fail("");
+    const spinner = BaseCommand.progress();
+    spinner.start("Running Migration");
+
+    const command = "npx knex migrate:latest --knexfile=./SchemaSetup.ts";
+
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        spinner.fail(`Failed to run migration: ${error.message}`);
+        if (stderr.includes("Cannot find module 'knex'")) {
+          BaseCommand.warning("Knex not found. Attempting to install it globally...");
+          exec("npm install knex -g", (installError) => {
+            if (installError) {
+              spinner.fail(`Failed to install knex: ${installError.message}`);
+              return;
+            }
+            spinner.succeed("Knex installed successfully.");
+            spinner.start("Retrying migration...");
+            exec(command, (retryError, retryStdout) => {
+              if (retryError) {
+                spinner.fail(`Failed to run migration on retry: ${retryError.message}`);
+                return;
+              }
+              BaseCommand.success(retryStdout);
+              spinner.succeed("Migration completed successfully.");
+            });
+          });
         }
-        if (success) {
-          BaseCommand.success(success);
-          spinner.color = "green";
-          spinner.text = "Completed";
-          spinner.succeed("Done 😊😘");
-        }
-      });
-    } catch (error) {
-      shell.exec("npm install knex -g");
-      shell.exec("npx knex migrate:latest --knexfile=./SchemaSetup.ts", (error, success) => {
-        if (error) {
-          BaseCommand.error(error);
-          spinner.color = "red";
-          spinner.text = "failed";
-          spinner.fail("");
-        }
-        if (success) {
-          BaseCommand.success(success);
-          spinner.color = "green";
-          spinner.text = "Completed";
-          spinner.succeed("Done 😊😘");
-        }
-      });
-    }
+        return;
+      }
+      BaseCommand.success(stdout);
+      spinner.succeed("Migration completed successfully.");
+    });
   }
 }

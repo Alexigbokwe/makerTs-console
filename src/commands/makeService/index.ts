@@ -1,19 +1,34 @@
 "use strict";
-import { argumentChecker } from "../../argumentChecker";
+import { Command as Program } from "commander";
+import { CommandArgument, CommandOption } from "../../command";
 import { Arguments } from "../../Types/CommandTypes";
 import { ServiceProgram } from "./program";
 
-class ServiceCommand {
-  static async handle(program: any) {
-    await program
-      .command("make-service <serviceName>")
-      .argument("[b]", "Generate Service Broker with Service class")
-      .description("Create a new service class with interface")
-      .action((consumerName: string, argument?: Arguments.broker) => {
-        argumentChecker({ checker: Arguments.broker, argument });
-        ServiceProgram.handle(consumerName, argument);
-      });
+class MakeServiceCommand {
+  static async handle(program: Program) {
+    // Define arguments and options using the new system
+    const commandArguments: CommandArgument[] = [{ name: "serviceName", mode: "REQUIRED", description: "The name of the service class" }];
+
+    const options: CommandOption[] = [{ flag: "-b,--broker", description: "Generate Service Broker with Service class" }];
+
+    // Build command signature dynamically from arguments
+    const commandSignature = commandArguments.map((arg) => (arg.mode === "REQUIRED" ? `<${arg.name}>` : `[${arg.name}]`)).join(" ");
+
+    // Build the command with enhanced features
+    const cmd = program.command(`make-service ${commandSignature}`).description("Create a new service class");
+
+    // Add options dynamically
+    options.forEach((option) => {
+      cmd.option(option.flag, option.description);
+    });
+
+    // Enhanced action with better argument handling
+    cmd.action((serviceName: string, options: any) => {
+      // Pass the broker flag as the enum value if provided
+      const brokerArg = options.broker ? Arguments.broker : undefined;
+      ServiceProgram.handle(serviceName, brokerArg);
+    });
   }
 }
 
-export default ServiceCommand;
+export default MakeServiceCommand;

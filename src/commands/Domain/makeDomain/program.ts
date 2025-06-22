@@ -1,9 +1,7 @@
 "use strict";
-import Ora from "ora";
-import fs from "fs";
+import { promises as fs } from "fs";
+import path from "path";
 import BaseCommand from "../../baseCommand";
-import shell from "shelljs";
-const spinner = Ora("Processing: ");
 import controller from "../../controller/program";
 import { RouteProgram } from "../../route/program";
 import { SqlProgram } from "../../sqlModel/program";
@@ -13,100 +11,67 @@ import { ORM } from "../../../Types/CommandTypes";
 
 class MakeDomainProgram {
   static async handle(name: string, orm: ORM) {
-    spinner.start();
-    spinner.color = "magenta";
-    spinner.text = "Generating Domain";
+    const spinner = BaseCommand.progress();
+    spinner.start(`Generating Domain ${name}`);
     name = name[0].toUpperCase() + name.slice(1);
+    const domainPath = path.join("Domains", name);
 
     try {
-      this.createDirectory("./Domains");
-      if (!this.createDirectory("./Domains/" + name)) {
-        throw new Error(name + " domain already exist");
-      } else {
-        await this.nextStep(name, orm);
-        spinner.color = "green";
-        spinner.text = "Completed";
-        spinner.succeed(name + " domain successfully generated.");
+      if (await BaseCommand.checkFileExists(domainPath)) {
+        throw new Error(`${name} domain already exists.`);
       }
+
+      await this.nextStep(name, orm, domainPath);
+      spinner.succeed(`${name} domain successfully generated.`);
     } catch (error) {
-      spinner.color = "red";
-      spinner.text = "failed";
-      spinner.fail("");
-      BaseCommand.error(error);
+      spinner.fail((error as Error).message);
     }
   }
 
-  private static createDirectory(name: string) {
-    if (!fs.existsSync(name)) {
-      fs.mkdirSync(name);
-      return true;
-    } else {
-      return false;
+  private static async nextStep(name: string, orm: ORM, domainPath: string) {
+    try {
+      await this.domainFolders(name, orm, domainPath);
+      BaseCommand.success(`${name} Domain Successfully Generated`);
+    } catch (error) {
+      throw new Error(`Error Occurred While Generating ${name} Domain: ${error}`);
     }
   }
 
-  private static async nextStep(name: string, orm: ORM) {
-    await this.domainFolders(name, orm)
-      .then(() => {
-        BaseCommand.success(`${name} Domain Successfully Generated`);
-      })
-      .catch((error) => {
-        BaseCommand.success(`Error Occurred  While  Generating ${name} Domain: ${error}`);
-      });
+  private static async domainFolders(name: string, orm: ORM, domainPath: string) {
+    const foldersToCreate = ["Http/Controller", "Http/Validation", "Model", "Provider", "Repository", "Routes", "Service", "Tests"];
+
+    for (const folder of foldersToCreate) {
+      await fs.mkdir(path.join(domainPath, folder), { recursive: true });
+    }
+
+    await this.domainController(path.join(domainPath, "Http", "Controller"), name);
+    await this.routeFolder(path.join(domainPath, "Routes"), name);
+    await this.modelFolder(path.join(domainPath, "Model"), name, orm);
+    await this.serviceFolder(path.join(domainPath, "Service"), name);
+    await this.serviceProviderFolder(path.join(domainPath, "Provider"), name);
   }
 
-  private static async domainFolders(name: string, orm: ORM) {
-    let blockPath = `./Domains/${name}`;
-    await this.httpFolders(blockPath, name);
-    await this.routeFolder(blockPath, name);
-    await this.modelFolder(blockPath, name, orm);
-    await this.serviceFolder(blockPath, name);
-    await this.serviceProviderFolder(blockPath, name);
-    await this.RepositoryFolder(blockPath);
-    await this.TestsFolder(blockPath);
+  private static async domainController(controllerPath: string, name: string) {
+    const controllerName = `${name}Controller`;
+    const filePath = path.join(controllerPath, `${controllerName}.ts`);
+    const body = await controller.controllerBodyWithResource(controllerName);
+    await fs.writeFile(filePath, body);
+    BaseCommand.success(`${controllerName}.ts successfully generated in ${path.dirname(filePath)}`);
   }
 
-  private static async RepositoryFolder(path: string) {
-    shell.mkdir(`${path}/Repository`);
+  private static async routeFolder(routePath: string, name: string) {
+    const filePath = path.join(routePath, "index.ts");
+    const body = await RouteProgram.routeBody(name);
+    await fs.writeFile(filePath, body);
+    BaseCommand.success(`index.ts route successfully generated in ${routePath}`);
   }
 
-  private static async TestsFolder(path: string) {
-    shell.mkdir(`${path}/Tests`);
-  }
-
-  private static async ValidationFolder(path: string) {
-    shell.mkdir(`${path}/Validation`);
-  }
-
-  private static async httpFolders(path: string, name: string) {
-    this.createDirectory(`${path}/Http`);
-    let blockPath = `${path}/Http`;
-    await this.ValidationFolder(blockPath);
-    await this.domainController(blockPath, name);
-  }
-
-  private static async domainController(path: string, name: string) {
-    this.createDirectory(`${path}/Controller`);
-    fs.appendFile(`${path}/Controller/${name}Controller.ts`, await controller.controllerBodyWithResource(`${name}Controller`), function (err: any) {
-      if (err) throw err;
-      BaseCommand.success(`${name} controller successfully generated in Domains/${name}/Http/Controller directory`);
-    });
-  }
-
-  private static async routeFolder(path: string, name: string) {
-    shell.mkdir(`${path}/Routes`);
-    fs.appendFile(`${path}/Routes/index.ts`, await RouteProgram.routeBody(name), function (err: any) {
-      if (err) throw err;
-      BaseCommand.success(`${name} route successfully generated in Domains/${name}/Routes directory`);
-    });
-  }
-
-  private static async modelFolder(path: string, name: string, orm: ORM) {
-    shell.mkdir(`${path}/Model`);
-    fs.appendFile(`${path}/Model/${name}Model.ts`, this.modelBody(name, orm), function (err: any) {
-      if (err) throw err;
-      BaseCommand.success(`${name} model successfully generated in Domains/${name}/Model directory`);
-    });
+  private static async modelFolder(modelPath: string, name: string, orm: ORM) {
+    const modelName = `${name}Model`;
+    const filePath = path.join(modelPath, `${modelName}.ts`);
+    const body = this.modelBody(name, orm);
+    await fs.writeFile(filePath, body);
+    BaseCommand.success(`${modelName}.ts successfully generated in ${modelPath}`);
   }
 
   private static modelBody(name: string, orm: ORM) {
@@ -117,22 +82,21 @@ class MakeDomainProgram {
     }
   }
 
-  private static serviceProviderFolder(path: string, name: string) {
-    shell.mkdir(`${path}/Provider`);
-    let providerPath = `${path}/Provider`;
-    fs.appendFile(`${providerPath}/${name}ServiceProvider.ts`, this.providerBody(name), function (err) {
-      if (err) throw err;
-      BaseCommand.success(`${name}ServiceProvider.ts successfully generated in Domains/${name}/Provider directory`);
-    });
+  private static async serviceProviderFolder(providerPath: string, name: string) {
+    const providerName = `${name}ServiceProvider`;
+    const filePath = path.join(providerPath, `${providerName}.ts`);
+    const body = this.providerBody(name);
+    await fs.writeFile(filePath, body);
+    BaseCommand.success(`${providerName}.ts successfully generated in ${providerPath}`);
   }
 
   private static providerBody(name: string) {
-    name = `${name}ServiceProvider`;
+    const providerName = `${name}ServiceProvider`;
 
-    let body = `
+    return `
       import {ServiceProvider} from "Elucidate/Support/ServiceProvider";
 
-      export class ${name} extends ServiceProvider{
+      export class ${providerName} extends ServiceProvider{
         /**
          * Register any application services.
          * @return void
@@ -157,28 +121,27 @@ class MakeDomainProgram {
           //
         }
       }`;
-    return body;
   }
 
-  private static async serviceFolder(path: string, name: string) {
-    shell.mkdir(`${path}/Service`);
-    let servicePath = `${path}/Service`;
-    this.loadAbstractService(servicePath, name);
-    this.loadService(servicePath, name);
+  private static async serviceFolder(servicePath: string, name: string) {
+    await this.loadAbstractService(servicePath, name);
+    await this.loadService(servicePath, name);
   }
 
-  private static loadAbstractService(servicePath: string, name: string) {
-    fs.appendFile(`${servicePath}/${name}Service.ts`, ServiceProgram.generateServiceAbstractClass(name), function (err) {
-      if (err) throw err;
-      BaseCommand.success(`${name}Service.ts abstract class successfully generated in Domains/${name}/Service directory`);
-    });
+  private static async loadAbstractService(servicePath: string, name: string) {
+    const serviceName = `${name}Service`;
+    const filePath = path.join(servicePath, `${serviceName}.ts`);
+    const body = ServiceProgram.generateServiceAbstractClass(name);
+    await fs.writeFile(filePath, body);
+    BaseCommand.success(`${serviceName}.ts abstract class successfully generated in ${servicePath}`);
   }
 
-  private static loadService(servicePath: string, name: string) {
-    fs.appendFile(`${servicePath}/${name}ServiceImpl.ts`, ServiceProgram.generateService(name, false), function (err) {
-      if (err) throw err;
-      BaseCommand.success(`${name}ServiceImpl implementation class successfully generated in Domains/${name}/Service directory`);
-    });
+  private static async loadService(servicePath: string, name: string) {
+    const serviceImplName = `${name}ServiceImpl`;
+    const filePath = path.join(servicePath, `${serviceImplName}.ts`);
+    const body = ServiceProgram.generateService(name, false);
+    await fs.writeFile(filePath, body);
+    BaseCommand.success(`${serviceImplName} implementation class successfully generated in ${servicePath}`);
   }
 }
 

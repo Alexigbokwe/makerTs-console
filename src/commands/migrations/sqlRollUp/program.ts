@@ -1,92 +1,46 @@
 "use strict";
 import BaseCommand from "../../baseCommand";
-import shell from "shelljs";
-import Ora from "ora";
-const spinner = Ora("Processing: ");
+import { exec } from "child_process";
 
 export class SqlRollUpProgram {
   static async handle(name: string) {
-    return name ? this.runSpecifiedMigration(name) : this.runNextMigration();
+    const spinner = BaseCommand.progress();
+    const migrationName = name || "";
+    const spinnerText = name ? `Running ${name} migration` : "Running the next migration";
+    spinner.start(spinnerText);
+
+    const command = `npx knex migrate:up ${migrationName} --knexfile=./SchemaSetup.ts`;
+
+    this.executeCommand(spinner, command);
   }
 
-  //Run the next migration that has not yet been run
-  private static runNextMigration() {
-    spinner.start();
-    spinner.color = "magenta";
-    spinner.text = "Running the next migration that has not yet been run: ";
-    try {
-      shell.exec("npx knex migrate:up --knexfile=./SchemaSetup.ts", (error, success) => {
-        if (error) {
-          BaseCommand.error(error);
-          spinner.color = "red";
-          spinner.text = "failed";
-          spinner.fail("");
+  private static executeCommand(spinner: any, command: string) {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        spinner.fail(`Failed to run rollup: ${error.message}`);
+        if (stderr.includes("Cannot find module 'knex'")) {
+          BaseCommand.warning("Knex not found. Attempting to install it globally...");
+          exec("npm install knex -g", (installError) => {
+            if (installError) {
+              spinner.fail(`Failed to install knex: ${installError.message}`);
+              return;
+            }
+            spinner.succeed("Knex installed successfully.");
+            spinner.start("Retrying rollup...");
+            exec(command, (retryError, retryStdout) => {
+              if (retryError) {
+                spinner.fail(`Failed to run rollup on retry: ${retryError.message}`);
+                return;
+              }
+              BaseCommand.success(retryStdout);
+              spinner.succeed("Rollup completed successfully.");
+            });
+          });
         }
-        if (success) {
-          BaseCommand.success(success);
-          spinner.color = "green";
-          spinner.text = "Completed";
-          spinner.succeed("Done 😊😘");
-        }
-      });
-    } catch (error) {
-      shell.exec("npm install knex -g");
-      shell.exec("npx knex migrate:up --knexfile=./SchemaSetup.ts", (error, success) => {
-        if (error) {
-          BaseCommand.error(error);
-          spinner.color = "red";
-          spinner.text = "failed";
-          spinner.fail("");
-        }
-        if (success) {
-          BaseCommand.success(success);
-          spinner.color = "green";
-          spinner.text = "Completed";
-          spinner.succeed("Done 😊😘");
-        }
-      });
-    }
-  }
-
-  /**
-   * Run the specified migration that has not yet been run
-   * @param {String} name
-   */
-  private static runSpecifiedMigration(name: string) {
-    spinner.start();
-    spinner.color = "magenta";
-    spinner.text = "Running " + name + " migration that has not yet been run: ";
-    try {
-      shell.exec("npx knex migrate:up " + name, (error, success) => {
-        if (error) {
-          BaseCommand.error(error);
-          spinner.color = "red";
-          spinner.text = "failed";
-          spinner.fail("");
-        }
-        if (success) {
-          BaseCommand.success(success);
-          spinner.color = "green";
-          spinner.text = "Completed";
-          spinner.succeed("Done 😊😘");
-        }
-      });
-    } catch (error) {
-      shell.exec("npm install knex -g");
-      shell.exec("npx knex migrate:up " + name, (error, success) => {
-        if (error) {
-          BaseCommand.error(error);
-          spinner.color = "red";
-          spinner.text = "failed";
-          spinner.fail("");
-        }
-        if (success) {
-          BaseCommand.success(success);
-          spinner.color = "green";
-          spinner.text = "Completed";
-          spinner.succeed("Done 😊😘");
-        }
-      });
-    }
+        return;
+      }
+      BaseCommand.success(stdout);
+      spinner.succeed("Rollup completed successfully.");
+    });
   }
 }

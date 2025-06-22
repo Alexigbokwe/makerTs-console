@@ -1,35 +1,32 @@
 "use strict";
-import fs from "fs";
+import { promises as fs } from "fs";
 import BaseCommand from "../baseCommand";
-import config from "../../config";
+import path from "path";
+import { Console } from "../../index";
 
 export class ConsoleProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
-    this.doesCommandNameAlreadyExist(name);
-    let checkFolder = BaseCommand.checkFolderExists("./App/Console/Commands");
-    if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists("./App/Console/Commands/" + name + ".ts");
-      if (!doesFileExist) {
-        await this.nextStep(name);
-      } else {
-        return BaseCommand.error(name + ".ts already exist. Modify command name and try again");
-      }
+    Console.checkCommandName(name);
+    const commandPath = path.join("App", "Console", "Commands");
+    const filePath = path.join(commandPath, `${name}.ts`);
+
+    if (await BaseCommand.checkFileExists(filePath)) {
+      return BaseCommand.error(`${name}.ts already exists. Modify command name and try again`);
+    }
+
+    if (await BaseCommand.checkFolderExists(commandPath)) {
+      await this.nextStep(name, filePath);
     }
   }
 
-  private static doesCommandNameAlreadyExist(name: string) {
-    if (config.has(name)) {
-      throw new Error(`${name} commend already exist. Modify command name and try again`);
+  private static async nextStep(name: string, filePath: string) {
+    try {
+      await fs.writeFile(filePath, this.generateCommand(name));
+      BaseCommand.success(`${name}.ts class successfully generated in App/Console/Commands folder`);
+    } catch (err) {
+      BaseCommand.error((err as Error).message);
     }
-  }
-
-  private static async nextStep(name: string) {
-    fs.appendFile("./App/Console/Commands/" + name + ".ts", this.generateCommand(name), function (err) {
-      if (err) return BaseCommand.error(err.errno);
-      BaseCommand.success(name + ".ts class successfully generated in App/Console/Commands folder");
-      return true;
-    });
   }
 
   private static generateCommand(name: string) {

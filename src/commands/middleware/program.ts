@@ -1,27 +1,31 @@
 "use strict";
-import fs from "fs";
+import { promises as fs } from "fs";
 import BaseCommand from "../baseCommand";
+import path from "path";
 
 export class MiddlewareProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
-    let checkFolder = BaseCommand.checkFolderExists("./App/Http/Middleware");
-    if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists("./App/Http/Middleware/" + name + "Middleware.ts");
-      if (doesFileExist == false) {
-        await this.nextStep(name);
-      } else {
-        return BaseCommand.error(name + "Middleware.ts already exist. Modify middleware name and try again");
-      }
+    const middlewareName = `${name}Middleware`;
+    const middlewarePath = path.join("App", "Http", "Middleware");
+    const filePath = path.join(middlewarePath, `${middlewareName}.ts`);
+
+    if (await BaseCommand.checkFileExists(filePath)) {
+      return BaseCommand.error(`${middlewareName}.ts already exists. Modify middleware name and try again`);
+    }
+
+    if (await BaseCommand.checkFolderExists(middlewarePath)) {
+      await this.nextStep(middlewareName, filePath);
     }
   }
 
-  private static async nextStep(name: string) {
-    fs.appendFile("./App/Http/Middleware/" + name + "Middleware.ts", this.generateMiddleware(name), function (err) {
-      if (err) return BaseCommand.error(err.errno);
-      BaseCommand.success(name + "Middleware.ts class successfully generated in App/Http/Middleware folder");
-      return true;
-    });
+  private static async nextStep(middlewareName: string, filePath: string) {
+    try {
+      await fs.writeFile(filePath, this.generateMiddleware(middlewareName));
+      BaseCommand.success(`${middlewareName}.ts class successfully generated in App/Http/Middleware folder`);
+    } catch (err) {
+      BaseCommand.error((err as Error).message);
+    }
   }
 
   private static generateMiddleware(name: string) {

@@ -1,27 +1,33 @@
 "use strict";
-import fs from "fs";
+import { promises as fs } from "fs";
 import BaseCommand from "../baseCommand";
+import path from "path";
 
 export class CustomValidationRuleProgram {
   static async handle(name: string) {
+    const spinner = BaseCommand.progress();
     name = name[0].toUpperCase() + name.slice(1);
-    let checkFolder = BaseCommand.checkFolderExists("./App/Rules");
-    if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists("./App/Rules/" + name + ".ts");
-      if (doesFileExist == false) {
-        await this.nextStep(name);
-      } else {
-        return BaseCommand.error(name + ".ts already exist. Modify rule name and try again");
+    const rulePath = path.join("App", "Rules");
+    const filePath = path.join(rulePath, `${name}.ts`);
+
+    spinner.start(`Generating custom validation rule ${name}`);
+
+    try {
+      if (await BaseCommand.checkFileExists(filePath)) {
+        throw new Error(`${name}.ts already exists. Modify rule name and try again`);
       }
+
+      await BaseCommand.checkFolderExists(rulePath);
+      await this.nextStep(name, filePath);
+      spinner.succeed(`Custom validation rule ${name} created successfully.`);
+    } catch (error) {
+      spinner.fail((error as Error).message);
     }
   }
 
-  private static async nextStep(name: string) {
-    fs.appendFile("./App/Rules/" + name + ".ts", this.generateRule(name), function (err) {
-      if (err) return BaseCommand.error(err.errno);
-      BaseCommand.success(name + ".ts class successfully generated in App/Rules folder");
-      return true;
-    });
+  private static async nextStep(name: string, filePath: string) {
+    await fs.writeFile(filePath, this.generateRule(name));
+    BaseCommand.success(`${name}.ts class successfully generated in App/Rules folder`);
   }
 
   private static generateRule(name: string) {

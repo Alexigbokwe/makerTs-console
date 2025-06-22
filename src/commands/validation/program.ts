@@ -1,29 +1,34 @@
 "use strict";
-import fs from "fs";
+import { promises as fs } from "fs";
 import BaseCommand from "../baseCommand";
+import path from "path";
 
 export class ValidationProgram {
   static async handle(name: string) {
+    const spinner = BaseCommand.progress();
     name = name[0].toUpperCase() + name.slice(1);
-    let checkFolder = BaseCommand.checkFolderExists("./App/Http/Validation");
-    if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists("./App/Http/Validation/" + name + "Validation.ts");
-      if (doesFileExist == false) {
-        await this.nextStep(name);
-      } else {
-        return BaseCommand.error(name + "Validation.ts already exist. Modify request validator name and try again");
+    const validationName = name.includes("Validation") ? name : `${name}Validation`;
+    const validationPath = path.join("App", "Http", "Validation");
+    const filePath = path.join(validationPath, `${validationName}.ts`);
+
+    spinner.start(`Generating validation ${validationName}`);
+
+    try {
+      if (await BaseCommand.checkFileExists(filePath)) {
+        throw new Error(`${validationName}.ts already exists. Modify request validator name and try again`);
       }
+
+      await BaseCommand.checkFolderExists(validationPath);
+      await this.nextStep(validationName, filePath);
+      spinner.succeed(`Validation ${validationName} created successfully.`);
+    } catch (error) {
+      spinner.fail((error as Error).message);
     }
   }
 
-  private static async nextStep(name: string) {
-    name = name.includes("validation") ? name : name + "Validation";
-    const validationName = name.charAt(0).toUpperCase() + name.slice(1);
-    fs.appendFile("./App/Http/Validation/" + validationName + ".ts", this.generateValidation(validationName), function (err: any) {
-      if (err) return BaseCommand.error(err.errno);
-      BaseCommand.success(validationName + "Validation.ts class successfully generated in App/Http/Validation folder");
-      return true;
-    });
+  private static async nextStep(validationName: string, filePath: string) {
+    await fs.writeFile(filePath, this.generateValidation(validationName));
+    BaseCommand.success(`${validationName}.ts class successfully generated in App/Http/Validation folder`);
   }
 
   private static generateValidation(name: string) {

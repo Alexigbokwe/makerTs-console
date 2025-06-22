@@ -1,27 +1,31 @@
 "use strict";
-import fs from "fs";
+import { promises as fs } from "fs";
 import BaseCommand from "../baseCommand";
+import path from "path";
 
 export class NoSqlProgram {
   static async handle(name: string) {
     name = name[0].toUpperCase() + name.slice(1);
-    let checkFolder = BaseCommand.checkFolderExists("./App/Model");
-    if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists("./App/Model/" + name + "Model.ts");
-      if (doesFileExist == false) {
-        await this.nextStep(name);
-      } else {
-        return BaseCommand.error(name + "Model.ts already exist. Modify model name and try again");
-      }
+    const modelName = `${name}Model`;
+    const modelPath = path.join("App", "Model");
+    const filePath = path.join(modelPath, `${modelName}.ts`);
+
+    if (await BaseCommand.checkFileExists(filePath)) {
+      return BaseCommand.error(`${modelName}.ts already exists. Modify model name and try again`);
+    }
+
+    if (await BaseCommand.checkFolderExists(modelPath)) {
+      await this.nextStep(modelName, filePath, name);
     }
   }
 
-  private static async nextStep(name: string) {
-    fs.appendFile("./App/Model/" + name + "Model.ts", this.generateModel(name), function (err) {
-      if (err) return BaseCommand.error(err.errno);
-      BaseCommand.success(name + "Model.ts class successfully generated in App/Model folder");
-      return true;
-    });
+  private static async nextStep(modelName: string, filePath: string, name: string) {
+    try {
+      await fs.writeFile(filePath, this.generateModel(name));
+      BaseCommand.success(`${modelName}.ts class successfully generated in App/Model folder`);
+    } catch (err) {
+      BaseCommand.error((err as Error).message);
+    }
   }
 
   static generateModel(name: string) {

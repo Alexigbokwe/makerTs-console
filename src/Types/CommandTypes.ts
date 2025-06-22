@@ -1,3 +1,5 @@
+import { CommandArgument, CommandOption } from "../command";
+
 export enum mode {
   REQUIRED = "REQUIRED",
   OPTIONAL = "OPTIONAL",
@@ -5,9 +7,12 @@ export enum mode {
 
 export type TCommand = {
   signature: string;
-  arguments: { name: string; mode: mode }[];
+  arguments?: CommandArgument[];
+  options?: CommandOption[];
   description: string;
   fire(...args: any): any;
+  validateOptions(): void;
+  getHelpText(): string;
 };
 
 export enum ORM {

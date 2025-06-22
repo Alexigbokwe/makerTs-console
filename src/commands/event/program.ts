@@ -1,27 +1,34 @@
 "use strict";
-import fs from "fs";
+import { promises as fs } from "fs";
 import BaseCommand from "../baseCommand";
+import path from "path";
 
 export class EventProgram {
   static async handle(name: string) {
+    const spinner = BaseCommand.progress();
     name = name[0].toUpperCase() + name.slice(1);
-    let checkFolder = BaseCommand.checkFolderExists("./App/Events");
-    if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists("./App/Events/" + name + "_event.ts");
-      if (doesFileExist == false) {
-        await this.nextStep(name);
-      } else {
-        return BaseCommand.error(name + "_event.ts already exist. Modify event name and try again");
+    const eventName = `${name}_event`;
+    const eventPath = path.join("App", "Events");
+    const filePath = path.join(eventPath, `${eventName}.ts`);
+
+    spinner.start(`Generating event ${eventName}`);
+
+    try {
+      if (await BaseCommand.checkFileExists(filePath)) {
+        throw new Error(`${eventName}.ts already exists. Modify event name and try again`);
       }
+
+      await BaseCommand.checkFolderExists(eventPath);
+      await this.nextStep(eventName, filePath, name);
+      spinner.succeed(`Event ${eventName} created successfully.`);
+    } catch (error) {
+      spinner.fail((error as Error).message);
     }
   }
 
-  private static async nextStep(name: string) {
-    fs.appendFile("./App/Events/" + name + "_event.ts", this.generateEvent(name), function (err) {
-      if (err) return BaseCommand.error(err.errno);
-      BaseCommand.success(name + "_event.ts class successfully generated in App/Events folder");
-      return true;
-    });
+  private static async nextStep(eventName: string, filePath: string, name: string) {
+    await fs.writeFile(filePath, this.generateEvent(name));
+    BaseCommand.success(`${eventName}.ts class successfully generated in App/Events folder`);
   }
 
   private static generateEvent(name: string) {

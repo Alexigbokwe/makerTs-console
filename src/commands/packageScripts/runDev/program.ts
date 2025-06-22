@@ -1,4 +1,4 @@
-import shell from "shelljs";
+import { exec } from "child_process";
 import { BaseScript } from "../BaseScript";
 
 class DevelopmentServerProgram extends BaseScript {
@@ -8,10 +8,16 @@ class DevelopmentServerProgram extends BaseScript {
   }
 
   private static runDevServer() {
-    if (shell.exec('tsc-watch --onSuccess "node -r tsconfig-paths/register -r ts-node/register app.ts "').code !== 0) {
-      shell.echo("Error: Run development server command failed");
-      shell.exit(1);
-    }
+    const command = 'tsc-watch --onSuccess "node -r tsconfig-paths/register -r ts-node/register app.ts "';
+    const devProcess = exec(command);
+
+    devProcess.stdout?.on("data", (data) => {
+      console.log(data);
+    });
+
+    devProcess.stderr?.on("data", (data) => {
+      console.error(data);
+    });
   }
 }
 

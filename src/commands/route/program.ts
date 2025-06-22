@@ -1,40 +1,35 @@
 "use strict";
-import Ora from "ora";
-import fs from "fs";
+import { promises as fs } from "fs";
 import BaseCommand from "../baseCommand";
-import shell from "shelljs";
-const spinner = Ora("Processing: ");
+import path from "path";
 
 export class RouteProgram {
   static async handle(name: string) {
-    spinner.start();
-    spinner.color = "magenta";
-    spinner.text = "Generating Route";
+    const spinner = BaseCommand.progress();
+    spinner.start("Generating Route");
     name = name[0].toUpperCase() + name.slice(1);
-    let doesFileExist = await BaseCommand.checkFileExists(`./Routes/${name}/index.ts`);
-    if (doesFileExist == false) {
-      await this.nextStep(name);
-      spinner.color = "green";
-      spinner.text = "Completed";
-      spinner.succeed("Completed 😊😘");
-    } else {
-      spinner.color = "red";
-      spinner.text = "failed";
-      spinner.fail("");
-      return BaseCommand.error(name + " route folder already exist. Modify route name and try again");
+    const routePath = path.join("Routes", name);
+    const filePath = path.join(routePath, "index.ts");
+
+    if (await BaseCommand.checkFileExists(filePath)) {
+      spinner.fail();
+      return BaseCommand.error(`${name} route folder already exists. Modify route name and try again`);
+    }
+
+    try {
+      await this.nextStep(name, routePath, filePath);
+      spinner.succeed(`Route [${name}] created successfully.`);
+    } catch (error) {
+      spinner.fail();
+      BaseCommand.error(`Failed to create route: ${(error as Error).message}`);
     }
   }
 
-  private static async nextStep(name: string) {
-    await this.routeFolder(name);
-  }
-
-  private static async routeFolder(name: string) {
-    shell.mkdir("./Routes/" + name);
-    fs.appendFile("./Routes/" + name + "/index.ts", await this.routeBody(name), function (err: any) {
-      if (err) throw err;
-      BaseCommand.success(`${name} route successfully generated in Routes/${name}`);
-    });
+  private static async nextStep(name: string, routePath: string, filePath: string) {
+    await fs.mkdir(routePath, { recursive: true });
+    const routeBodyContent = await this.routeBody(name);
+    await fs.writeFile(filePath, routeBodyContent);
+    BaseCommand.success(`${name} route successfully generated in ${routePath}`);
   }
 
   static async routeBody(name: string) {

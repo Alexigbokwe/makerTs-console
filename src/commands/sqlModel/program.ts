@@ -1,46 +1,82 @@
 "use strict";
-import Ora from "ora";
-import fs from "fs";
+import { promises as fs } from "fs";
+import { exec } from "child_process";
+import path from "path";
 import BaseCommand from "../baseCommand";
-import shell from "shelljs";
 import { Arguments, ORM } from "../../Types/CommandTypes";
-const spinner = Ora("Processing: ");
 
 export class SqlProgram {
   static async handle(name: string, orm: ORM, migration?: Arguments.migration) {
+    const spinner = BaseCommand.progress();
     name = name[0].toUpperCase() + name.slice(1);
-    let check = await BaseCommand.checkFileExists("./App/Model/" + name + "Model.ts");
-    if (!check) {
-      await this.createModel(name, orm, migration);
-    } else {
-      return BaseCommand.error(`${name} Sql model class already exists`);
+    const modelName = `${name}Model`;
+    const modelPath = path.join("App", "Model");
+    const filePath = path.join(modelPath, `${modelName}.ts`);
+
+    spinner.start(`Generating SQL model ${modelName}`);
+
+    try {
+      if (await BaseCommand.checkFileExists(filePath)) {
+        throw new Error(`${modelName} class already exists`);
+      }
+
+      await BaseCommand.checkFolderExists(modelPath);
+
+      if (migration === Arguments.migration) {
+        await this.createModelWithMigration(name, orm, filePath, spinner);
+      } else {
+        await this.createModel(name, orm, filePath, spinner);
+      }
+    } catch (error) {
+      spinner.fail((error as Error).message);
     }
   }
 
-  private static async createModel(modelName: string, orm: ORM, migration?: Arguments.migration) {
-    if (migration === Arguments.migration) {
-      spinner.start();
-      spinner.color = "magenta";
-      spinner.text = "Generating Model";
-      fs.appendFile("./App/Model/" + modelName + "Model.ts", await this.modelBodyWithMigration(modelName, orm), function (err) {
-        if (err) BaseCommand.error(err);
-        BaseCommand.success("\n" + modelName + "Model.ts class successfully generated in App/Model folder");
-        spinner.color = "green";
-        spinner.text = "Completed";
-        spinner.succeed("Done 😊😘");
+  private static async createModel(modelName: string, orm: ORM, filePath: string, spinner: any) {
+    const body = this.modelBody(modelName, orm);
+    await fs.writeFile(filePath, body);
+    spinner.succeed(`${path.basename(filePath)} class successfully generated in ${path.dirname(filePath)}`);
+  }
+
+  private static async createModelWithMigration(modelName: string, orm: ORM, filePath: string, spinner: any) {
+    const migrationName = modelName.toLowerCase();
+    const command = `npx knex migrate:make ${migrationName} --knexfile=./SchemaSetup.ts`;
+
+    spinner.text = `Generating migration for ${modelName}`;
+    await this.executeKnexCommand(command);
+    spinner.succeed(`Migration ${migrationName} created successfully.`);
+
+    spinner.start(`Generating model ${modelName}`);
+    await this.createModel(modelName, orm, filePath, spinner);
+  }
+
+  private static executeKnexCommand(command: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      exec(command, (error, stdout, stderr) => {
+        if (error) {
+          if (stderr.includes("Cannot find module 'knex'")) {
+            console.warn("Knex not found. Attempting to install it globally...");
+            exec("npm install knex -g", (installError) => {
+              if (installError) {
+                return reject(new Error(`Failed to install knex: ${installError.message}`));
+              }
+              console.log("Knex installed successfully.");
+              // Retry the command
+              exec(command, (retryError) => {
+                if (retryError) {
+                  return reject(new Error(`Failed to execute knex command on retry: ${retryError.message}`));
+                }
+                resolve();
+              });
+            });
+          } else {
+            reject(new Error(`Failed to execute knex command: ${error.message}`));
+          }
+        } else {
+          resolve();
+        }
       });
-    } else {
-      spinner.start();
-      spinner.color = "magenta";
-      spinner.text = "Generating Model";
-      fs.appendFile("./App/Model/" + modelName + "Model.ts", this.modelBody(modelName, orm), function (err) {
-        if (err) BaseCommand.error(err);
-        BaseCommand.success("\n" + modelName + "Model.ts class successfully generated in App/Model folder");
-        spinner.color = "green";
-        spinner.text = "Completed";
-        spinner.succeed("Done 😊😘");
-      });
-    }
+    });
   }
 
   private static TypeORMModelBody(modelName: string, tableName: string) {
@@ -77,20 +113,6 @@ export class SqlProgram {
         return this.TypeORMModelBody(modelName, tableName);
       default:
         throw new Error("Invalid SQL ORM selected");
-    }
-  }
-
-  private static async modelBodyWithMigration(modelName: string, orm: ORM) {
-    modelName = modelName.toLowerCase();
-    try {
-      shell.exec("npx knex migrate:make " + modelName + " --knexfile=./SchemaSetup.ts");
-      await BaseCommand.success(modelName + " migration successfully generated in Database/Migrations folder");
-      return this.modelBody(modelName, orm);
-    } catch (error) {
-      shell.exec("npm install knex -g");
-      shell.exec("npx knex migrate:make " + modelName + " --knexfile=./SchemaSetup.ts");
-      await BaseCommand.success(modelName + " migration successfully generated in Database/Migrations folder");
-      return this.modelBody(modelName, orm);
     }
   }
 }

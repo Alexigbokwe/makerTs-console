@@ -1,73 +1,29 @@
 "use strict";
-import Ora from "ora";
-import fs from "fs";
+import path from "path";
+import { promises as fs } from "fs";
 import BaseCommand from "../baseCommand";
 import { ORM } from "../../Types/CommandTypes";
-const spinner = Ora("Processing: ");
 
 class AuthProgram {
   static async handle(orm: ORM) {
+    const spinner = BaseCommand.progress();
+    spinner.start("Scaffolding authentication...");
+
     try {
-      const [routeStatus, validationCreated, controllerCreated, middlewareCreated] = await Promise.all([this.createAuthRoute(), this.generateAuthValidations(), this.generateAuthControllers(), this.generateAuthMiddleware()]);
+      await Promise.all([this.generateAuthMiddleware(spinner), this.generateAuthControllers(spinner), this.generateAuthValidations(spinner), this.createAuthRoute(spinner), this.createModel(orm, spinner)]);
 
-      if (!routeStatus) {
-        throw new Error("An error occurred while generating authentication routes.");
-      }
-
-      if (!validationCreated) {
-        throw new Error("An error occurred while generating authentication validations.");
-      }
-
-      if (!controllerCreated) {
-        throw new Error("An error occurred while generating authentication controllers.");
-      }
-
-      if (!middlewareCreated) {
-        throw new Error("An error occurred while generating authentication middleware.");
-      }
-
-      await this.createModel(orm);
-      BaseCommand.success(" Authentication routes, validations, controllers, middleware and model successfully created.");
+      spinner.succeed("Authentication scaffolding generated successfully.");
     } catch (error) {
-      this.handleError(error);
+      spinner.fail(`Authentication scaffolding failed: ${(error as Error).message}`);
     }
   }
 
-  private static handleError(error: any) {
-    spinner.color = "red";
-    spinner.text = "Failed";
-    spinner.fail("");
-    BaseCommand.error("Error Occurred: " + error);
-  }
-
-  private static async generateAuthMiddleware() {
-    const dir = "./App/Http/Middleware";
-    try {
-      const dirExists = await fs.promises
-        .stat(dir)
-        .then((stats) => stats.isDirectory())
-        .catch(() => false);
-
-      // Create directory if it does not exist
-      if (!dirExists) {
-        await fs.promises.mkdir(dir, { recursive: true });
-      }
-
-      // Append file
-      await fs.promises.appendFile(`${dir}/Auth.ts`, this.authMiddleware());
-
-      // Success message
-      spinner.color = "green";
-      spinner.text = "Completed";
-      spinner.succeed("Auth Middleware Successfully Generated in App/Http/Middleware folder");
-      return true;
-    } catch (err) {
-      spinner.color = "red";
-      spinner.text = "Failed";
-      spinner.fail("");
-      BaseCommand.error(err);
-      return false;
-    }
+  private static async generateAuthMiddleware(spinner: any) {
+    spinner.text = "Generating authentication middleware...";
+    const middlewarePath = path.join("App", "Http", "Middleware");
+    await BaseCommand.checkFolderExists(middlewarePath);
+    const filePath = path.join(middlewarePath, "Auth.ts");
+    await fs.writeFile(filePath, this.authMiddleware());
   }
 
   private static authMiddleware() {
@@ -99,34 +55,12 @@ class AuthProgram {
      `;
   }
 
-  private static async generateAuthControllers() {
-    const dir = "./App/Http/Controller/Auth";
-    try {
-      const dirExists = await fs.promises
-        .stat(dir)
-        .then((stats) => stats.isDirectory())
-        .catch(() => false);
+  private static async generateAuthControllers(spinner: any) {
+    spinner.text = "Generating authentication controllers...";
+    const controllerPath = path.join("App", "Http", "Controller", "Auth");
+    await BaseCommand.checkFolderExists(controllerPath);
 
-      // Create directory if it does not exist
-      if (!dirExists) {
-        await fs.promises.mkdir(dir, { recursive: true });
-      }
-
-      // Append file
-      await Promise.all([fs.promises.appendFile(`${dir}/LoginController.ts`, this.loginController()), fs.promises.appendFile(`${dir}/RegisterController.ts`, this.registerController())]);
-
-      // Success message
-      spinner.color = "green";
-      spinner.text = "Completed";
-      spinner.succeed("Login and Registration Controllers Successfully Generated in App/Http/Controller/Auth folder");
-      return true;
-    } catch (err) {
-      spinner.color = "red";
-      spinner.text = "Failed";
-      spinner.fail("");
-      BaseCommand.error(err);
-      return false;
-    }
+    await Promise.all([fs.writeFile(path.join(controllerPath, "LoginController.ts"), this.loginController()), fs.writeFile(path.join(controllerPath, "RegisterController.ts"), this.registerController())]);
   }
 
   private static loginController() {
@@ -201,35 +135,12 @@ class AuthProgram {
     `;
   }
 
-  private static async generateAuthValidations() {
-    const dir = "./App/Http/Validation";
-    try {
-      const dirExists = await fs.promises
-        .stat(dir)
-        .then((stats) => stats.isDirectory())
-        .catch(() => false);
+  private static async generateAuthValidations(spinner: any) {
+    spinner.text = "Generating authentication validations...";
+    const validationPath = path.join("App", "Http", "Validation");
+    await BaseCommand.checkFolderExists(validationPath);
 
-      // Create directory if it does not exist
-      if (!dirExists) {
-        await fs.promises.mkdir(dir, { recursive: true });
-      }
-
-      // Append file
-      await Promise.all([fs.promises.appendFile(`${dir}/LoginValidation.ts`, this.loginValidation()), fs.promises.appendFile(`${dir}/RegisterValidation.ts`, this.registrationValidation())]);
-
-      // Success message
-      spinner.color = "green";
-      spinner.text = "Completed";
-      spinner.succeed("Login and Registration Validation Successfully Generated in App/Http/Validation folder");
-      return true;
-    } catch (err) {
-      // Error handling
-      spinner.color = "red";
-      spinner.text = "Failed";
-      spinner.fail("");
-      BaseCommand.error(err);
-      return false;
-    }
+    await Promise.all([fs.writeFile(path.join(validationPath, "LoginValidation.ts"), this.loginValidation()), fs.writeFile(path.join(validationPath, "RegisterValidation.ts"), this.registrationValidation())]);
   }
 
   private static loginValidation() {
@@ -277,52 +188,29 @@ class AuthProgram {
     export { RegisterValidation, dataType };`;
   }
 
-  private static async createAuthRoute() {
-    spinner.start();
-    spinner.color = "magenta";
-    spinner.text = "Generating Authentication route";
-    const fileExist = await BaseCommand.checkFileExists("./Routes/AuthRoute/index.ts");
-    if (!fileExist) {
-      return await this.appendRoute();
-    } else {
-      spinner.color = "red";
-      spinner.text = "failed";
-      spinner.fail("");
-      await BaseCommand.error("Authentication routes already exist in App/Routes/AuthRoute folder.");
-      return false;
+  private static async createAuthRoute(spinner: any) {
+    spinner.text = "Creating authentication routes...";
+    const routePath = path.join("Routes", "auth.ts");
+    if (!(await BaseCommand.checkFileExists(routePath))) {
+      await fs.writeFile(routePath, this.routeBody());
+      await this.appendRoute();
     }
   }
 
   private static async appendRoute() {
-    const dir = "./Routes/AuthRoute";
-    try {
-      // Check if directory exists
-      const dirExists = await fs.promises
-        .stat(dir)
-        .then((stats) => stats.isDirectory())
-        .catch(() => false);
+    const mainRoutePath = path.join("Routes", "index.ts");
+    const importStatement = `\nimport auth from "./auth";`;
+    const useStatement = `\nRoute.use("/auth", auth);`;
 
-      // Create directory if it does not exist
-      if (!dirExists) {
-        await fs.promises.mkdir(dir, { recursive: true });
-      }
-
-      // Append file
-      await fs.promises.appendFile(`${dir}/index.ts`, this.routeBody());
-
-      // Success message
-      spinner.color = "green";
-      spinner.text = "Completed";
-      spinner.succeed("Authentication route successfully generated in App/Routes/AuthRoute folder");
-      return true;
-    } catch (err) {
-      // Error handling
-      spinner.color = "red";
-      spinner.text = "Failed";
-      spinner.fail("");
-      BaseCommand.error(err);
-      return false;
+    let mainRouteContent = await fs.readFile(mainRoutePath, "utf-8");
+    if (!mainRouteContent.includes(importStatement)) {
+      mainRouteContent += importStatement;
     }
+    if (!mainRouteContent.includes(`Route.use("/auth", auth)`)) {
+      mainRouteContent = mainRouteContent.replace("export default Route.exec;", `${useStatement}\nexport default Route.exec;`);
+    }
+
+    await fs.writeFile(mainRoutePath, mainRouteContent);
   }
 
   private static routeBody() {
@@ -345,58 +233,32 @@ class AuthProgram {
     export default Route.exec;`;
   }
 
-  private static async createModel(orm: ORM) {
-    spinner.start();
-    spinner.color = "magenta";
-    spinner.text = "Generating Authentication";
-    let checkFolder = BaseCommand.checkFolderExists("./App/Model");
-    if (checkFolder) {
-      let doesFileExist = await BaseCommand.checkFileExists("./App/Model/UserModel.ts");
-      if (!doesFileExist) {
-        switch (orm) {
-          case ORM.Mongoose:
-            await this.nextStep(this.MongoDBModelBody());
-            break;
-          case ORM.Objection:
-            await this.nextStep(this.ObjectionModelBody());
-            break;
-          case ORM.TypeORM:
-            await this.nextStep(this.TypeORMModelBody());
-            break;
-          default:
-            spinner.color = "red";
-            spinner.text = "failed";
-            spinner.fail("");
-            await BaseCommand.error("Invalid ORM Selected.");
-        }
-      } else {
-        spinner.color = "red";
-        spinner.text = "failed";
-        spinner.fail("");
-        await BaseCommand.error("UserModel.ts already exist.");
-      }
-    } else {
-      spinner.color = "red";
-      spinner.text = "failed";
-      spinner.fail("");
-      await BaseCommand.error("App/Model directory does not exist. Kindly create that and try again");
-    }
-  }
+  private static async createModel(orm: ORM, spinner: any) {
+    spinner.text = "Creating user model...";
+    const modelPath = path.join("App", "Model");
+    await BaseCommand.checkFolderExists(modelPath);
+    const filePath = path.join(modelPath, "User.ts");
 
-  private static async nextStep(generateModel: any) {
-    fs.appendFile("./App/Model/UserModel.ts", generateModel, function (err) {
-      if (err) {
-        spinner.color = "red";
-        spinner.text = "failed";
-        spinner.fail("");
-        BaseCommand.error(err.errno);
-        return false;
-      }
-      spinner.color = "green";
-      spinner.text = "Completed";
-      spinner.succeed("UserModel class successfully generated in App/Model folder");
-      return true;
-    });
+    if (await BaseCommand.checkFileExists(filePath)) {
+      BaseCommand.warning("User model already exists. Skipping creation.");
+      return;
+    }
+
+    let modelBody;
+    switch (orm) {
+      case ORM.Mongoose:
+        modelBody = this.MongoDBModelBody();
+        break;
+      case ORM.TypeORM:
+        modelBody = this.TypeORMModelBody();
+        break;
+      case ORM.Objection:
+        modelBody = this.ObjectionModelBody();
+        break;
+      default:
+        throw new Error("Invalid ORM specified for auth scaffolding.");
+    }
+    await fs.writeFile(filePath, modelBody);
   }
 
   private static MongoDBModelBody() {

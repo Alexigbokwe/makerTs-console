@@ -1,36 +1,28 @@
 "use strict";
-import fs from "fs";
+import fs from "fs/promises";
 import BaseCommand from "../baseCommand";
-import path from "path";
 import { Arguments } from "../../Types/CommandTypes";
 
 class ControllerProgram {
   static async handle(name: string, directoryPath: string, resource?: Arguments.resourceController) {
     name = name[0].toUpperCase() + name.slice(1);
-    let check = await BaseCommand.checkFileExists("./" + directoryPath + "/" + name + ".ts");
-    if (!check) {
-      await this.createController(name, directoryPath, resource);
+    const controllerPath = `${directoryPath}/${name}.ts`;
+    const exists = await BaseCommand.checkFileExists(controllerPath);
+    if (!exists) {
+      await this.createController(name, directoryPath, controllerPath, resource);
     } else {
-      return BaseCommand.error("Controller class already exists");
+      BaseCommand.error(`Controller class ${name} already exists.`);
     }
   }
 
-  private static async createController(name: string, directoryPath: string, resource?: Arguments.resourceController) {
-    let directory = "./" + directoryPath + "/" + name + ".ts";
-    let dirPath = path.dirname(directory);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
-    if (resource === Arguments.resourceController) {
-      fs.appendFile(directory, await this.controllerBodyWithResource(name), (err) => {
-        if (err) BaseCommand.error(err);
-        BaseCommand.success(this.formatControllerName(name) + " class successfully generated in " + directoryPath + " folder");
-      });
-    } else {
-      fs.appendFile(directory, await this.controllerBody(name), (err) => {
-        if (err) BaseCommand.error(err);
-        BaseCommand.success(this.formatControllerName(name) + " class successfully generated in " + directoryPath + " folder");
-      });
+  private static async createController(name: string, directoryPath: string, controllerPath: string, resource?: Arguments.resourceController) {
+    try {
+      await BaseCommand.checkFolderExists(directoryPath);
+      const body = resource === Arguments.resourceController ? await this.controllerBodyWithResource(name) : await this.controllerBody(name);
+      await fs.writeFile(controllerPath, body);
+      BaseCommand.success(`${this.formatControllerName(name)} class successfully generated in ${directoryPath} folder`);
+    } catch (err) {
+      BaseCommand.error(err);
     }
   }
 
@@ -46,7 +38,7 @@ class ControllerProgram {
   private static async controllerBody(name: string) {
     let controllerName = this.formatControllerName(name);
     let body = `
-    import { Request, Response } from "Config/Http";
+    import { HttpContext } from "Resources/platform";
     import { BaseController } from "App/Http/Controller/BaseController";
 
     export class ${controllerName} extends BaseController{
@@ -57,7 +49,8 @@ class ControllerProgram {
 
   static async controllerBodyWithResource(name: string) {
     let controllerName = this.formatControllerName(name);
-    let body = `import { Request, Response } from "Config/Http";
+    let body = `
+    import { HttpContext } from "Resources/platform";
     import { BaseController } from "App/Http/Controller/BaseController";
 
     export class ${controllerName} extends BaseController{
@@ -67,7 +60,7 @@ class ControllerProgram {
        * @method GET
        * @endpoint
        */
-      public async index(req: Request, res: Response){
+      public async index(ctx: HttpContext){
         throw new Error('${controllerName} index method not implemented.');
       }
 
@@ -76,7 +69,7 @@ class ControllerProgram {
        * @method POST
        * @endpoint
        */
-      public async store(req: Request, res: Response){
+      public async store(ctx: HttpContext){
         throw new Error('${controllerName} store method not implemented.');
       }
 
@@ -85,7 +78,7 @@ class ControllerProgram {
        * @method GET
        * @endpoint
        */
-      public async show(req: Request, res: Response){
+      public async show(ctx: HttpContext){
         throw new Error('${controllerName} show method not implemented.');
       }
 
@@ -94,7 +87,7 @@ class ControllerProgram {
        * @method PUT/PATCH
        * @endpoint
        */
-      public async update(req: Request, res: Response){
+      public async update(ctx: HttpContext){
         throw new Error('${controllerName} update method not implemented.');
       }
 
@@ -103,7 +96,7 @@ class ControllerProgram {
        * @method DELETE
        * @endpoint
        */
-      public async destroy(req: Request, res: Response){
+      public async destroy(ctx: HttpContext){
         throw new Error('${controllerName} destroy method not implemented.');
       }
     }`;
