@@ -1,9 +1,9 @@
-import { exec } from "child_process";
-import { promises as fs, existsSync } from "fs";
+import { spawn } from "child_process";
+import { existsSync } from "fs";
 import path from "path";
-import { BaseScript } from "../BaseScript";
 import { projectDirectory } from "../../../RootDirectory";
 import BaseCommand from "../../baseCommand";
+import { BaseScript } from "../BaseScript";
 
 class RunStartProgram extends BaseScript {
   static async handle() {
@@ -32,19 +32,19 @@ class RunStartProgram extends BaseScript {
       directory = directory.replace("build/", "");
     }
 
-    const command = `node -r module-alias/register -r ${directory} ${entryPoint}`;
-    const startProcess = exec(command);
-
-    startProcess.stdout?.on("data", (data) => {
-      console.log(data);
-      if (data.includes("started successfully")) {
-        spinner.succeed("Production server started successfully.");
-      }
+    // Use spawn instead of exec - this doesn't create a shell subprocess
+    const startProcess = spawn("node", ["-r", "module-alias/register", "-r", directory, entryPoint], {
+      stdio: "inherit", // This passes through stdout/stderr directly
+      detached: false, // Keep it attached to parent process
     });
 
-    startProcess.stderr?.on("data", (data) => {
-      console.error(data);
+    startProcess.on("error", (error) => {
+      console.error(error);
       spinner.fail("Failed to start production server.");
+    });
+
+    startProcess.on("spawn", () => {
+      spinner.succeed("Production server started successfully.");
     });
   }
 }
